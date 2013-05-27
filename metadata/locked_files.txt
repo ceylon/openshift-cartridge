@@ -1,0 +1,8 @@
+redhat-ceylon/
+redhat-ceylon/bin/
+redhat-ceylon/configuration/
+redhat-ceylon/env/
+redhat-ceylon/lib/
+redhat-ceylon/metadata/
+redhat-ceylon/template/
+redhat-ceylon/versions/
