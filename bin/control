@@ -13,13 +13,7 @@ OPENSHIFT_CEYLON_RUN_DIR=${OPENSHIFT_CEYLON_DIR}run
 CEYLON_LOG_PATH=${OPENSHIFT_CEYLON_LOG_DIR}/ceylon.log
 CEYLON_PID_FILE=${OPENSHIFT_CEYLON_RUN_DIR}/ceylon.pid
 
-CEYLON_FIRST_BOOT_MODULES=${OPENSHIFT_CEYLON_RUN_DIR}/use_first_boot_modules
-
 function start() {
-	ceylon_repos="";
-	if [ -f "${CEYLON_FIRST_BOOT_MODULES}" ]; then
-		ceylon_repos=" --rep ${OPENSHIFT_CEYLON_DIR}versions/${OPENSHIFT_CEYLON_VERSION}/template-fitstboot/modules"
-	fi
 	
 	echo "Starting Ceylon cart"
     if [ -f "${OPENSHIFT_REPO_DIR}/.openshift/markers/enable_jpda" ]; then
@@ -43,9 +37,9 @@ function start() {
 		export PRESERVE_JAVA_OPTS="true"
 		export JAVA_OPTS
 
+		ceylon_repos=" --rep ${OPENSHIFT_REPO_DIR}.openshift/config/modules"
 		ceylon_repos="${ceylon_repos} --rep http://modules.ceylon-lang.org/test/"
 		ceylon_repos="${ceylon_repos} --rep ${OPENSHIFT_CEYLON_MODULES_REPO_DIR}"
-		ceylon_repos="${ceylon_repos} --rep ${OPENSHIFT_REPO_DIR}.openshift/config/modules"
 		
 		source ${OPENSHIFT_REPO_DIR}.openshift/config/ceylon.properties
 
@@ -53,8 +47,7 @@ function start() {
 		echo "With JAVA_OPTS: ${JAVA_OPTS}"
 
 		# Start
-		#TODO uncomment $CEYLON_BIN_DIR/ceylon run ${run_module_id} ${ceylon_repos} >> ${CEYLON_LOG_PATH} 2>&1 &
-		$CEYLON_BIN_DIR/ceylon run ${run_module_id} ${ceylon_repos} &
+		$CEYLON_BIN_DIR/ceylon run ${run_module_id} ${ceylon_repos} >> ${CEYLON_LOG_PATH} 2>&1 &
 		ceylon_pid=$!
 		echo $ceylon_pid > $CEYLON_PID_FILE
 
@@ -119,20 +112,15 @@ function tidy() {
 function build() {
 	echo "Building Ceylon app..."
 
-	if [ -f "${CEYLON_FIRST_BOOT_MODULES}" ]; then
-		# Use first boot modules till first user build.
-		rm -f ${OPENSHIFT_CEYLON_RUN_DIR}/use_first_boot_modules
-	fi
-
 	JAVA_OPTS="-Dceylon.cache.repo=${OPENSHIFT_CEYLON_MODULES_REPO_DIR}/cache"
 	JAVA_OPTS="$JAVA_OPTS -Dcom.redhat.ceylon.common.tool.terminal.width=9999" #do not wrap output
 
 	export JAVA_OPTS
 	export PRESERVE_JAVA_OPTS="true"
 
-	ceylon_repos="--rep http://modules.ceylon-lang.org/test/"
+	ceylon_repos=" --rep ${OPENSHIFT_REPO_DIR}.openshift/config/modules"
+	ceylon_repos="${ceylon_repos} --rep http://modules.ceylon-lang.org/test/"
 	ceylon_repos="${ceylon_repos} --rep ${OPENSHIFT_CEYLON_MODULES_REPO_DIR}"
-	ceylon_repos="${ceylon_repos} --rep ${OPENSHIFT_REPO_DIR}.openshift/config/modules"
 
 	compile_files=`find ${OPENSHIFT_REPO_DIR}/source/ -name *\.ceylon -o -name *\.java`
 	printf "Compiling files:\n$compile_files\n"
