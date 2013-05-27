@@ -1,7 +1,7 @@
 #!/bin/bash -eu
 
 echo "seting up ..."
-echo "seting up ..." >> /var/log/ceylon.install.log
+echo "seting up ..." > ${OPENSHIFT_CEYLON_DIR}/ceylon.install.log
 
 version='0.5'
 echo "export OPENSHIFT_CEYLON_VERSION='$version'" > "$OPENSHIFT_CEYLON_DIR/env/OPENSHIFT_CEYLON_VERSION"
@@ -12,6 +12,6 @@ OPENSHIFT_CEYLON_MODULES_REPO_DIR=${OPENSHIFT_CEYLON_DIR}data/ceylon_repo
 mkdir $OPENSHIFT_CEYLON_MODULES_REPO_DIR
 
 echo "setup done"
-echo "setup done" >> /var/log/ceylon.install.log 
+echo "setup done" >> ${OPENSHIFT_CEYLON_DIR}/ceylon.install.log 
 
 exit 0
