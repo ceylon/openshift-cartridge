@@ -1,0 +1,18 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>print.ceylon</title><link href='.resources/shCore.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/shThemeDefault.css' rel='stylesheet' type='text/css'/>
+<script type='text/javascript' src='.resources/jquery-1.8.2.min.js'></script><script type='text/javascript' src='.resources/ceylondoc.js'></script><script src='.resources/shCore.js' type='text/javascript'></script><script src='.resources/shBrushCeylon.js' type='text/javascript'></script></head><body><pre class='brush: ceylon'>doc &quot;Print a line to the standard output of the virtual 
+     machine process, printing the given value\&apos;s `string`, 
+     or `\{#ab}null\{#bb}` if the value is `null`.
+     
+     This method is a shortcut for:
+     
+         process.writeLine(line?.string else \&quot;\{#ab}null\{#bb}\&quot;)
+     
+     and is intended mainly for debugging purposes.&quot;
+see (process.writeLine)
+by &quot;Gavin&quot;
+shared void print(Anything line) { 
+    process.writeLine(line?.string else &quot;\{#ab}null\{#bb}&quot;);
+}
+</pre></body></html>

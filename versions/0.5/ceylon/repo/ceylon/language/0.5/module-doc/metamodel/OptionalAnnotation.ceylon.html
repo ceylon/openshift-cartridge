@@ -1,0 +1,10 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>OptionalAnnotation.ceylon</title><link href='../.resources/shCore.css' rel='stylesheet' type='text/css'/>
+<link href='../.resources/shThemeDefault.css' rel='stylesheet' type='text/css'/>
+<script type='text/javascript' src='../.resources/jquery-1.8.2.min.js'></script><script type='text/javascript' src='../.resources/ceylondoc.js'></script><script src='../.resources/shCore.js' type='text/javascript'></script><script src='../.resources/shBrushCeylon.js' type='text/javascript'></script></head><body><pre class='brush: ceylon'>doc &quot;An annotation that may occur at most once
+     at a single program element.&quot;
+shared interface OptionalAnnotation&lt;out Value, in ProgramElement&gt;
+        satisfies ConstrainedAnnotation&lt;Value,Value?,ProgramElement&gt;
+        given Value satisfies Annotation&lt;Value&gt;
+        given ProgramElement satisfies Annotated {}
+</pre></body></html>

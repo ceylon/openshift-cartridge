@@ -1,0 +1,96 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>Set.ceylon</title><link href='.resources/shCore.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/shThemeDefault.css' rel='stylesheet' type='text/css'/>
+<script type='text/javascript' src='.resources/jquery-1.8.2.min.js'></script><script type='text/javascript' src='.resources/ceylondoc.js'></script><script src='.resources/shCore.js' type='text/javascript'></script><script src='.resources/shBrushCeylon.js' type='text/javascript'></script></head><body><pre class='brush: ceylon'>doc &quot;A collection of unique elements.
+     
+     A `Set` is a `Collection` of its elements.
+     
+     Sets may be the subject of the binary union, 
+     intersection, exclusive union, and complement operators 
+     `|`, `&amp;`, `^`, and `~`.&quot;
+shared interface Set&lt;out Element&gt;
+        satisfies Collection&lt;Element&gt; &amp;
+                  Cloneable&lt;Set&lt;Element&gt;&gt;
+        given Element satisfies Object {
+    
+    doc &quot;Determines if this `Set` is a superset of the 
+         specified Set, that is, if this `Set` contains all 
+         of the elements in the specified `Set`.&quot;
+    shared default Boolean superset(Set&lt;Object&gt; set) {
+        for (element in set) {
+            if (!element in this) {
+                return false;
+            }
+        }
+        else {
+            return true;
+        }
+    }
+    
+    doc &quot;Determines if this `Set` is a subset of the given 
+         `Set`, that is, if the given set contains all of 
+         the elements in this set.&quot;
+    shared default Boolean subset(Set&lt;Object&gt; set) {
+        for (element in this) {
+            if (!element in set) {
+                return false;
+            }
+        }
+        else {
+            return true;
+        }
+    }
+    
+    doc &quot;Two `Set`s are considered equal if they have the 
+         same size and if every element of the first set is
+         also an element of the second set, as determined
+         by `contains()`.&quot;
+    shared actual default Boolean equals(Object that) {
+        if (is Set&lt;Object&gt; that,
+                that.size==size) {
+            for (element in this) {
+                if (!element in that) {
+                    return false;
+                }
+            }
+            else {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    shared actual default Integer hash {
+        variable Integer hashCode = 1;
+        for (Element elem in this){
+            hashCode *= 31;
+            hashCode += elem.hash;
+        }
+        return hashCode;
+    }
+    
+    doc &quot;Returns a new `Set` containing all the elements of 
+         this `Set` and all the elements of the given `Set`.&quot;
+    shared formal Set&lt;Element|Other&gt; union&lt;Other&gt;(Set&lt;Other&gt; set)
+            given Other satisfies Object;
+    
+    doc &quot;Returns a new `Set` containing only the elements 
+         that are present in both this `Set` and the given 
+         `Set`.&quot;
+    shared formal Set&lt;Element&amp;Other&gt; intersection&lt;Other&gt;(Set&lt;Other&gt; set)
+            given Other satisfies Object;
+    
+    doc &quot;Returns a new `Set` containing only the elements 
+         contained in either this `Set` or the given `Set`, 
+         but no element contained in both sets.&quot;
+    shared formal Set&lt;Element|Other&gt; exclusiveUnion&lt;Other&gt;(Set&lt;Other&gt; set)
+            given Other satisfies Object;
+    
+    doc &quot;Returns a new `Set` containing all the elements in 
+         this `Set` that are not contained in the given
+         `Set`.&quot;
+    shared formal Set&lt;Element&gt; complement&lt;Other&gt;(Set&lt;Other&gt; set)
+            given Other satisfies Object;
+    
+}
+</pre></body></html>

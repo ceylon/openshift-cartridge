@@ -1,0 +1,224 @@
+<!DOCTYPE html><html><head><meta charset='UTF-8'/>
+<title>Interface Iterable</title><link href='.resources/shCore.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/shThemeDefault.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/bootstrap.min.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+</head><body><div class='navbar navbar-inverse navbar-static-top'><div class='navbar-inner'><a class='module-header' href='index.html'><i class='module-logo'></i><span class='module-label'>module</span><span class='module-name'>ceylon.language</span><span class='module-version'>0.5</span></a><ul class='nav pull-right'><li class='divider-vertical' /><li id='infoDropdown' class='dropdown'><a href='#' title='Show keyboard shortcuts [Shortcut: ?]' role='button' class='dropdown-toggle' data-toggle='dropdown'><i class='icon-info'></i></a><ul id='info-dropdown-panel' class='dropdown-menu'><h4>Keyboard Shortcuts</h4><li class='divider'></li><div id='info-common-shortcuts'><div id='f'><span class='key badge'>f</span><span class='info muted'>Open filter by tags</span></div><div id='s'><span class='key badge'>s</span><span class='info muted'>Open search page</span></div><div id='?'><span class='key badge'>?</span><span class='info muted'>Open this information panel</span></div></div><li class='divider'></li><div class='row-fluid'><div id='info-doc-shortcuts' class='span6'><h5>Documentation:</h5><div id='o'><span class='key badge'>o</span><span class='info muted'>Jump to module documentation</span></div><div id='p'><span class='key badge'>p</span><span class='info muted'>Jump to package documentation</span></div><div id='a'><span class='key badge'>a</span><span class='info muted'>Jump to attributes</span></div><div id='c'><span class='key badge'>c</span><span class='info muted'>Jump to constructor</span></div><div id='m'><span class='key badge'>m</span><span class='info muted'>Jump to methods</span></div><div id='i'><span class='key badge'>i</span><span class='info muted'>Jump to interfaces</span></div><div id='c'><span class='key badge'>c</span><span class='info muted'>Jump to classes</span></div><div id='e'><span class='key badge'>e</span><span class='info muted'>Jump to exceptions</span></div></div><div id='info-search-shortcuts' class='span6'><h5>Search page:</h5><div id='enter'><span class='key badge'>enter</span><span class='info muted'>Jump to selected declaration</span></div><div id='esc'><span class='key badge'>esc</span><span class='info muted'>Clear search query/Go to overview</span></div><div id='up'><span class='key badge'>up</span><span class='info muted'>Move selection up</span></div><div id='down'><span class='key badge'>down</span><span class='info muted'>Move selection down</span></div></div></div></ul></li></ul><ul class='nav pull-right'><li class='divider-vertical' /><li><a href='search.html' title='Search this module [Shortcut: S]'><i class='icon-search'></i>Search</a></li></ul><ul class='nav pull-right'><li class='divider-vertical' /><li id='filterDropdown' class='dropdown'><a href='#' title='Filter declarations by tags [Shortcut: F]' role='button' class='dropdown-toggle' data-toggle='dropdown'><i class='icon-filter'></i>Filter <span id='filterDropdownLinkInfo'></span> <b class='caret'></b></a><ul id='filterDropdownPanel' class='dropdown-menu'><h4 id='filterDropdownPanelInfo'>Filter declarations by tags</h4><li class='divider'></li><div id='filterDropdownPanelTags'></div><li class='divider'></li><div id='filterActions'><a id='filterActionAll'>All</a><a id='filterActionNone'>None</a><a id='filterActionMore'>Show more</a></div></ul></li></ul></div></div><div class='sub-navbar'><a class='link-source-code' href='Iterable.ceylon.html'><i class='icon-source-code'></i>Source Code</a><div class='sub-navbar-inner'><a class='sub-navbar-package' href='index.html#section-package'>ceylon.language</a><br/><span class='sub-navbar-label'>interface</span><i class='icon-interface'></i><span class='sub-navbar-name'>Iterable<span class='type-parameter'>&lt;<span class='type-parameter-keyword'>out </span>Element, <span class='type-parameter-keyword'>out </span>Absent<span class='type-parameter-keyword'> = </span><a class='link' href='class_Null.html'>Null</a>&gt;</span></span><div class='type-parameter-constraint'><span class='type-parameter-keyword'>given </span><span class='type-parameter'>Absent</span><span class='type-parameter-keyword'> satisfies </span><a class='link' href='class_Null.html'>Null</a></div></div><div class='sub-navbar-menu'><a href='index.html'><span title='Jump to module documentation [Shortcut: O]'><span class='accesskey'>O</span>verview</span></a><a href='index.html#section-package'><span title='Jump to package documentation [Shortcut: P]'><span class='accesskey'>P</span>ackage</span></a><a href='#section-attributes'><span title='Jump to attributes [Shortcut: A]'><span class='accesskey'>A</span>ttributes</span></a><a href='#section-methods'><span title='Jump to methods [Shortcut: M]'><span class='accesskey'>M</span>ethods</span></a></div></div><div class='container-fluid'><div class='class-description'><div class='satisfied section'><span class='title'>Satisfied Interfaces: </span><a class='link' href='interface_Category.html'>Category</a>, <a class='link' href='interface_Container.html'>Container</a>&lt;<span class='type-parameter'>Element</span>,<span class='type-parameter'>Absent</span>&gt;</div><div class='satisfyingInterfaces section'><span class='title'>All Known Satisfying Interfaces: </span><a class='link' href='interface_Collection.html'>Collection</a>&lt;<span class='type-parameter'>Element</span>&gt;, <a class='link' href='interface_Sequence.html'>Sequence</a>&lt;<span class='type-parameter'>Element</span>&gt;</div><div class='doc'><p>Abstract supertype of containers whose elements may be
+iterated. An iterable container need not be finite, but
+its elements must at least be countable. There may not
+be a well-defined iteration order, and so the order of
+iterated elements may not be stable.</p>
+<p>The type <code>Iterable&lt;Element,Null&gt;</code>, usually abbreviated
+<code>{Element*}</code> represents a possibly-empty iterable
+container. The type <code>Iterable&lt;Element,Nothing&gt;</code>,
+usually abbreviated <code>{Element+}</code> represents a nonempty
+iterable container.</p>
+<p>An instance of <code>Iterable</code> may be constructed by
+surrounding a value list in braces:</p>
+<pre>{String+} words = { "hello", "world" };
+</pre>
+<p>An instance of <code>Iterable</code> may be iterated using a <code>for</code>
+loop:</p>
+<pre>for (c in "hello world") { ... }
+</pre>
+<p><code>Iterable</code> and its subtypes define various operations
+that return other iterable objects. Such operations
+come in two flavors:</p>
+<ul>
+<li><p><em>Lazy</em> operations return a &ldquo;view&rdquo; of the receiving
+iterable object. If the underlying iterable object is
+mutable, then changes to the underlying object will
+be reflected in the resulting view. Lazy operations
+are usually efficient, avoiding memory allocation or
+iteration of the receiving iterable object.</p>
+</li>
+<li><p><em>Eager</em> operations return an immutable object. If the
+receiving iterable object is mutable, changes to this
+object will not be reflected in the resulting
+immutable object. Eager operations are often
+expensive, involving memory allocation and iteration
+of the receiving iterable object.</p>
+</li>
+</ul>
+<p>Lazy operations are preferred, because they can be
+efficiently chained. For example:</p>
+<pre>string.filter((Character c) =&gt; c.letter)
+      .map((Character c) =&gt; c.uppercased)
+</pre>
+<p>is much less expensive than:</p>
+<pre>string.select((Character c) =&gt; c.letter)
+      .collect((Character c) =&gt; c.uppercased)
+</pre>
+<p>Furthermore, it is always easy to produce a new
+immutable iterable object given the view produced by a
+lazy operation. For example:</p>
+<pre>[ string.filter((Character c) =&gt; c.letter)
+        .map((Character c) =&gt; c.uppercased)... ]
+</pre>
+<p>Lazy operations normally return an instance of
+<code>Iterable</code> or <code>Map</code>.</p>
+<p>However, there are certain scenarios where an eager
+operation is more useful, more convenient, or no more
+expensive than a lazy operation, including:</p>
+<ul>
+<li>sorting operations, which are eager by nature,</li>
+<li>operations which preserve emptiness/nonemptiness of
+the receiving iterable object.</li>
+</ul>
+<p>Eager operations normally return a sequence.</p>
+</div><div class='by section'><span class='title'>By: </span><span class='value'>Gavin</span></div><div class='see section'><span class='title'>See also: </span><span class='value'><a class='link' href='interface_Collection.html'>Collection</a></span></div></div><div id='section-attributes'><table id='null' class='table table-condensed table-bordered table-hover'><thead><tr class='table-header' title='Click for expand/collapse'><td colspan='2'><i class='icon-expand'></i>Attributes</td></tr></thead><tbody><tr><td id='coalesced' nowrap><i class='icon-shared-member'></i>coalesced</td><td><a class='link-one-self' title='Link to this declaration' href='interface_Iterable.html#coalesced'><i class='icon-link'></i></a><a class='link-source-code' title='Link to source code' href='Iterable.ceylon.html#361,366'><i class='icon-source-code'></i>Source Code</a><div class='signature'><span class='modifiers'>shared default</span> <a class='link' href='interface_Iterable.html'>Iterable</a>&lt;<span class='type-parameter'>Element</span>&amp;<a class='link' href='class_Object.html'>Object</a>,<a class='link' href='class_Null.html'>Null</a>&gt; coalesced</div><div class='description'><div class='doc section'><p>The non-null elements of this <code>Iterable</code>, in their
+original order. For null elements of the original
+<code>Iterable</code>, there is no entry in the resulting
+iterable object.</p>
+</div></div></td></tr><tr><td id='empty' nowrap><i class='icon-shared-member'><i class='icon-decoration-impl'></i></i>empty</td><td><a class='link-one-self' title='Link to this declaration' href='interface_Iterable.html#empty'><i class='icon-link'></i></a><a class='link-source-code' title='Link to source code' href='Iterable.ceylon.html#83,86'><i class='icon-source-code'></i>Source Code</a><div class='signature'><span class='modifiers'>shared actual default</span> <a class='link' href='class_Boolean.html'>Boolean</a> empty</div><div class='description'><div class='doc section'><p>Determines if the iterable object is empty, that is
+to say, if the iterator returns no elements.</p>
+</div><div class='refined section'><span class='title'>Refined declaration: </span><a class='link' href='interface_Container.html#empty'>empty</a><span class='value'></span></div></div></td></tr><tr><td id='first' nowrap><i class='icon-shared-member'><i class='icon-decoration-impl'></i></i>first</td><td><a class='link-one-self' title='Link to this declaration' href='interface_Iterable.html#first'><i class='icon-link'></i></a><a class='link-source-code' title='Link to source code' href='Iterable.ceylon.html#93,97'><i class='icon-source-code'></i>Source Code</a><div class='signature'><span class='modifiers'>shared actual default</span> <span class='type-parameter'>Absent</span>|<span class='type-parameter'>Element</span> first</div><div class='description'><div class='doc section'><p>The first element returned by the iterator, if any.
+This should always produce the same value as
+<code>iterable.iterator().head</code>.</p>
+</div><div class='refined section'><span class='title'>Refined declaration: </span><a class='link' href='interface_Container.html#first'>first</a><span class='value'></span></div></div></td></tr><tr><td id='indexed' nowrap><i class='icon-shared-member'></i>indexed</td><td><a class='link-one-self' title='Link to this declaration' href='interface_Iterable.html#indexed'><i class='icon-link'></i></a><a class='link-source-code' title='Link to source code' href='Iterable.ceylon.html#368,405'><i class='icon-source-code'></i>Source Code</a><div class='signature'><span class='modifiers'>shared default</span> <a class='link' href='interface_Iterable.html'>Iterable</a>&lt;<a class='link' href='class_Entry.html'>Entry</a>&lt;<a class='link' href='class_Integer.html'>Integer</a>,<span class='type-parameter'>Element</span>&amp;<a class='link' href='class_Object.html'>Object</a>&gt;,<a class='link' href='class_Null.html'>Null</a>&gt; indexed</div><div class='description'><div class='doc section'><p>All entries of form <code>index-&gt;element</code> where <code>index</code>
+is the position at which <code>element</code> occurs, for every
+non-null element of this <code>Iterable</code>, ordered by
+increasing <code>index</code>. For a null element at a given
+position in the original <code>Iterable</code>, there is no
+entry with the corresponding index in the resulting
+iterable object. The expression</p>
+<pre>{ "hello", null, "world" }.indexed
+</pre>
+<p>results in an iterable object with the entries
+<code>0-&gt;"hello"</code> and <code>2-&gt;"world"</code>.</p>
+</div></div></td></tr><tr><td id='last' nowrap><i class='icon-shared-member'><i class='icon-decoration-impl'></i></i>last</td><td><a class='link-one-self' title='Link to this declaration' href='interface_Iterable.html#last'><i class='icon-link'></i></a><a class='link-source-code' title='Link to source code' href='Iterable.ceylon.html#99,110'><i class='icon-source-code'></i>Source Code</a><div class='signature'><span class='modifiers'>shared actual default</span> <span class='type-parameter'>Absent</span>|<span class='type-parameter'>Element</span> last</div><div class='description'><div class='doc section'><p>The last element returned by the iterator, if any.
+Iterables are potentially infinite, so calling this
+might never return; also, this implementation will
+iterate through all the elements, which might be
+very time-consuming.</p>
+</div><div class='refined section'><span class='title'>Refined declaration: </span><a class='link' href='interface_Container.html#last'>last</a><span class='value'></span></div></div></td></tr><tr><td id='rest' nowrap><i class='icon-shared-member'></i>rest</td><td><a class='link-one-self' title='Link to this declaration' href='interface_Iterable.html#rest'><i class='icon-link'></i></a><a class='link-source-code' title='Link to source code' href='Iterable.ceylon.html#112,114'><i class='icon-source-code'></i>Source Code</a><div class='signature'><span class='modifiers'>shared default</span> <a class='link' href='interface_Iterable.html'>Iterable</a>&lt;<span class='type-parameter'>Element</span>,<a class='link' href='class_Null.html'>Null</a>&gt; rest</div><div class='description'><div class='doc section'><p>Returns an iterable object containing all but the
+first element of this container.</p>
+</div></div></td></tr><tr><td id='sequence' nowrap><i class='icon-shared-member'></i>sequence</td><td><a class='link-one-self' title='Link to this declaration' href='interface_Iterable.html#sequence'><i class='icon-link'></i></a><a class='link-source-code' title='Link to source code' href='Iterable.ceylon.html#116,118'><i class='icon-source-code'></i>Source Code</a><div class='signature'><span class='modifiers'>shared default</span> <a class='link' href='interface_Sequential.html'>Sequential</a>&lt;<span class='type-parameter'>Element</span>&gt; sequence</div><div class='description'><div class='doc section'><p>A sequence containing the elements returned by the
+iterator.</p>
+</div></div></td></tr><tr><td id='size' nowrap><i class='icon-shared-member'></i>size</td><td><a class='link-one-self' title='Link to this declaration' href='interface_Iterable.html#size'><i class='icon-link'></i></a><a class='link-source-code' title='Link to source code' href='Iterable.ceylon.html#88,88'><i class='icon-source-code'></i>Source Code</a><div class='signature'><span class='modifiers'>shared default</span> <a class='link' href='class_Integer.html'>Integer</a> size</div><div class='description'><div class='doc section'></div></div></td></tr><tr><td id='string' nowrap><i class='icon-shared-member'><i class='icon-decoration-over'></i></i>string</td><td><a class='link-one-self' title='Link to this declaration' href='interface_Iterable.html#string'><i class='icon-link'></i></a><a class='link-source-code' title='Link to source code' href='Iterable.ceylon.html#463,480'><i class='icon-source-code'></i>Source Code</a><div class='signature'><span class='modifiers'>shared actual default</span> <a class='link' href='class_String.html'>String</a> string</div><div class='description'><div class='doc section'><p>A string of form <code>"{ x, y, z }"</code> where <code>x</code>, <code>y</code>,
+and <code>z</code> are the <code>string</code> representations of the
+elements of this collection, as produced by the
+iterator of the collection, or the string <code>"{}"</code>
+if this iterable is empty. If the number of items
+is very large only a certain amount of them might
+be shown followed by &ldquo;&hellip;&ldquo;.</p>
+</div><div class='refined section'><span class='title'>Refined declaration: </span><a class='link' href='class_Object.html#string'>string</a><span class='value'></span></div></div></td></tr></tbody></table><table id='null' class='table table-condensed table-bordered table-hover'><thead><tr class='table-header' title='Click for expand/collapse'><td colspan='1'><i class='icon-collapse'></i>Inherited Attributes</td></tr></thead><tbody style='display: none'><tr><td>Attributes inherited from: <i class='icon-class'><i class='icon-decoration-abstract'></i></i><a class='link' href='class_Object.html'>Object</a><div class='inherited-members'><a class='link' href='class_Object.html#hash'>hash</a></div></td></tr><tr><td>Attributes inherited from: <i class='icon-decoration-deprecated'><i class='icon-interface'></i></i><a class='link' href='interface_Container.html'>Container</a>&lt;<span class='type-parameter'>Element</span>,<span class='type-parameter'>Absent</span>&gt;<div class='inherited-members'><a class='link' href='interface_Container.html#empty'>empty</a>, <a class='link' href='interface_Container.html#first'>first</a>, <a class='link' href='interface_Container.html#last'>last</a></div></td></tr></tbody></table></div><div id='section-methods'><table id='null' class='table table-condensed table-bordered table-hover'><thead><tr class='table-header' title='Click for expand/collapse'><td colspan='2'><i class='icon-expand'></i>Methods</td></tr></thead><tbody><tr><td id='any' nowrap><i class='icon-shared-member'></i>any</td><td><a class='link-one-self' title='Link to this declaration' href='interface_Iterable.html#any'><i class='icon-link'></i></a><a class='link-source-code' title='Link to source code' href='Iterable.ceylon.html#218,230'><i class='icon-source-code'></i>Source Code</a><div class='signature'><span class='modifiers'>shared default</span> <a class='link' href='class_Boolean.html'>Boolean</a> any(<a class='link' href='class_Boolean.html'>Boolean</a> selecting(<span class='type-parameter'>Element</span> e))</div><div class='description'><div class='doc section'><p>Return <code>true</code> if at least one element satisfies the
+predicate function.</p>
+</div><div class='parameters section'><span class='title'>Parameters: </span><ul><li>selecting<p>The predicate that at least one element
+must satisfy.</p>
+</li></ul></div></div></td></tr><tr><td id='by' nowrap><i class='icon-shared-member'></i>by</td><td><a class='link-one-self' title='Link to this declaration' href='interface_Iterable.html#by'><i class='icon-link'></i></a><a class='link-source-code' title='Link to source code' href='Iterable.ceylon.html#306,342'><i class='icon-source-code'></i>Source Code</a><div class='signature'><span class='modifiers'>shared default</span> <a class='link' href='interface_Iterable.html'>Iterable</a>&lt;<span class='type-parameter'>Element</span>,<a class='link' href='class_Null.html'>Null</a>&gt; by(<a class='link' href='class_Integer.html'>Integer</a> step)</div><div class='description'><div class='doc section'><p>Produce an <code>Iterable</code> containing every <code>step</code>th
+element of this iterable object. If the step size
+is <code>1</code>, the <code>Iterable</code> contains the same elements
+as this iterable object. The step size must be
+greater than zero. The expression</p>
+<pre>(0..10).by(3)
+</pre>
+<p>results in an iterable object with the elements
+<code>0</code>, <code>3</code>, <code>6</code>, and <code>9</code> in that order.</p>
+</div><div class='throws section'><span class='title'>Throws: </span><ul><li><a class='link' href='class_Exception.html'>Exception</a><p>if the given step size is nonpositive,
+i.e. <code>step&lt;1</code></p>
+</li></ul></div></div></td></tr><tr><td id='chain' nowrap><i class='icon-shared-member'></i>chain</td><td><a class='link-one-self' title='Link to this declaration' href='interface_Iterable.html#chain'><i class='icon-link'></i></a><a class='link-source-code' title='Link to source code' href='Iterable.ceylon.html#432,442'><i class='icon-source-code'></i>Source Code</a><div class='signature'><span class='modifiers'>shared default</span> <a class='link' href='interface_Iterable.html'>Iterable</a>&lt;<span class='type-parameter'>Element</span>|<span class='type-parameter'>Other</span>,<a class='link' href='class_Null.html'>Null</a>&gt; chain<span class='type-parameter'>&lt;Other&gt;</span>(<a class='link' href='interface_Iterable.html'>Iterable</a>&lt;<span class='type-parameter'>Other</span>,<a class='link' href='class_Null.html'>Null</a>&gt; other)</div><div class='description'><div class='doc section'><p>The elements of this iterable object, in their
+original order, followed by the elements of the
+given iterable object also in their original
+order.</p>
+</div></div></td></tr><tr><td id='collect' nowrap><i class='icon-shared-member'></i>collect</td><td><a class='link-one-self' title='Link to this declaration' href='interface_Iterable.html#collect'><i class='icon-link'></i></a><a class='link-source-code' title='Link to source code' href='Iterable.ceylon.html#200,207'><i class='icon-source-code'></i>Source Code</a><div class='signature'><span class='modifiers'>shared default</span> <a class='link' href='interface_Sequential.html'>Sequential</a>&lt;<span class='type-parameter'>Result</span>&gt; collect<span class='type-parameter'>&lt;Result&gt;</span>(<span class='type-parameter'>Result</span> collecting(<span class='type-parameter'>Element</span> element))</div><div class='description'><div class='doc section'><p>A sequence containing the results of applying the
+given mapping to the elements of this container. An
+eager counterpart to <code>map()</code>.</p>
+</div><div class='parameters section'><span class='title'>Parameters: </span><ul><li>collecting<p>The transformation applied to the elements.</p>
+</li></ul></div><div class='see section'><span class='title'>See also: </span><span class='value'><a class='link' href='interface_Iterable.html#map'>map</a></span></div></div></td></tr><tr><td id='contains' nowrap><i class='icon-shared-member'><i class='icon-decoration-impl'></i></i>contains</td><td><a class='link-one-self' title='Link to this declaration' href='interface_Iterable.html#contains'><i class='icon-link'></i></a><a class='link-source-code' title='Link to source code' href='Iterable.ceylon.html#90,91'><i class='icon-source-code'></i>Source Code</a><div class='signature'><span class='modifiers'>shared actual default</span> <a class='link' href='class_Boolean.html'>Boolean</a> contains(<a class='link' href='class_Object.html'>Object</a> element)</div><div class='description'><div class='doc section'><p>Determines if the given value belongs to this
+<code>Category</code>, that is, if it is an element of this
+<code>Category</code>.</p>
+<p>For most <code>Category</code>s, if <code>x==y</code>, then
+<code>category.contains(x)</code> evaluates to the same
+value as <code>category.contains(y)</code>. However, it is
+possible to form a <code>Category</code> consistent with some
+other equivalence relation, for example <code>===</code>.
+Therefore implementations of <code>contains()</code> which do
+not satisfy this relationship are tolerated.</p>
+</div><div class='refined section'><span class='title'>Refined declaration: </span><a class='link' href='interface_Category.html#contains'>contains</a><span class='value'></span></div></div></td></tr><tr><td id='count' nowrap><i class='icon-shared-member'></i>count</td><td><a class='link-one-self' title='Link to this declaration' href='interface_Iterable.html#count'><i class='icon-link'></i></a><a class='link-source-code' title='Link to source code' href='Iterable.ceylon.html#344,359'><i class='icon-source-code'></i>Source Code</a><div class='signature'><span class='modifiers'>shared default</span> <a class='link' href='class_Integer.html'>Integer</a> count(<a class='link' href='class_Boolean.html'>Boolean</a> selecting(<span class='type-parameter'>Element</span> element))</div><div class='description'><div class='doc section'><p>Return the number of elements in this <code>Iterable</code>
+that satisfy the predicate function.</p>
+</div><div class='parameters section'><span class='title'>Parameters: </span><ul><li>selecting<p>The predicate satisfied by the elements to
+be counted.</p>
+</li></ul></div></div></td></tr><tr><td id='defaultNullElements' nowrap><i class='icon-shared-member'></i>defaultNullElements</td><td><a class='link-one-self' title='Link to this declaration' href='interface_Iterable.html#defaultNullElements'><i class='icon-link'></i></a><a class='link-source-code' title='Link to source code' href='Iterable.ceylon.html#444,452'><i class='icon-source-code'></i>Source Code</a><div class='signature'><span class='modifiers'>shared default</span> <a class='link' href='interface_Iterable.html'>Iterable</a>&lt;<span class='type-parameter'>Element</span>&amp;<a class='link' href='class_Object.html'>Object</a>|<span class='type-parameter'>Default</span>,<a class='link' href='class_Null.html'>Null</a>&gt; defaultNullElements<span class='type-parameter'>&lt;Default&gt;</span>(<span class='type-parameter'>Default</span> defaultValue)</div><div class='description'><div class='doc section'><p>An <code>Iterable</code> that produces the elements of this
+iterable object, replacing every <code>null</code> element
+with the given default value. The resulting iterable
+object does not produce the value <code>null</code>.</p>
+</div><div class='parameters section'><span class='title'>Parameters: </span><ul><li>defaultValue<p>A default value that replaces <code>null</code> elements.</p>
+</li></ul></div></div></td></tr><tr><td id='every' nowrap><i class='icon-shared-member'></i>every</td><td><a class='link-one-self' title='Link to this declaration' href='interface_Iterable.html#every'><i class='icon-link'></i></a><a class='link-source-code' title='Link to source code' href='Iterable.ceylon.html#232,244'><i class='icon-source-code'></i>Source Code</a><div class='signature'><span class='modifiers'>shared default</span> <a class='link' href='class_Boolean.html'>Boolean</a> every(<a class='link' href='class_Boolean.html'>Boolean</a> selecting(<span class='type-parameter'>Element</span> e))</div><div class='description'><div class='doc section'><p>Return <code>true</code> if all elements satisfy the predicate
+function.</p>
+</div><div class='parameters section'><span class='title'>Parameters: </span><ul><li>selecting<p>The predicate that all elements must
+satisfy.</p>
+</li></ul></div></div></td></tr><tr><td id='filter' nowrap><i class='icon-shared-member'></i>filter</td><td><a class='link-one-self' title='Link to this declaration' href='interface_Iterable.html#filter'><i class='icon-link'></i></a><a class='link-source-code' title='Link to source code' href='Iterable.ceylon.html#135,141'><i class='icon-source-code'></i>Source Code</a><div class='signature'><span class='modifiers'>shared default</span> <a class='link' href='interface_Iterable.html'>Iterable</a>&lt;<span class='type-parameter'>Element</span>,<a class='link' href='class_Null.html'>Null</a>&gt; filter(<a class='link' href='class_Boolean.html'>Boolean</a> selecting(<span class='type-parameter'>Element</span> elem))</div><div class='description'><div class='doc section'><p>An <code>Iterable</code> containing the elements of this
+container that satisfy the given predicate.</p>
+</div><div class='parameters section'><span class='title'>Parameters: </span><ul><li>selecting<p>The predicate the elements must satisfy.</p>
+</li></ul></div><div class='see section'><span class='title'>See also: </span><span class='value'><a class='link' href='interface_Iterable.html#select'>select</a></span></div></div></td></tr><tr><td id='find' nowrap><i class='icon-shared-member'></i>find</td><td><a class='link-one-self' title='Link to this declaration' href='interface_Iterable.html#find'><i class='icon-link'></i></a><a class='link-source-code' title='Link to source code' href='Iterable.ceylon.html#156,167'><i class='icon-source-code'></i>Source Code</a><div class='signature'><span class='modifiers'>shared default</span> <span class='type-parameter'>Element</span>? find(<a class='link' href='class_Boolean.html'>Boolean</a> selecting(<span class='type-parameter'>Element</span> elem))</div><div class='description'><div class='doc section'><p>The first element which satisfies the given
+predicate, if any, or <code>null</code> otherwise.</p>
+</div><div class='parameters section'><span class='title'>Parameters: </span><ul><li>selecting<p>The predicate the element must satisfy.</p>
+</li></ul></div></div></td></tr><tr><td id='findLast' nowrap><i class='icon-shared-member'></i>findLast</td><td><a class='link-one-self' title='Link to this declaration' href='interface_Iterable.html#findLast'><i class='icon-link'></i></a><a class='link-source-code' title='Link to source code' href='Iterable.ceylon.html#169,181'><i class='icon-source-code'></i>Source Code</a><div class='signature'><span class='modifiers'>shared default</span> <span class='type-parameter'>Element</span>? findLast(<a class='link' href='class_Boolean.html'>Boolean</a> selecting(<span class='type-parameter'>Element</span> elem))</div><div class='description'><div class='doc section'><p>The last element which satisfies the given
+predicate, if any, or <code>null</code> otherwise.</p>
+</div><div class='parameters section'><span class='title'>Parameters: </span><ul><li>selecting<p>The predicate the element must satisfy.</p>
+</li></ul></div></div></td></tr><tr><td id='fold' nowrap><i class='icon-shared-member'></i>fold</td><td><a class='link-one-self' title='Link to this declaration' href='interface_Iterable.html#fold'><i class='icon-link'></i></a><a class='link-source-code' title='Link to source code' href='Iterable.ceylon.html#143,154'><i class='icon-source-code'></i>Source Code</a><div class='signature'><span class='modifiers'>shared default</span> <span class='type-parameter'>Result</span> fold<span class='type-parameter'>&lt;Result&gt;</span>(<span class='type-parameter'>Result</span> initial, <span class='type-parameter'>Result</span> accumulating(<span class='type-parameter'>Result</span> partial, <span class='type-parameter'>Element</span> elem))</div><div class='description'><div class='doc section'><p>The result of applying the accumulating function to
+each element of this container in turn.</p>
+</div><div class='parameters section'><span class='title'>Parameters: </span><ul><li>accumulating<p>The accumulating function that accepts an
+intermediate result, and the next element.</p>
+</li></ul></div></div></td></tr><tr><td id='following' nowrap><i class='icon-shared-member'></i>following</td><td><a class='link-one-self' title='Link to this declaration' href='interface_Iterable.html#following'><i class='icon-link'></i></a><a class='link-source-code' title='Link to source code' href='Iterable.ceylon.html#407,430'><i class='icon-source-code'></i>Source Code</a><div class='signature'><span class='modifiers'>shared default</span> <a class='link' href='interface_Iterable.html'>Iterable</a>&lt;<span class='type-parameter'>Element</span>|<span class='type-parameter'>Other</span>,Nothing&gt; following<span class='type-parameter'>&lt;Other&gt;</span>(<span class='type-parameter'>Other</span> head)</div><div class='description'><div class='doc section'><p>An <code>Iterable</code> with the given inital element followed
+by the elements of this iterable object.</p>
+</div></div></td></tr><tr><td id='iterator' nowrap><i class='icon-shared-member'><i class='icon-decoration-formal'></i></i>iterator</td><td><a class='link-one-self' title='Link to this declaration' href='interface_Iterable.html#iterator'><i class='icon-link'></i></a><a class='link-source-code' title='Link to source code' href='Iterable.ceylon.html#79,81'><i class='icon-source-code'></i>Source Code</a><div class='signature'><span class='modifiers'>shared formal</span> <a class='link' href='interface_Iterator.html'>Iterator</a>&lt;<span class='type-parameter'>Element</span>&gt; iterator()</div><div class='description'><div class='doc section'><p>An iterator for the elements belonging to this
+container.</p>
+</div></div></td></tr><tr><td id='map' nowrap><i class='icon-shared-member'></i>map</td><td><a class='link-one-self' title='Link to this declaration' href='interface_Iterable.html#map'><i class='icon-link'></i></a><a class='link-source-code' title='Link to source code' href='Iterable.ceylon.html#120,127'><i class='icon-source-code'></i>Source Code</a><div class='signature'><span class='modifiers'>shared default</span> <a class='link' href='interface_Iterable.html'>Iterable</a>&lt;<span class='type-parameter'>Result</span>,<a class='link' href='class_Null.html'>Null</a>&gt; map<span class='type-parameter'>&lt;Result&gt;</span>(<span class='type-parameter'>Result</span> collecting(<span class='type-parameter'>Element</span> elem))</div><div class='description'><div class='doc section'><p>An <code>Iterable</code> containing the results of applying
+the given mapping to the elements of to this
+container.</p>
+</div><div class='parameters section'><span class='title'>Parameters: </span><ul><li>collecting<p>The mapping to apply to the elements.</p>
+</li></ul></div><div class='see section'><span class='title'>See also: </span><span class='value'><a class='link' href='interface_Iterable.html#collect'>collect</a></span></div></div></td></tr><tr><td id='select' nowrap><i class='icon-shared-member'></i>select</td><td><a class='link-one-self' title='Link to this declaration' href='interface_Iterable.html#select'><i class='icon-link'></i></a><a class='link-source-code' title='Link to source code' href='Iterable.ceylon.html#209,216'><i class='icon-source-code'></i>Source Code</a><div class='signature'><span class='modifiers'>shared default</span> <a class='link' href='interface_Sequential.html'>Sequential</a>&lt;<span class='type-parameter'>Element</span>&gt; select(<a class='link' href='class_Boolean.html'>Boolean</a> selecting(<span class='type-parameter'>Element</span> element))</div><div class='description'><div class='doc section'><p>A sequence containing the elements of this
+container that satisfy the given predicate. An
+eager counterpart to <code>filter()</code>.</p>
+</div><div class='parameters section'><span class='title'>Parameters: </span><ul><li>selecting<p>The predicate the elements must satisfy.</p>
+</li></ul></div><div class='see section'><span class='title'>See also: </span><span class='value'><a class='link' href='interface_Iterable.html#filter'>filter</a></span></div></div></td></tr><tr><td id='skipping' nowrap><i class='icon-shared-member'></i>skipping</td><td><a class='link-one-self' title='Link to this declaration' href='interface_Iterable.html#skipping'><i class='icon-link'></i></a><a class='link-source-code' title='Link to source code' href='Iterable.ceylon.html#246,275'><i class='icon-source-code'></i>Source Code</a><div class='signature'><span class='modifiers'>shared default</span> <a class='link' href='interface_Iterable.html'>Iterable</a>&lt;<span class='type-parameter'>Element</span>,<a class='link' href='class_Null.html'>Null</a>&gt; skipping(<a class='link' href='class_Integer.html'>Integer</a> skip)</div><div class='description'><div class='doc section'><p>Produce an <code>Iterable</code> containing the elements of
+this iterable object, after skipping the first
+<code>skip</code> elements. If this iterable object does not
+contain more elements than the specified number of
+elements, the <code>Iterable</code> contains no elements.</p>
+</div></div></td></tr><tr><td id='sort' nowrap><i class='icon-shared-member'></i>sort</td><td><a class='link-one-self' title='Link to this declaration' href='interface_Iterable.html#sort'><i class='icon-link'></i></a><a class='link-source-code' title='Link to source code' href='Iterable.ceylon.html#183,198'><i class='icon-source-code'></i>Source Code</a><div class='signature'><span class='modifiers'>shared default</span> <a class='link' href='interface_Sequential.html'>Sequential</a>&lt;<span class='type-parameter'>Element</span>&gt; sort(<a class='link' href='class_Comparison.html'>Comparison</a> comparing(<span class='type-parameter'>Element</span> x, <span class='type-parameter'>Element</span> y))</div><div class='description'><div class='doc section'><p>A sequence containing the elements of this
+container, sorted according to a function
+imposing a partial order upon the elements.</p>
+<p>For convenience, the functions <code>byIncreasing()</code>
+and <code>byDecreasing()</code> produce a suitable
+comparison function:</p>
+<pre>"Hello World!".sort(byIncreasing((Character c) =&gt; c.lowercased))
+</pre>
+<p>This operation is eager by nature.</p>
+</div><div class='parameters section'><span class='title'>Parameters: </span><ul><li>comparing<p>The function comparing pairs of elements.</p>
+</li></ul></div><div class='see section'><span class='title'>See also: </span><span class='value'><a class='link' href='index.html#byIncreasing'>byIncreasing</a>, <a class='link' href='index.html#byDecreasing'>byDecreasing</a></span></div></div></td></tr><tr><td id='taking' nowrap><i class='icon-shared-member'></i>taking</td><td><a class='link-one-self' title='Link to this declaration' href='interface_Iterable.html#taking'><i class='icon-link'></i></a><a class='link-source-code' title='Link to source code' href='Iterable.ceylon.html#277,304'><i class='icon-source-code'></i>Source Code</a><div class='signature'><span class='modifiers'>shared default</span> <a class='link' href='interface_Iterable.html'>Iterable</a>&lt;<span class='type-parameter'>Element</span>,<a class='link' href='class_Null.html'>Null</a>&gt; taking(<a class='link' href='class_Integer.html'>Integer</a> take)</div><div class='description'><div class='doc section'><p>Produce an <code>Iterable</code> containing the first <code>take</code>
+elements of this iterable object. If the specified
+number of elements is larger than the number of
+elements of this iterable object, the <code>Iterable</code>
+contains the same elements as this iterable object.</p>
+</div></div></td></tr></tbody></table><table id='null' class='table table-condensed table-bordered table-hover'><thead><tr class='table-header' title='Click for expand/collapse'><td colspan='1'><i class='icon-collapse'></i>Inherited Methods</td></tr></thead><tbody style='display: none'><tr><td>Methods inherited from: <i class='icon-class'><i class='icon-decoration-abstract'></i></i><a class='link' href='class_Object.html'>Object</a><div class='inherited-members'><a class='link' href='class_Object.html#equals'>equals</a></div></td></tr><tr><td>Methods inherited from: <i class='icon-interface'></i><a class='link' href='interface_Category.html'>Category</a><div class='inherited-members'><a class='link' href='interface_Category.html#contains'>contains</a>, <a class='link' href='interface_Category.html#containsAny'>containsAny</a>, <a class='link' href='interface_Category.html#containsEvery'>containsEvery</a></div></td></tr></tbody></table></div></div><script type='text/javascript' src='.resources/jquery-1.8.2.min.js'></script><script type='text/javascript' src='.resources/bootstrap.min.js'></script><script type='text/javascript' src='.resources/shCore.js'></script><script type='text/javascript' src='.resources/shBrushCeylon.js'></script><script type='text/javascript' src='.resources/index.js'></script><script type='text/javascript' src='.resources/ceylondoc.js'></script><script type='text/javascript'>jQuery('html').keypress(function(evt){
+  evt = evt || window.event;
+  var keyCode = evt.keyCode || evt.which;
+  if (keyCode == 63) {
+    $('#infoDropdown > .dropdown-toggle').click();
+  }
+ if(keyCode == 115){
+   document.location = 'search.html';
+ }
+ if(keyCode == 97){
+   document.location = '#section-attributes';
+ }
+ if(keyCode == 112){
+   document.location = 'index.html';
+ }
+ if(keyCode == 111){
+   document.location = 'index.html';
+ }
+ if(keyCode == 109){
+   document.location = '#section-methods';
+ }
+});
+enableInfoKeybordShortcut('\\?');
+enableInfoKeybordShortcut('s');
+enableInfoKeybordShortcut('a');
+enableInfoKeybordShortcut('p');
+enableInfoKeybordShortcut('o');
+enableInfoKeybordShortcut('m');
+</script></body></html>

@@ -1,0 +1,13 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>join.ceylon</title><link href='.resources/shCore.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/shThemeDefault.css' rel='stylesheet' type='text/css'/>
+<script type='text/javascript' src='.resources/jquery-1.8.2.min.js'></script><script type='text/javascript' src='.resources/ceylondoc.js'></script><script src='.resources/shCore.js' type='text/javascript'></script><script src='.resources/shBrushCeylon.js' type='text/javascript'></script></head><body><pre class='brush: ceylon'>doc &quot;Given a list of iterable objects, return a new sequence 
+     of all elements of the all given objects. If there are
+     no arguments, or if none of the arguments contains any
+     elements, return the empty sequence.&quot;
+see (SequenceBuilder)
+shared Element[] join&lt;Element&gt;(
+        doc &quot;The iterable objects to join.&quot;
+        {Element*}* iterables) =&gt;
+                [ for (it in iterables) for (val in it) val ];
+</pre></body></html>

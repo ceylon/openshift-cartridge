@@ -1,0 +1,83 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>Float.ceylon</title><link href='.resources/shCore.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/shThemeDefault.css' rel='stylesheet' type='text/css'/>
+<script type='text/javascript' src='.resources/jquery-1.8.2.min.js'></script><script type='text/javascript' src='.resources/ceylondoc.js'></script><script src='.resources/shCore.js' type='text/javascript'></script><script src='.resources/shBrushCeylon.js' type='text/javascript'></script></head><body><pre class='brush: ceylon'>doc &quot;An instance of `Float` representing positive infinity 
+     \{#221E}.&quot;
+shared Float infinity = 1.0/0.0;
+
+doc &quot;An IEEE 754 64-bit [floating point number][]. A `Float` 
+     is capable of approximately representing numeric values 
+     between 2&lt;sup&gt;-1022&lt;/sup&gt; and 
+     (2-2&lt;sup&gt;-52&lt;/sup&gt;)\{#00D7}2&lt;sup&gt;1023&lt;/sup&gt;, along with 
+     the special values `infinity` and `-infinity`, and 
+     undefined values (Not a Number). Zero is represented by 
+     distinct instances `+0`, `-0`, but these instances are 
+     equal. An undefined value is not equal to any other
+     value, not even to itself.
+     
+     [floating point number]: http://www.validlab.com/goldberg/paper.pdf&quot;
+shared abstract class Float()
+        extends Object()
+        satisfies Scalar&lt;Float&gt; &amp; 
+                  Exponentiable&lt;Float,Float&gt; {
+    
+    doc &quot;Determines whether this value is undefined (that is, 
+         Not a Number or NaN). The undefined value has the 
+         property that it is not equal (`==`) to itself, as 
+         a consequence the undefined value cannot sensibly 
+         be used in most collections.&quot;
+    shared Boolean undefined =&gt; this!=this;
+    
+    doc &quot;Determines whether this value is infinite in 
+         magnitude. Produces `true` for `infinity` and 
+         `-infinity`. Produces `false` for a finite number, 
+         `+0`, `-0`, or undefined.&quot;
+    see(infinity, finite)
+    shared Boolean infinite =&gt; 
+            this==infinity || this==-infinity;
+    
+    doc &quot;Determines whether this value is finite. Produces
+         `false` for `infinity`, `-infinity`, and undefined.&quot;
+    see(infinite, infinity)
+    shared Boolean finite =&gt;
+            this!=infinity &amp;&amp; this!=-infinity 
+                    &amp;&amp; !this.undefined;
+    
+    doc &quot;The sign of this value. Produces `1` for a positive 
+         number or `infinity`. Produces `-1` for a negative
+         number or `-infinity`. Produces `0` for `+0`, `-0`, 
+         or undefined.&quot;
+    shared actual formal Integer sign;
+    
+    doc &quot;Determines if this value is a positive number or
+         `infinity`. Produces `false` for a negative number, 
+         `+0`, `-0`, or undefined.&quot;
+    shared actual formal Boolean positive;
+    
+    doc &quot;Determines if this value is a negative number or
+         `-infinity`. Produces `false` for a positive number, 
+         `+0`, `-0`, or undefined.&quot;
+    shared actual formal Boolean negative;
+    
+    doc &quot;Determines if this value is a positive number, `+0`, 
+         or `infinity`. Produces `false` for a negative 
+         number, `-0`, or undefined.&quot;
+    shared formal Boolean strictlyPositive;
+    
+    doc &quot;Determines if this value is a negative number, `-0`, 
+         or `-infinity`. Produces `false` for a positive 
+         number, `+0`, or undefined.&quot;
+    shared formal Boolean strictlyNegative;
+    
+}
+
+doc &quot;The `Float` value of the given string representation of 
+     a decimal number or `null` if the string does not 
+     represent a decimal number.
+     
+     The syntax accepted by this method is the same as the 
+     syntax for a `Float` literal in the Ceylon language 
+     except that it may optionally begin with a sign 
+     character (`+` or `-`).&quot;
+shared native Float? parseFloat(String string);
+</pre></body></html>

@@ -1,0 +1,21 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>Boolean.ceylon</title><link href='.resources/shCore.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/shThemeDefault.css' rel='stylesheet' type='text/css'/>
+<script type='text/javascript' src='.resources/jquery-1.8.2.min.js'></script><script type='text/javascript' src='.resources/ceylondoc.js'></script><script src='.resources/shCore.js' type='text/javascript'></script><script src='.resources/shBrushCeylon.js' type='text/javascript'></script></head><body><pre class='brush: ceylon'>doc &quot;A type capable of representing the values true and
+     false of Boolean logic.&quot;
+by &quot;Gavin&quot;
+shared abstract class Boolean() 
+        of true | false {}
+
+doc &quot;A value representing truth in Boolean logic.&quot;
+by &quot;Gavin&quot;
+shared object true extends Boolean() {
+    shared actual String string =&gt; &quot;true&quot;;
+}
+
+doc &quot;A value representing falsity in Boolean logic.&quot;
+by &quot;Gavin&quot;
+shared object false extends Boolean() {
+    shared actual String string =&gt; &quot;false&quot;;
+}
+</pre></body></html>

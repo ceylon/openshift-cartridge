@@ -1,0 +1,43 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>Container.ceylon</title><link href='.resources/shCore.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/shThemeDefault.css' rel='stylesheet' type='text/css'/>
+<script type='text/javascript' src='.resources/jquery-1.8.2.min.js'></script><script type='text/javascript' src='.resources/ceylondoc.js'></script><script src='.resources/shCore.js' type='text/javascript'></script><script src='.resources/shBrushCeylon.js' type='text/javascript'></script></head><body><pre class='brush: ceylon'>doc &quot;Abstract supertype of objects which may or may not
+     contain one of more other values, called *elements*,
+     and provide an operation for accessing the first 
+     element, if any. A container which may or may not be 
+     empty is a `Container&lt;Element,Null&gt;`. A container which 
+     is always empty is a `Container&lt;Nothing,Null&gt;`. A 
+     container which is never empty is a 
+     `Container&lt;Element,Nothing&gt;`.&quot;
+see (Category)
+by &quot;Gavin&quot;
+deprecated &quot;Will be removed in Ceylon 1.0.&quot;
+shared interface Container&lt;out Element, out Absent=Null&gt;
+        satisfies Category
+        given Absent satisfies Null {
+    
+    doc &quot;Determine if the container is empty, that is, if
+         it has no elements.&quot;
+    shared formal Boolean empty;
+    
+    doc &quot;The first element. Should produce `null` if the 
+         container is empty, that is, for any instance for
+         which `empty` evaluates to `true`.&quot;
+    shared formal Absent|Element first;
+    
+    doc &quot;The last element. Should produce `null` if the
+         container is empty, that is, for any instance for
+         which `empty` evaluates to `true`.&quot;
+    shared formal Absent|Element last;    
+    
+}
+
+doc &quot;An empty container.&quot;
+deprecated &quot;Will be removed in Ceylon 1.0.&quot;
+shared interface EmptyContainer =&gt; Container&lt;Nothing,Null&gt;;
+
+doc &quot;A nonempty container.&quot;
+deprecated &quot;Will be removed in Ceylon 1.0.&quot;
+shared interface NonemptyContainer&lt;out Element&gt; =&gt;
+        Container&lt;Element,Nothing&gt;;
+</pre></body></html>

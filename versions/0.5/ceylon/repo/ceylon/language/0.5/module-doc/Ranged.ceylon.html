@@ -1,0 +1,36 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>Ranged.ceylon</title><link href='.resources/shCore.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/shThemeDefault.css' rel='stylesheet' type='text/css'/>
+<script type='text/javascript' src='.resources/jquery-1.8.2.min.js'></script><script type='text/javascript' src='.resources/ceylondoc.js'></script><script src='.resources/shCore.js' type='text/javascript'></script><script src='.resources/shBrushCeylon.js' type='text/javascript'></script></head><body><pre class='brush: ceylon'>doc &quot;Abstract supertype of ranged objects which map a range
+     of `Comparable` keys to ranges of values. The type
+     parameter `Span` abstracts the type of the resulting
+     range.
+     
+     A span may be obtained from an instance of `Ranged`
+     using the span operator:
+     
+         print(\&quot;hello world\&quot;[0..5])
+     &quot;
+see (List, Sequence, String)
+shared interface Ranged&lt;in Index, out Span&gt; 
+        given Index satisfies Comparable&lt;Index&gt; {
+    
+    doc &quot;Obtain a span containing the mapped values between 
+         the two given indices.&quot;
+    shared formal Span span(Index from, Index to);
+   
+    doc &quot;Obtain a span containing the mapped values between
+         the starting index and the end of the receiver.&quot;
+    shared formal Span spanFrom(Index from);
+
+    doc &quot;Obtain a span containing the mapped values between
+         the start of the receiver and the end index.&quot;
+    shared formal Span spanTo(Index to);
+ 
+    doc &quot;Obtain a segment containing the mapped values
+         starting from the given index, with the given 
+         length.&quot;
+    shared formal Span segment(Index from, Integer length);
+    
+}
+</pre></body></html>

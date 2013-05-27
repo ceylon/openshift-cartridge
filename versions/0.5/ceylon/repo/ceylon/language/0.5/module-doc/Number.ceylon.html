@@ -1,0 +1,48 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>Number.ceylon</title><link href='.resources/shCore.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/shThemeDefault.css' rel='stylesheet' type='text/css'/>
+<script type='text/javascript' src='.resources/jquery-1.8.2.min.js'></script><script type='text/javascript' src='.resources/ceylondoc.js'></script><script src='.resources/shCore.js' type='text/javascript'></script><script src='.resources/shBrushCeylon.js' type='text/javascript'></script></head><body><pre class='brush: ceylon'>doc &quot;Abstraction of numbers. Numeric operations are provided
+     by the subtype `Numeric`. This type defines operations
+     which can be expressed without reference to the self
+     type `Other` of `Numeric`.&quot;
+see (Numeric)
+by &quot;Gavin&quot;
+shared interface Number {
+    
+    doc &quot;Determine if the number is positive.&quot;
+    shared formal Boolean positive;
+    
+    doc &quot;Determine if the number is negative.&quot;    
+    shared formal Boolean negative;
+
+    doc &quot;The number, represented as a `Float`.&quot;
+    throws (OverflowException,
+           &quot;if the number is too large to be represented 
+            as a `Float`&quot;)
+    shared formal Float float;
+        
+    doc &quot;The number, represented as an `Integer`, after 
+         truncation of any fractional part.&quot;
+    throws (OverflowException,
+           &quot;if the number is too large to be represented 
+            as an `Integer`&quot;)
+    shared formal Integer integer;
+    
+    doc &quot;The magnitude of the number.&quot;
+    shared formal Number magnitude;
+    
+    doc &quot;The sign of this number. Returns `1` if the number 
+         is positive, `-1` if it is negative, or `0` if it 
+         is zero.&quot;
+    shared formal Integer sign;
+    
+    doc &quot;The fractional part of the number, after truncation 
+         of the integral part.&quot;
+    shared formal Number fractionalPart;
+    
+    doc &quot;The integral value of the number after truncation 
+         of the fractional part.&quot;
+    shared formal Number wholePart;
+
+}
+</pre></body></html>

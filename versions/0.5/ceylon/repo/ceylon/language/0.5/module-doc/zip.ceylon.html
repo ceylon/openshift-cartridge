@@ -1,0 +1,23 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>zip.ceylon</title><link href='.resources/shCore.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/shThemeDefault.css' rel='stylesheet' type='text/css'/>
+<script type='text/javascript' src='.resources/jquery-1.8.2.min.js'></script><script type='text/javascript' src='.resources/ceylondoc.js'></script><script src='.resources/shCore.js' type='text/javascript'></script><script src='.resources/shBrushCeylon.js' type='text/javascript'></script></head><body><pre class='brush: ceylon'>doc &quot;Given two sequences, form a new sequence consisting of
+     all entries where, for any given index in the resulting
+     sequence, the key of the entry is the element occurring 
+     at the same index in the first sequence, and the item 
+     is the element occurring at the same index in the second 
+     sequence. The length of the resulting sequence is the 
+     length of the shorter of the two given sequences. 
+     
+     Thus:
+     
+         zip(xs,ys)[i]==xs[i]-&gt;ys[i]
+     
+     for every `0&lt;=i&lt;min({xs.size,ys.size})`.&quot;
+shared &lt;Key-&gt;Item&gt;[] zip&lt;Key,Item&gt;({Key*} keys, {Item*} items)
+        given Key satisfies Object
+        given Item satisfies Object {
+    value iter = items.iterator();
+    return [ for (key in keys) if (!is Finished item=iter.next()) key-&gt;item ];
+}
+</pre></body></html>
