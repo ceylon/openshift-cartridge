@@ -146,15 +146,25 @@ function threaddump() {
     fi
 }
 
+function post-deploy() {
+    echo
+}
+
+function pre-build() {
+    echo
+}
+
 case "$1" in
-  start)     start ;;
-  stop)      stop ;;
-  restart)   restart ;;
-  status)    status ;;
-  reload)    reload ;;
-  tidy)      tidy ;;
-  build)     build ;;
-  deploy)    deploy ;;
-  threaddump)   threaddump ;;
+  start)       start ;;
+  stop)        stop ;;
+  restart)     restart ;;
+  status)      status ;;
+  reload)      reload ;;
+  pre-build)   pre-build ;;
+  build)       build ;;
+  deploy)      deploy ;;
+  post-deploy) post-deploy ;;
+  threaddump)  threaddump ;;
+  tidy)        tidy ;;
   *)         exit 0
 esac
