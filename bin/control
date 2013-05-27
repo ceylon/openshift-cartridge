@@ -1,0 +1,172 @@
+#!/bin/bash -e
+
+source ${OPENSHIFT_CEYLON_DIR}bin/util
+source ${OPENSHIFT_CEYLON_DIR}env/*
+
+CEYLON_HOME=/usr/lib/ceylon/${OPENSHIFT_CEYLON_VERSION}/
+CEYLON_BIN_DIR=${CEYLON_HOME}bin
+
+OPENSHIFT_CEYLON_MODULES_REPO_DIR=${OPENSHIFT_CEYLON_DIR}data/ceylon_repo
+OPENSHIFT_CEYLON_LOG_DIR=${OPENSHIFT_CEYLON_DIR}log
+OPENSHIFT_CEYLON_RUN_DIR=${OPENSHIFT_CEYLON_DIR}run
+
+CEYLON_LOG_PATH=${OPENSHIFT_CEYLON_LOG_DIR}/ceylon.log
+CEYLON_PID_FILE=${OPENSHIFT_CEYLON_RUN_DIR}/ceylon.pid
+
+CEYLON_FIRST_BOOT_MODULES=${OPENSHIFT_CEYLON_RUN_DIR}/use_first_boot_modules
+
+function start() {
+	ceylon_repos="";
+	if [ -f "${CEYLON_FIRST_BOOT_MODULES}" ]; then
+		ceylon_repos=" --rep ${OPENSHIFT_CEYLON_DIR}versions/${OPENSHIFT_CEYLON_VERSION}/template-fitstboot/modules"
+	fi
+	
+	echo "Starting Ceylon cart"
+    if [ -f "${OPENSHIFT_REPO_DIR}/.openshift/markers/enable_jpda" ]; then
+       ENABLE_JPDA=1
+    fi
+
+	# Check for running app
+	if isrunning; then
+		echo "Application is already running" 1>&2
+	else
+		JAVA_OPTS="-Dserver.bind.host=${OPENSHIFT_CEYLON_IP}"
+		JAVA_OPTS="$JAVA_OPTS -Dserver.files.location=${OPENSHIFT_REPO_DIR}web-content/"
+
+		JAVA_OPTS="$JAVA_OPTS -Dceylon.cache.repo=${OPENSHIFT_CEYLON_MODULES_REPO_DIR}/cache"
+		JAVA_OPTS="$JAVA_OPTS -Dcom.redhat.ceylon.common.tool.terminal.width=9999" #do not wrap output
+
+		if [ "${ENABLE_JPDA:-0}" -eq 1 ] ; then
+			JAVA_OPTS="$JAVA_OPTS -Xdebug -Xrunjdwp:transport=dt_socket,address=$OPENSHIFT_CEYLON_IP:8787,server=y,suspend=n"
+		fi
+		
+		export PRESERVE_JAVA_OPTS="true"
+		export JAVA_OPTS
+
+		ceylon_repos="${ceylon_repos} --rep http://modules.ceylon-lang.org/test/"
+		ceylon_repos="${ceylon_repos} --rep ${OPENSHIFT_CEYLON_MODULES_REPO_DIR}"
+		ceylon_repos="${ceylon_repos} --rep ${OPENSHIFT_REPO_DIR}.openshift/config/modules"
+		
+		source ${OPENSHIFT_REPO_DIR}.openshift/config/ceylon.properties
+
+		echo "Starting Ceylon module: ${run_module_id}. Using repos: ${ceylon_repos}"
+		echo "With JAVA_OPTS: ${JAVA_OPTS}"
+
+		# Start
+		#TODO uncomment $CEYLON_BIN_DIR/ceylon run ${run_module_id} ${ceylon_repos} >> ${CEYLON_LOG_PATH} 2>&1 &
+		$CEYLON_BIN_DIR/ceylon run ${run_module_id} ${ceylon_repos} &
+		ceylon_pid=$!
+		echo $ceylon_pid > $CEYLON_PID_FILE
+
+		if ! ishttpup; then
+			echo "Timed out waiting for http listening port"
+			exit 1
+		fi
+	fi
+
+}
+
+function stop() {
+    echo "Stopping Ceylon cart"
+    if ! isrunning; then
+        echo "Application is already stopped" 1>&2
+    elif [ -f "$CEYLON_PID_FILE" ]; then
+        pid=$(cat $CEYLON_PID_FILE);
+        echo "Sending SIGTERM to ceylon:$pid ..." 1>&2
+        killtree $pid
+        wait_for_stop $pid
+    else 
+        echo "Failed to locate Ceylon PID File" 1>&2
+    fi
+}
+
+function restart() {
+    echo "Restarting Ceylon cart ..."
+   
+  	stop
+  	
+  	start
+}
+
+function status() {
+   if isrunning
+   then
+      echo "Application is running"
+   else
+      echo "Application is either stopped or inaccessible"
+   fi
+}
+
+function reload() {
+    echo "Reloading Ceylon cart"
+    restart
+}
+
+function tidy() {
+    echo "Tidying $cartridge_type cart"
+    
+    for logdir in `awk 'BEGIN {
+                           for (a in ENVIRON)
+                           if (a ~ /LOG_DIR$/)
+                           print ENVIRON[a] }'`
+	do
+    	client_message "Emptying log dir: ${logdir}"
+    	rm -rf ${logdir}* ${logdir}.[^.]*
+	done
+
+}
+
+function build() {
+	echo "Building Ceylon app..."
+
+	if [ -f "${CEYLON_FIRST_BOOT_MODULES}" ]; then
+		# Use first boot modules till first user build.
+		rm -f ${OPENSHIFT_CEYLON_RUN_DIR}/use_first_boot_modules
+	fi
+
+	JAVA_OPTS="-Dceylon.cache.repo=${OPENSHIFT_CEYLON_MODULES_REPO_DIR}/cache"
+	JAVA_OPTS="$JAVA_OPTS -Dcom.redhat.ceylon.common.tool.terminal.width=9999" #do not wrap output
+
+	export JAVA_OPTS
+	export PRESERVE_JAVA_OPTS="true"
+
+	ceylon_repos="--rep http://modules.ceylon-lang.org/test/"
+	ceylon_repos="${ceylon_repos} --rep ${OPENSHIFT_CEYLON_MODULES_REPO_DIR}"
+	ceylon_repos="${ceylon_repos} --rep ${OPENSHIFT_REPO_DIR}.openshift/config/modules"
+
+	compile_files=`find ${OPENSHIFT_REPO_DIR}/source/ -name *\.ceylon -o -name *\.java`
+	printf "Compiling files:\n$compile_files\n"
+	${CEYLON_BIN_DIR}/ceylon compile --javac=-encoding=utf8 --src ${OPENSHIFT_REPO_DIR}/source --out ${OPENSHIFT_CEYLON_MODULES_REPO_DIR} ${ceylon_repos} ${compile_files}
+}
+
+function deploy() {
+    echo "TODO"
+}
+
+function threaddump() {
+	echo "Thread dump for Ceylon cart"
+	
+    if ! isrunning; then
+        echo "Application is stopped"
+        exit 1
+    elif [ -f "$CEYLON_PID_FILE" ]; then
+        pid=$(cat $CEYLON_PID_FILE);
+        java_pid=`ps h --ppid $pid -o '%p'`
+        kill -3 $java_pid
+    else 
+        echo "Failed to locate CEYLON PID File"
+    fi
+}
+
+case "$1" in
+  start)     start ;;
+  stop)      stop ;;
+  restart)   restart ;;
+  status)    status ;;
+  reload)    reload ;;
+  tidy)      tidy ;;
+  build)     build ;;
+  deploy)    deploy ;;
+  threaddump)   threaddump ;;
+  *)         exit 0
+esac
