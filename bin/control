@@ -110,7 +110,7 @@ function tidy() {
 }
 
 function build() {
-	echo "Building Ceylon app..." >> ${OPENSHIFT_CEYLON_DIR}/intall.log
+	echo "Building Ceylon app..."
 
 	JAVA_OPTS="-Dceylon.cache.repo=${OPENSHIFT_CEYLON_MODULES_REPO_DIR}/cache"
 	JAVA_OPTS="$JAVA_OPTS -Dcom.redhat.ceylon.common.tool.terminal.width=9999" #do not wrap output
@@ -123,10 +123,10 @@ function build() {
 	ceylon_repos="${ceylon_repos} --rep ${OPENSHIFT_CEYLON_MODULES_REPO_DIR}"
 
 	compile_files=`find ${OPENSHIFT_REPO_DIR}/source/ -name *\.ceylon -o -name *\.java`
-	printf "Compiling files:\n$compile_files\n"  >> ${OPENSHIFT_CEYLON_DIR}/intall.log
+	printf "Compiling files:\n$compile_files\n"
 	${CEYLON_BIN_DIR}/ceylon compile --javac=-encoding=utf8 --src ${OPENSHIFT_REPO_DIR}/source --out ${OPENSHIFT_CEYLON_MODULES_REPO_DIR} ${ceylon_repos} ${compile_files}
 	
-	echo "Build Ceylon." >> ${OPENSHIFT_CEYLON_DIR}/intall.log
+	echo "Build Ceylon."
 }
 
 function deploy() {

@@ -87,4 +87,4 @@ Endpoints:
         Options:       { "websocket": 1}
 Additional-Control-Actions:
     - threaddump
-Install-Build-Required: true
+Install-Build-Required: false
