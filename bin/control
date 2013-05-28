@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
 source ${OPENSHIFT_CEYLON_DIR}bin/util
-source ${OPENSHIFT_CEYLON_DIR}env/*
+source ${OPENSHIFT_CEYLON_DIR}env/OPENSHIFT_CEYLON_VERSION
 
 CEYLON_HOME=${OPENSHIFT_CEYLON_DIR}usr/ceylon-${OPENSHIFT_CEYLON_VERSION}/
 CEYLON_BIN_DIR=${CEYLON_HOME}bin
@@ -126,7 +126,7 @@ function build() {
 	printf "Compiling files:\n$compile_files\n"
 	${CEYLON_BIN_DIR}/ceylon compile --javac=-encoding=utf8 --src ${OPENSHIFT_REPO_DIR}/source --out ${OPENSHIFT_CEYLON_MODULES_REPO_DIR} ${ceylon_repos} ${compile_files}
 	
-	echo "Build Ceylon."
+	echo "Ceylon build done."
 }
 
 function deploy() {
