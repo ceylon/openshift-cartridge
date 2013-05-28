@@ -1,7 +1,7 @@
 #!/bin/bash -eu
 
 version='0.5'
-echo "'$version'" > "$OPENSHIFT_CEYLON_DIR/env/OPENSHIFT_CEYLON_VERSION"
+echo "$version" > "$OPENSHIFT_CEYLON_DIR/env/OPENSHIFT_CEYLON_VERSION"
 
 mkdir $OPENSHIFT_CEYLON_DIR/{log,data,run}
 
