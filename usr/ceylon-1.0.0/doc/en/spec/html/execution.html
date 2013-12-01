@@ -1,0 +1,581 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Chapter&nbsp;8.&nbsp;Execution</title><link rel="stylesheet" href="../shared/css/html.css" type="text/css">
+<link type='text/css' href='../shared/css/shCore.css' rel='stylesheet'/>
+<link type='text/css' href='../shared/css/shThemeDefault.css' rel='stylesheet'/>
+<script src='../shared/css/shCore.js' type='text/javascript'></script>
+<script src='../shared/css/shBrushCeylon.js' type='text/javascript'></script>
+    	    <script type='text/javascript'>
+    	        SyntaxHighlighter.defaults['gutter'] = false;
+    	        SyntaxHighlighter.defaults['toolbar'] = false;
+    	        // register a listener for when the highlighter is done with replacing elements
+    	        var hl = SyntaxHighlighter.highlight;
+    	        SyntaxHighlighter.highlight = function(params, element){
+    	          hl(params, element);
+    	          postSyntaxHighlighting();
+    	        };
+    	        SyntaxHighlighter.all();
+    	    </script><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="The Ceylon Language"><link rel="up" href="index.html" title="The Ceylon Language"><link rel="previous" href="annotations.html" title="Chapter&nbsp;7.&nbsp;Annotations"><link rel="next" href="modulesystem.html" title="Chapter&nbsp;9.&nbsp;Module system"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">The Ceylon Language &mdash; 8.&nbsp;Execution</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="annotations.html">Prev</a>&nbsp;</td><th width="60%" align="center">&nbsp;</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="modulesystem.html">Next</a></td></tr></table><hr></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="execution"></a>Chapter&nbsp;8.&nbsp;Execution</h2></div></div><div></div></div><p>A Ceylon program executes in a virtual machine environment, either:</p><div class="itemizedlist"><ul type="disc"><li><p>a Java Virtual Machine (JVM), or</p></li><li><p>a JavaScript virtual machine.</p></li></ul></div><p>In future, other virtual machine architectures may be supported.</p><p>Despite the obvious differences between the respective languages that these 
+    virtual machines were designed for, they share very much in common in terms of 
+    runtime semantics, including common notions such as object identity, primitive 
+    value types, exceptions, garbage collection, dynamic dispatch, and pass by 
+    reference.</p><p>Ceylon abstracts away many of the differences between these platforms, and
+    reuses what is common between them. Inevitably there are some differences that
+    can't reasonably be hidden from the Ceylon program, and the programmer must take 
+    these differences into consideration.</p><p>In Ceylon, every value is a reference to an instance of a class, except
+    within a <tt class="literal">dynamic</tt> block, where a value with no type may be
+    a reference to an object which is not an instance of a class.</p><i><span class="comment"><p>Note: the semantics of objects without classes is platform-dependent
+    and outside the scope of this specification.</p></span></i><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="objectinstancesidentity"></a>8.1.&nbsp;Object instances, identity, and reference passing</h2></div></div><div></div></div><p>An <span class="emphasis"><em>object</em></span> is a unique identifier, together with a 
+        reference to a class, its type arguments, and a persistent value for each 
+        reference declared by the class (including inherited references). The object 
+        is said to be an <span class="emphasis"><em>instance</em></span> of the class.</p><p>A <span class="emphasis"><em>value</em></span> is a reference to an object (a copy of its 
+        unique identifier). At a particular point in the execution of the program, 
+        every reference of every object that exists, and every initialized reference 
+        of every function, getter, setter, or initializer that is currently executing 
+        has a value. Furthermore, every time an expression is executed, it produces a 
+        value.</p><p>Two values are said to be <span class="emphasis"><em>identical</em></span> if they are
+        references to the same object&#8212;if they hold the same unique identifier. 
+        The program may determine if two values of type <tt class="literal">Identifiable</tt> 
+        are identical using the <tt class="literal">===</tt> operator defined in
+        <a href="expressions.html#operatordefinition" title="6.8.2.&nbsp;Operator definition">&sect;6.8.2 Operator definition</a>. It may not directly obtain the unique 
+        identifier (which is a purely abstract construct). The program has no way of 
+        determining the identity of a value which is not of type 
+        <tt class="literal">Identifiable</tt>.</p><p>Given a value, the program may determine if the referenced object is
+        <span class="emphasis"><em>assignable to a certain type</em></span> using the <tt class="literal">is</tt> 
+        operator. The object is assignable to the given type if the applied type formed 
+        by its class and type arguments is a subtype of the given type according to the 
+        type system defined in <a href="typesystem.html" title="Chapter&nbsp;3.&nbsp;Type system">Chapter&nbsp;3, <i>Type system</i></a>. (Therefore, the Ceylon 
+        runtime must be capable of reasoning about subtyping.)</p><p>Invocation of a function or instantiation of a class results in execution 
+        of the function body or class initializer with parameter values that are copies 
+        of the value produced by executing the argument expressions of the invocation, 
+        and a reference to the receiving instance that is a copy of the value produced 
+        by executing the receiver expression. The value produced by the invocation 
+        expression is a copy of the value produced by execution of the 
+        <tt class="literal">return</tt> directive expression.</p><pre class="brush: ceylon">Person myself(Person me) { return me; }
+Person p = ...;
+assert (myself(p)===p); //assertion never fails</pre><pre class="brush: ceylon">Semaphore s = Semaphore();
+this.semaphore = s;
+assert (semaphore===s); //assertion never fails</pre><p>A new object is produced by execution of a class instantiation expression.
+        The Ceylon compiler guarantees that if execution of a class initializer terminates
+        with no uncaught exception, then every reference of the object has been initialized
+        with a well-defined persistent value. The value of a reference is initialized for 
+        the first time by execution of a specifier or assignment expression. Every class 
+        instantiation expression results in an object with a new unique identifier shared 
+        by no other existing object. The object exists from the point at which execution 
+        of its initializer terminates. <span class="emphasis"><em>Conceptually</em></span>, the object exists 
+        until execution of the program terminates.</p><p>In practice, the object exists at least until the point at which it is not 
+        reachable by recursively following references from any function, getter, setter, 
+        or initializer currently being executed, or from an expression in a statement 
+        currently being executed. At this point, its persistent values are no longer 
+        accessible to expressions which subsequently execute and the object may be 
+        destroyed by the virtual machine. There is no way for the program to determine
+        that an object has been destroyed by the virtual machine (Ceylon does not support 
+        finalizers).</p><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="valuetypeoptimizations"></a>8.1.1.&nbsp;Value type optimizations</h3></div></div><div></div></div><p>As a special exception to the rules defined above, the compiler is permitted 
+            to emit bytecode or compiled JavaScript that produces a new instance of certain 
+            types in the module <tt class="literal">ceylon.language</tt> without execution of the 
+            initializer of the class, whenever any expression is evaluated. These types are: 
+            <tt class="literal">Integer</tt>, <tt class="literal">Float</tt>, <tt class="literal">Character</tt>, 
+            <tt class="literal">Range</tt>, <tt class="literal">Entry</tt>, <tt class="literal">String</tt>, 
+            <tt class="literal">Array</tt>, and <tt class="literal">Tuple</tt>. Furthermore, it is permitted 
+            to use such a newly-produced instance as the value of the expression, as long as the 
+            newly-produced instance is equal to the value expected according to the rules above, 
+            as determined using the <tt class="literal">==</tt> operator.</p><p>Therefore, the types listed above directly extend <tt class="literal">Object</tt>
+            instead of <tt class="literal">Basic</tt>, and are not <tt class="literal">Identifiable</tt>.</p><i><span class="comment"><p>Note: this does no justice at all to our compiler. Actually the 
+            compiler infrastructure already supports value type optimization for user-defined 
+            types, though we have not yet exposed this functionality as part of the language.
+            </p></span></i></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="reification"></a>8.1.2.&nbsp;Type argument reification</h3></div></div><div></div></div><p>Type arguments, as defined in <a href="typesystem.html#generictypearguments" title="3.6.&nbsp;Generic type arguments">&sect;3.6 Generic type arguments</a>, are 
+            <span class="emphasis"><em>reified</em></span> in Ceylon. An instance of a generic type holds a 
+            reference to each of its type arguments. Therefore, the following are possible in 
+            Ceylon:</p><div class="itemizedlist"><ul type="disc"><li><p>testing the runtime value of a type argument of an instance, for 
+                    example, <tt class="literal">objectList is List&lt;Person&gt;</tt> or 
+                    <tt class="literal">case (is List&lt;Person&gt;)</tt>,</p></li><li><p>filtering exceptions based on type arguments, for example,
+                    <tt class="literal">catch (NotFoundException&lt;Person&gt; pnfe)</tt>, and</p></li><li><p>testing the runtime value of an instance against a type parameter,
+                    for example <tt class="literal">x is Key</tt>, or against a type with a type 
+                    parameter as an argument, for example, 
+                    <tt class="literal">objectList is List&lt;Element&gt;</tt>.</p></li><li><p>obtaining a <tt class="literal">Type</tt> object representing a type with 
+                    type arguments, for example, <tt class="literal">`List&lt;Person&gt;`</tt>,</p></li><li><p>obtaining a <tt class="literal">Type</tt> object representing the runtime 
+                    value of a type parameter, for example, <tt class="literal">`Element`</tt>, or of 
+                    a type with a type parameter as an argument, for example, 
+                    <tt class="literal">`List&lt;Element&gt;`</tt>, and</p></li><li><p>obtaining a <tt class="literal">Type</tt> object representing the
+                    runtime value of a type argument of an instance using reflection, for 
+                    example, <tt class="literal">type(objectList).typeArguments.first</tt>.</p></li></ul></div><p>At runtime, all types are <span class="emphasis"><em>concrete types</em></span> formed by:</p><div class="itemizedlist"><ul type="disc"><li><p>recursively replacing all type aliases, class aliases, and interface
+                    aliases with their definitions, which is always possible according to 
+                    <a href="typesystem.html#typealiaselimination" title="3.2.10.&nbsp;Type alias elimination">&sect;3.2.10 Type alias elimination</a>, and</p></li><li><p>recursively replacing all type parameters with their type arguments</p></li></ul></div><p>in any type that appears in an expression or condition.</p><p>Therefore, every type parameter refers, at runtime, to a concrete type that
+            involves no type aliases or type parameters. In particular, the type arguments
+            held by an instance of a generic class are concrete types.</p><p>This program prints <tt class="literal">String[]</tt>.</p><pre class="brush: ceylon">class Generic&lt;out T&gt;(T t) { string=&gt;`T`.string; }
+Generic&lt;{S*}&gt; gen&lt;S&gt;(S* ss) =&gt; Generic(ss);
+void run() {
+    print(gen("hello", "world"));
+}</pre><p>The runtime is generally permitted, as an optimization, to return a more 
+            precise type in place of a less precise type when a type parameter is evaluated.
+            This program may print <tt class="literal">String</tt> instead of <tt class="literal">Object</tt>,
+            even though <tt class="literal">Object</tt> is the type argument inferred at compile time.</p><pre class="brush: ceylon">class Generic&lt;out T&gt;(T t) { string=&gt;`T`.string; }
+Generic&lt;Object&gt; gen(Object o) =&gt; Generic(o);
+void run() {
+    print(gen("hello"));
+}</pre></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="sequentialexecutionandclosure"></a>8.2.&nbsp;Sequential execution and closure</h2></div></div><div></div></div><p>Ceylon programs are organized into bodies, as defined in 
+        <a href="statementblocks.html#blockstructure" title="5.1.&nbsp;Block structure and references">&sect;5.1 Block structure and references</a>, containing statements which are executed 
+        sequentially and have access to declarations which occur in the surrounding 
+        lexical context and to persistent values held by references, as defined in 
+        <a href="declarations.html#references" title="4.8.1.&nbsp;References">&sect;4.8.1 References</a>, declared in the surrounding lexical context.</p><i><span class="comment"><p>Note: for the purposes of this section, an interface body is, 
+        strictly speaking, a trivial case of a body which contains no statements or 
+        persistent values, but we're primarily concerned with blocks and class bodies.
+        </p></span></i><p>The statements and non-lazy specifiers that directly occur in a body are 
+        executed sequentially in the lexical order in which they occcur. Execution of a 
+        body begins at the first statement or non-lazy specifier. Execution of a block 
+        terminates when the last statement or non-lazy specifier of the body finishes 
+        executing, or when a control directive that terminates the block is executed, 
+        or when an exception is thrown by an evaluation, assignment, invocation, or 
+        instantiation.</p><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="d0e16242"></a>8.2.1.&nbsp;Frames</h3></div></div><div></div></div><p>When execution of a body begins, a <span class="emphasis"><em>frame</em></span> is created.
+            For each reference whose declaration directly occurs in the body, the frame
+            has a value, which may or may not be initialized. The value may be initialized
+            or assigned during execution of the body.</p><p>While a body is executing, all values held in the frame are considered 
+            accessible. An evaluation, assignment, invocation, or instantiation may result 
+            in a pause in execution of the body while the called getter, setter, function, 
+            or class is executed or instantiated. However, the frame associated with the 
+            calling body is retained and values held in the frame are still considered 
+            accessible. When execution of the body resumes, the frame is restored.</p><p>When execution of a body terminates, the frame may or may not become
+            inaccessible. In the case of a class body, if the initializer terminates with
+            no thrown exception, the frame and its values become a new instance of the 
+            class, are associated with the newly created unique identifier, and remain 
+            accessible while this object is itself accessible. In the case of any other 
+            kind of body, or in the case that an initializer throws an exception, the 
+            frame and its values may remain accessible if:</p><div class="itemizedlist"><ul type="disc"><li><p>a reference to a function or class declared within the body is 
+                    accessible,</p></li><li><p>an instance of a class declared within the body is accessible, 
+                    or</p></li><li><p>an instance of a comprehension declared within the body is 
+                    accessible.</p></li></ul></div><p>Otherwise, the frame becomes inaccessible and may be destroyed.</p><p>The principle of <span class="emphasis"><em>closure</em></span> states that a nested body
+            always has access to a frame for every containing body. The set of 
+            <span class="emphasis"><em>current instances</em></span> of containing classes and 
+            <span class="emphasis"><em>current frames</em></span> of containing blocks forms the closure of 
+            a nested declaration.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="d0e16277"></a>8.2.2.&nbsp;Current instances and current frames</h3></div></div><div></div></div><p>A frame may be the <span class="emphasis"><em>current frame</em></span> for a body. When the 
+            body is executing, the created frame is the current frame. When execution of the 
+            body terminates, the created frame is no longer the current frame. Invocation or 
+            evaluation of a member of a class or interface, invocation of a callable reference
+            or anonymous function, or evaluation of the values produced by a comprehension may 
+            result in the frame being restored as the current frame.</p><p>A class instance, callable reference, anonymous function reference, or 
+            comprehension instance packages a reference to a frame for each body containing 
+            the program element, as specified below. When a member of the class instance is
+            invoked or evaluated, when the callable reference or anonymous function is
+            invoked, or when the comprehension instance produces a value, these frames are
+            restored as the current frames of the associated bodies. When the invocation or
+            evaluation terminates, or when the comprehension value has been produced, these
+            frames are no longer current frames.</p><p>The value associated with a value reference in the current frame of the
+            body to which the value reference belongs is called the <span class="emphasis"><em>current 
+            value</em></span> of the value reference.</p><p>If a frame is the current frame for a class or interface body, we call it 
+            the <span class="emphasis"><em>current instance</em></span> of the class or interface.</p><i><span class="comment"><p>TODO: in the following two sections, account for callable references,
+            anonymous function references, and comprehension instances.</p></span></i></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="currentinstanceofaclassorinterface"></a>8.2.3.&nbsp;Current instance of a class or interface</h3></div></div><div></div></div><p>If a statement is occurs directly or indirectly inside a class or interface 
+            body, then there is always a current instance of the class or interface when the 
+            statement is executed. The current instance is determined as follows:</p><div class="itemizedlist"><ul type="disc"><li><p>For a statement that occurs sequentially, as defined by 
+                    <a href="statementblocks.html#blockstructure" title="5.1.&nbsp;Block structure and references">&sect;5.1 Block structure and references</a>, in the body of the class, the current 
+                    instance is the new instance being initialized.</p></li><li><p>For a statement that occurs sequentially in the body of a member
+                    of the class or interface, the current instance is the receiving instance 
+                    of the base or member expression that resulted in a reference to the 
+                    member.</p></li><li><p>For a statement that occurs sequentially in the body of a nested 
+                    class or interface that occurs in the body of the class or interface, 
+                    the current instance is the same object that was the current instance 
+                    when the initializer of the current instance of the nested class or 
+                    interface was executed.</p></li><li><p>Otherwise, for any other statement that occurs sequentially in the 
+                    body of a declaration that occurs in the body of the class or interface, 
+                    the current instance is the same object that was the current instance when 
+                    the base member expression that resulted in a reference to the declaration 
+                    was executed.</p></li></ul></div><p>Here, <tt class="literal">innerObject</tt> is the current instance of 
+            <tt class="literal">Inner</tt> when <tt class="literal">member()</tt> is executed, and
+            <tt class="literal">outerObject</tt> is the current instance of <tt class="literal">Outer</tt>:</p><pre class="brush: ceylon">Outer outerObject = Outer();
+Inner innerObject = outerObject.Inner();
+innerObject.member();</pre></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="currentframeofablock"></a>8.2.4.&nbsp;Current frame of a block</h3></div></div><div></div></div><p>If a statement occurs directly or indirectly inside a block, then there 
+            is always a current frame of the block when the statement is executed. The current 
+            frame is determined as follows:</p><div class="itemizedlist"><ul type="disc"><li><p>If the statement occurs sequentially, as defined by 
+                    <a href="statementblocks.html#blockstructure" title="5.1.&nbsp;Block structure and references">&sect;5.1 Block structure and references</a>, in the block, the current frame is the
+                    frame associated with the current execution of the block.</p></li><li><p>For a statement that occurs sequentially in the body of a nested 
+                    class or interface that occurs in the block, the current frame is the same 
+                    frame that was the current frame when the initializer of the current 
+                    instance of the nested class or interface was executed.</p></li><li><p>Otherwise, for any other statement that occurs sequentially inside 
+                    the body of a declaration that occurs in the block, and the current frame 
+                    is the frame that was the current frame when the base member expression 
+                    that resulted in a reference to the declaration was executed.</p></li></ul></div><p>In each of the following code fragments, <tt class="literal">result</tt> refers 
+            to the value <tt class="literal">"hello"</tt>:</p><pre class="brush: ceylon">String()() outerMethod(String s) {
+    String() middleMethod() {
+        String innerMethod() =&gt; s;
+        return innerMethod;
+    }
+    return middleMethod;
+}
+
+String middleMethod()() =&gt; outerMethod("hello");
+String innerMethod() =&gt; middleMethod();
+String result = innerMethod();</pre><pre class="brush: ceylon">Object outerMethod(String s) {
+    object middleObject {
+        shared actual String string =&gt; s;
+    }
+    return middleObject;
+}
+
+Object middleObject = outerMethod("hello");
+String result = middleObject.string;</pre></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="initialization"></a>8.2.5.&nbsp;Initialization</h3></div></div><div></div></div><p>When an instance is instantiated, its initializer is executed, and the
+            initializer for every class it inherits is executed. For a class
+            <tt class="literal">C</tt>:</p><div class="itemizedlist"><ul type="disc"><li><p>First, the initializer of <tt class="literal">Object</tt> defined in
+                    <tt class="literal">ceylon.language</tt> is executed. (This initializer is
+                    empty and does no work.)</p></li><li><p>For each superclass <tt class="literal">X</tt> of <tt class="literal">C</tt>, 
+                    there is exactly one other superclass <tt class="literal">Y</tt> of 
+                    <tt class="literal">C</tt> that directly extends <tt class="literal">X</tt>. When
+                    execution of the initializer of <tt class="literal">X</tt> terminates without
+                    a thrown exception, execution of the initializer of <tt class="literal">Y</tt>
+                    begins.</p></li><li><p>Finally, when execution of the initializer of <tt class="literal">C</tt>
+                    terminates without a thrown exception, the new instance of <tt class="literal">C</tt>
+                    is fully-initialized and made accessible to the calling code.</p></li></ul></div><p>If any initializer in the class heirarchy terminates with a thrown exception,
+            initialization terminates and the incompletely-initialized instance never becomes
+            accessible.</p><p>Each initializer produces a frame containing values for each reference declared
+            be the corresponding class. These frames are aggregated together to form the new
+            instance of the class <tt class="literal">C</tt>.</p><i><span class="comment"><p>Note: since interfaces don't have initializers, the issue of 
+            "linearization" of supertypes simply never arises in Ceylon. There is a natural,
+            well-defined initialization ordering.</p></span></i></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="classinstanceoptimization"></a>8.2.6.&nbsp;Class instance optimization</h3></div></div><div></div></div><p>As an exception to the above, the compiler is permitted to destroy a 
+            persistent value associated with a class instance when the class initializer 
+            terminates, potentially rendering inaccessible the instance identified by the 
+            value, if it can determine that the persistent value will never be subsequently
+            accessed by the program.</p><i><span class="comment"><p>This optimization is the only source of a distinction between a 
+            "field" of a class and a "local variable" of its initializer. There is no way
+            for a program to observe this distinction.</p></span></i></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="executionofexpressionandspecificationstatements"></a>8.2.7.&nbsp;Execution of expression and specification statements</h3></div></div><div></div></div><p>When an expression statement is executed, the expression is evaluated.</p><p>When a non-lazy specification statement is executed, the specified 
+            expression is evaluated, and the resulting value assigned to the specified
+            reference within the current frame or current instance associated with the 
+            body to which the specified reference belongs.</p><p>When a lazy specification statement is executed, the specified
+            expression is associated with the specified reference within the current 
+            frame or current instance associated with the body to which the specified
+            reference belongs. Subsequent evaluation or invocation of the reference
+            for this current frame or current instance may result in evaluation of the 
+            specified expression, in which case the expression is evaluated within this 
+            current frame or current instance.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="executionofcontroldirectives"></a>8.2.8.&nbsp;Execution of control directives</h3></div></div><div></div></div><p>Execution of a control directive, as specified in 
+            <a href="statementblocks.html#controldirectives" title="5.2.2.&nbsp;Control directives">&sect;5.2.2 Control directives</a>, terminates execution of the body in which it 
+            occurs, and possibly of other containing bodies.</p><div class="itemizedlist"><ul type="disc"><li><p>A <tt class="literal">return</tt> directive that occurs sequentially in
+                    the body of a function, getter, setter, or class initializer terminates
+                    execution of the body of the function, getter, setter, or class initializer 
+                    and of all intervening bodies. Optionally, it determines the return value of
+                    the function or getter.</p></li><li><p>A <tt class="literal">break</tt> directive terminates execution of the
+                    body of the most nested containing loop in which it occurs sequentially,
+                    and of all intervening bodies. Additionally, it terminates execution of
+                    the loop.</p></li><li><p>A <tt class="literal">continue</tt> directive terminates execution of the
+                    body of the most nested containing loop in which it occurs sequentially,
+                    and of all intervening bodies. It does not terminate execution of the 
+                    loop.</p></li><li><p>A <tt class="literal">throw</tt> directive that occurs sequentially in
+                    the body of a function, getter, setter, or class initializer terminates
+                    execution of the body of the function, getter, setter, or class 
+                    initializer and of all intervening bodies, and, furthermore, the exception 
+                    propagates to the caller, as defined below, unless there is an intervening 
+                    <tt class="literal">try</tt> with a <tt class="literal">catch</tt> clause matching the 
+                    thrown exception, in which case it terminates execution of the body of the 
+                    <tt class="literal">try</tt> statement and all intervening bodies, and execution 
+                    continues from the body of the <tt class="literal">catch</tt> clause.</p></li></ul></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="exceptionpropagation"></a>8.2.9.&nbsp;Exception propagation</h3></div></div><div></div></div><p>If execution of an evaluation, assignment, invocation, or instantiation
+            terminates with an exception thrown, the exception propagates to the calling 
+            code, and terminates execution of the body of the function, getter, setter, or 
+            class initializer in which the expression involving the evaluation, assignment, 
+            invocation, or instantiation sequentially occurs, and of all intervening bodies, 
+            and, furthermore, the exception propagates to the caller unless there is an 
+            intervening <tt class="literal">try</tt> with a <tt class="literal">catch</tt> clause 
+            matching the thrown exception, in which case it terminates execution of the body 
+            of the <tt class="literal">try</tt> statement and all intervening bodies, and execution 
+            continues from the body of the <tt class="literal">catch</tt> clause.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="toplevelinitialization"></a>8.2.10.&nbsp;Initialization of toplevel references</h3></div></div><div></div></div><p>A toplevel reference has no associated frame. Instead, the lifecycle of 
+            its persistent value is associated with the loading and unloading of a module 
+            by the module runtime. The first time a toplevel reference is accessed 
+            following the loading of its containing module, its initializer expression is 
+            evaluated, and the resulting value is associated with the reference. This 
+            association survives until the toplevel reference is reassigned, or until the 
+            module is unloaded by the module runtime.</p><p>Initialization of a toplevel reference may result in recursive 
+            initialization of other toplevel references. Therefore, it is possible that
+            a cycle could occur where evaluation of a toplevel reference occurs while
+            evaluating its initializer expression. When this occurs, an 
+            <tt class="literal">InitializationException</tt> is thrown.</p></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="executionofcontrolstructures"></a>8.3.&nbsp;Execution of control structures and assertions</h2></div></div><div></div></div><p>Control structures, as specified in <a href="statementblocks.html#controlstructures" title="5.3.&nbsp;Control structures and assertions">&sect;5.3 Control structures and assertions</a>, are 
+        used to organize conditional and repetitive code within a body. Assertions are 
+        essentially a sophisticated sort of control directive, but for convenience are 
+        categorized together with control structures.</p><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="evaluationofconditions"></a>8.3.1.&nbsp;Evaluation of condition lists</h3></div></div><div></div></div><p>Execution of an <tt class="literal">if</tt>, <tt class="literal">while</tt>, or
+            <tt class="literal">assert</tt> requires evaluation of a condition list, as defined
+            in <a href="statementblocks.html#controlstructureconditions" title="5.3.3.&nbsp;Control structure conditions">&sect;5.3.3 Control structure conditions</a>.</p><p>To determine if a condition list is satisfied, its constituent conditions 
+            are evaluated in the lexical order in which they occur in the condition list. 
+            If any condition is not satisfied, none of the subsequent conditions in the list 
+            are evaluated.</p><div class="itemizedlist"><ul type="disc"><li><p>A boolean condition is satisfied if its expression evaluates to 
+                    <tt class="literal">true</tt> when the condition is evaluated.</p></li></ul></div><p>For any other kind of condition, the condition is satisfied if its value 
+             reference or expression evaluates to an instance of the required type when the 
+             condition is evaluated:</p><div class="itemizedlist"><ul type="disc"><li><p>for an assignability condition, the condition is satisfied if the 
+                     expression evaluates to an instance of the specified type when the control 
+                     structure is executed,</p></li><li><p>for an existence condition, the condition is satisfied unless the 
+                     expression evaluates to <tt class="literal">null</tt> when the control structure 
+                     is executed, or</p></li><li><p>for a nonemptiness expression, the condition is satisfied unless the 
+                     expression evaluates to an instance of <tt class="literal">[]|Null</tt> when the 
+                     control structure is executed.</p></li></ul></div><p>A condition list is satisfied if and only if all of its constituent conditions 
+             are satisfied.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="validationofassertions"></a>8.3.2.&nbsp;Validation of assertions</h3></div></div><div></div></div><p>When an assertion, as specified in <a href="statementblocks.html#assertions" title="5.3.11.&nbsp;Assertions">&sect;5.3.11 Assertions</a>, is 
+            executed, its condition list is evaluated. If the condition list is not satisfied, 
+            an exception of type <tt class="literal">AssertionFailure</tt> in 
+            <tt class="literal">ceylon.language</tt> is thrown.</p><p>The information carried by the <tt class="literal">AssertionFailure</tt> includes:</p><div class="itemizedlist"><ul type="disc"><li><p>the text of the Ceylon code of the condition that failed,</p></li><li><p>the message specified by the <tt class="literal">doc</tt> annotation of the
+                    assertion, if any.</p></li></ul></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="executionofconditionals"></a>8.3.3.&nbsp;Execution of conditionals</h3></div></div><div></div></div><p>The <tt class="literal">if/else</tt> and <tt class="literal">switch/case/else</tt> 
+            constructs control conditional execution.</p><p>When the <tt class="literal">if/else</tt> construct, specified in 
+            <a href="statementblocks.html#ifelse" title="5.3.6.&nbsp;if/else">&sect;5.3.6 if/else</a>, is executed, its condition list is evaluated. If the 
+            condition list is satisfied, the <tt class="literal">if</tt> block is executed. 
+            Otherwise, the <tt class="literal">else</tt> block, if any, is executed, or, if the 
+            construct has an <tt class="literal">else if</tt>, the child <tt class="literal">if</tt>
+            construct is executed.</p><p>When a <tt class="literal">switch/case/else</tt> construct, specified in 
+            <a href="statementblocks.html#switchcaseelse" title="5.3.7.&nbsp;switch/case/else">&sect;5.3.7 switch/case/else</a>, is executed, its <tt class="literal">switch</tt> 
+            expression is evaluated to produce a value. The value is guaranteed to 
+            <span class="emphasis"><em>match</em></span> at most one <tt class="literal">case</tt> of the 
+            <tt class="literal">switch</tt>. If it matches a certain case, then that 
+            <tt class="literal">case</tt> block is executed. Otherwise, <tt class="literal">switch</tt> 
+            is guaranteed to have an <tt class="literal">else</tt>, and so the 
+            <tt class="literal">else</tt> block is executed.</p><p>The value produced by the <tt class="literal">switch</tt> expression matches
+            a case if either:</p><div class="itemizedlist"><ul type="disc"><li><p>the case is a list of literal values and value references the 
+                    value is identical to one of the value references in the list or 
+                    equal to one of the literal values in the list, or if</p></li><li><p>the case is an assignability condition of form 
+                    <tt class="literal">case (is V)</tt> and the value is an instance of
+                    <tt class="literal">V</tt>.</p></li></ul></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="executionofloops"></a>8.3.4.&nbsp;Execution of loops</h3></div></div><div></div></div><p>The <tt class="literal">for/else</tt> and <tt class="literal">while</tt> loops control
+            repeated execution.</p><p>When a <tt class="literal">while</tt> construct, specified in <a href="statementblocks.html#while" title="5.3.9.&nbsp;while">&sect;5.3.9 while</a>, 
+            is executed, the loop condition list is evaluated repeatedly until the first time 
+            the condition list is not satisfied, or until a <tt class="literal">break</tt>, 
+            <tt class="literal">return</tt>, or <tt class="literal">throw</tt> directive that terminates the
+            loop is executed. Each time the condition is satisfied, the <tt class="literal">while</tt> 
+            block is executed.</p><p>When a <tt class="literal">for/else</tt> construct, specified in <a href="statementblocks.html#forelse" title="5.3.8.&nbsp;for/else">&sect;5.3.8 for/else</a>, 
+            is executed:</p><div class="itemizedlist"><ul type="disc"><li><p>the iterated expression is evaluated to produce an an instance of
+                    <tt class="literal">Iterable</tt>,</p></li><li><p>an <tt class="literal">Iterator</tt> is obtained by calling 
+                    <tt class="literal">iterator()</tt> on the iterable object, and then</p></li><li><p>the <tt class="literal">for</tt> block is executed once for each value 
+                    of produced by repeatedly invoking the <tt class="literal">next()</tt> method 
+                    of the iterator, until the iterator produces the value <tt class="literal">finished</tt>, 
+                    or until a <tt class="literal">break</tt>, <tt class="literal">return</tt>, or 
+                    <tt class="literal">throw</tt> directive that terminates the loop is executed.</p></li></ul></div><p>Note that:</p><div class="itemizedlist"><ul type="disc"><li><p>if the iterated expression is also of type <tt class="literal">X[]</tt>,
+                    the compiler is permitted to optimize away the use of <tt class="literal">Iterator</tt>, 
+                    instead using indexed element access.</p></li><li><p>if the iterated expression is a range constructor expression, the 
+                    compiler is permitted to optimize away creation of the <tt class="literal">Range</tt>, 
+                    and generate the indices using the <tt class="literal">successor</tt> operation.</p></li></ul></div><p>We say that the loop <span class="emphasis"><em>exits early</em></span> if it ends via execution 
+            of a <tt class="literal">break</tt>, <tt class="literal">return</tt>, or <tt class="literal">throw</tt>
+            directive. Otherwise, we say that the loop <span class="emphasis"><em>completes</em></span> normally.</p><p>If the loop completes normally, the <tt class="literal">else</tt> block is executed. 
+            Otherwise, if the loop exists early, the <tt class="literal">else</tt> block is not executed.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="exceptionhandling"></a>8.3.5.&nbsp;Exception handling</h3></div></div><div></div></div><p>When a <tt class="literal">try/catch/finally</tt> construct, specified in 
+             <a href="statementblocks.html#trycatchfinally" title="5.3.10.&nbsp;try/catch/finally">&sect;5.3.10 try/catch/finally</a>, is executed:</p><div class="itemizedlist"><ul type="disc"><li><p>the resource expressions, if any, are evaluated in the order
+                     they occur, and then <tt class="literal">open()</tt> is called on each 
+                     resulting resource instance, in the same order, then</p></li><li><p>the <tt class="literal">try</tt> block is executed, then</p></li><li><p><tt class="literal">close()</tt> is called on the resource instances, 
+                     if any, in the reverse order that the resource expressions occur, 
+                     with the exception that propagated out of the <tt class="literal">try</tt> 
+                     block, if any, then</p></li><li><p>if an exception did propagate out of the <tt class="literal">try</tt> 
+                     block, the first <tt class="literal">catch</tt> block with a variable 
+                     to which the exception is assignable, if any, is executed, and 
+                     then</p></li><li><p>the <tt class="literal">finally</tt> block, if any, is executed, 
+                     even in the case where an exception propagates out of the whole
+                     construct.</p></li></ul></div><i><span class="comment"><p>TODO: Specify what happens if <tt class="literal">close()</tt> 
+             throws an exception? Same semantics as Java with "suppressed" exceptions.</p></span></i></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="dynamictypechecking"></a>8.3.6.&nbsp;Dynamic type checking</h3></div></div><div></div></div><p>Inside a <tt class="literal">dynamic</tt> block, a situation might occur that 
+            requires dynamic type checking, as specified in <a href="statementblocks.html#dynamicblocks" title="5.3.12.&nbsp;Dynamic blocks">&sect;5.3.12 Dynamic blocks</a>. 
+            It is possible that:</p><div class="itemizedlist"><ul type="disc"><li><p>the value to which an expression with no type evaluates at 
+                    execution time might not be an instance of the type required where 
+                    the expression occurs,</p></li><li><p>in particular, the value to which a <tt class="literal">switch</tt> 
+                    expression with no type evaluates at execution time might be an 
+                    instance of a type not covered by the <tt class="literal">case</tt>s of
+                    a <tt class="literal">switch</tt> with no <tt class="literal">else</tt>, or</p></li><li><p>a qualified or unqualified reference which does not refer to 
+                    a statically typed declaration might not resolve to any declaration
+                    at all.</p></li></ul></div><p>Whenever such a condition is encountered at runtime, an 
+            <tt class="literal">AssertionException</tt> is immediately thrown.</p><i><span class="comment"><p>Note: in Ceylon 1.0, dynamic type checking is only supported
+            on JavaScript virtual machines.</p></span></i></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="evaluationinvocationandassignment"></a>8.4.&nbsp;Evaluation, invocation, and assignment</h2></div></div><div></div></div><p>Evaluation of an expression may result in:</p><div class="itemizedlist"><ul type="disc"><li><p>invocation of a function or instantiation of a class,</p></li><li><p>evaluation of a value,</p></li><li><p>instantiation of an instance of <tt class="literal">Callable</tt> 
+            that packages a callable reference, or</p></li><li><p>assignment to a variable value.</p></li></ul></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="dynamicdispatch"></a>8.4.1.&nbsp;Dynamic dispatch</h3></div></div><div></div></div><p><span class="emphasis"><em>Dynamic dispatch</em></span> is the process of determing
+            at runtime a member declaration based upon the runtime type of an object,
+            which, as a result of subtype polymorphism, may be different to its static 
+            type known at compile time.</p><p>Any concrete class is guaranteed to have exactly one declaration of
+            a member, either declared or inherited by the class, which refines all other 
+            declarations of the member declared or inherited by the class. At runtime,
+            this member is selected.</p><p>There is one exception to this rule: member expressions where the 
+            receiver expression is of form <tt class="literal">super</tt> or
+            <tt class="literal">(super of Type)</tt>, as defined in <a href="expressions.html#super" title="6.3.3.&nbsp;super">&sect;6.3.3 super</a>,
+            are dispatched based on the static type of the receiver expression:</p><div class="itemizedlist"><ul type="disc"><li><p>Any invocation of a member of <tt class="literal">super</tt> is 
+                    processed by the member defined or inherited by the supertype, 
+                    bypassing any member declaration that refines this member 
+                    declaration.</p></li><li><p>Any invocation of a member of an expression of form 
+                    <tt class="literal">(super of Type)</tt> is processed by the member 
+                    defined or inherited by <tt class="literal">Type</tt>, bypassing any 
+                    member declaration that refines this member declaration.</p></li></ul></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="evaluation"></a>8.4.2.&nbsp;Evaluation</h3></div></div><div></div></div><p>Evaluation of a value reference, as defined in <a href="expressions.html#valuereferences" title="6.5.3.&nbsp;Value references">&sect;6.5.3 Value references</a>, 
+            produces its current value. Evaluation of a callable reference, as defined in
+            <a href="expressions.html#callablereferences" title="6.5.4.&nbsp;Callable references">&sect;6.5.4 Callable references</a>, that does not occur as the primary of a 
+            direct invocation results in a new instance of <tt class="literal">Callable</tt> that 
+            packages the callable reference.</p><pre class="brush: ceylon">person.name</pre><pre class="brush: ceylon">'/'.equals</pre><p>When a value reference expression is executed:</p><div class="itemizedlist"><ul type="disc"><li><p>first, the receiver expression, if any, is evaluated to obtain a 
+                    receiving instance for the evaluation, then</p></li><li><p>the actual declaration to be invoked is determined by considering 
+                    the runtime type of the receiving instance, if any, and then</p></li><li><p>if the declaration is a reference, its persistent value is retrieved
+                    from the receiving instance, or</p></li><li><p>otherwise, execution of the calling body pauses while the body 
+                    of its getter is executed by the receiving instance, then,</p></li><li><p>finally, when execution of the getter ends, execution of the 
+                    calling body resumes.</p></li></ul></div><p>The resulting value is the persistent value retrieved, or the return value 
+            of the getter, as specified by the <tt class="literal">return</tt> directive.</p><p>When a callable reference expression that does not occur as the primary of
+            a direct invocation expression is executed:</p><div class="itemizedlist"><ul type="disc"><li><p>first, the receiver expression, if any, is evaluated to obtain a 
+                    receiving instance for the evaluation, then</p></li><li><p>the receiving instance, a reference to the declaration to be
+                    invoked, or a reference to the current frame or instance of every body 
+                    that contains the referenced declaration are packaged together into an 
+                    instance of <tt class="literal">Callable</tt>.</p></li></ul></div><p>The resulting value is the instance of <tt class="literal">Callable</tt>. The 
+            concrete class of this instance is not specified here.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="assignment"></a>8.4.3.&nbsp;Assignment</h3></div></div><div></div></div><p>Given a value reference, as defined in <a href="expressions.html#valuereferences" title="6.5.3.&nbsp;Value references">&sect;6.5.3 Value references</a>, 
+            to a variable, the assignment operator <tt class="literal">=</tt> assigns it a new 
+            value.</p><pre class="brush: ceylon">person.name = "Gavin"</pre><p>When an assignment expression is executed:</p><div class="itemizedlist"><ul type="disc"><li><p>first, the receiver expression of the value reference expression 
+                    is executed to obtain the receiving instance, then</p></li><li><p>the actual declaration to be assigned is determined by considering 
+                    the runtime type of the receiving instance, and then</p></li><li><p>if the member is a reference, its persistent value is updated in 
+                    the receiving instance, or</p></li><li><p>otherwise, execution of the calling body pauses while the body 
+                    of its setter is executed by the receiving instance with the assigned 
+                    value, then,</p></li><li><p>finally, when execution of the setter ends, execution of the calling 
+                    body resumes.</p></li></ul></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="invocation"></a>8.4.4.&nbsp;Invocation</h3></div></div><div></div></div><p>Evaluation of an invocation expression, as defined in 
+            <a href="expressions.html#invocationexpressions" title="6.6.&nbsp;Invocation expressions">&sect;6.6 Invocation expressions</a>, results in <span class="emphasis"><em>invocation</em></span>
+            of a function, or <span class="emphasis"><em>instantiation</em></span> of a class. Every invocation 
+            has a callable expression:</p><div class="itemizedlist"><ul type="disc"><li><p>in a direct invocation, the callable expression is a callable 
+                    reference, and</p></li><li><p>in an indirect invocation, the callable expression is an instance of
+                    <tt class="literal">Callable</tt> that packages an underlying callable reference.</p></li></ul></div><p>In either case, the callable expression determines the instance and member 
+            to be invoked.</p><pre class="brush: ceylon">print("Hello world!")</pre><pre class="brush: ceylon">Entry(person.name, person)</pre><p>When an invocation expression is executed:</p><div class="itemizedlist"><ul type="disc"><li><p>first, the callable expression is evaluated to obtain the receiving
+                    instance, then</p></li><li><p>each listed argument or spread argument is evaluated in turn in the 
+                    calling body, and</p></li><li><p>if the argument list has a comprehension, a comprehension instance, 
+                    as defined in <a href="execution.html#comprehensionevaluation" title="8.6.&nbsp;Evaluation of comprehensions">&sect;8.6 Evaluation of comprehensions</a>, is obtained, 
+                    and then</p></li><li><p>the actual declaration to be invoked is determined by considering the 
+                    runtime type of the receiving instance, if any, and then</p></li><li><p>execution of the calling body pauses while the body of the function 
+                    or initializer is executed by the receiving instance with the argument values, 
+                    then</p></li><li><p>finally, when execution of the function or initializer ends, execution 
+                    of the calling body resumes.</p></li></ul></div><p>A function invocation evaluates to the return value of the function, as specified 
+            by the <tt class="literal">return</tt> directive. The argument values are passed to the 
+            parameters of the method, and the body of the method is executed.</p><p>A class instantiation evaluates to a new instance of the class. The argument 
+            values are passed to the initializer parameters of the class, and the initializer
+            is executed.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="anonymousfunctionevaluation"></a>8.4.5.&nbsp;Evaluation of anonymous functions</h3></div></div><div></div></div><p>When an anonymous function expression, as defined in 
+            <a href="expressions.html#anonymousfunctions" title="6.4.&nbsp;Anonymous functions">&sect;6.4 Anonymous functions</a>, is evaluated, a reference to the function and a
+            reference to the current frame or instance of every containing body are packaged into an 
+            instance of <tt class="literal">Callable</tt>. The instance of <tt class="literal">Callable</tt> is
+            the resulting value of the expression. The concrete class of this instance is not 
+            specified here.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="enumerationevaluation"></a>8.4.6.&nbsp;Evaluation of enumerations</h3></div></div><div></div></div><p>Evaluation of an enumeration expression, as defined in 
+            <a href="expressions.html#enumeration" title="6.6.12.&nbsp;Iterable and tuple enumeration">&sect;6.6.12 Iterable and tuple enumeration</a>, results in creation of an iterable object or 
+            tuple.</p><pre class="brush: ceylon">{ "hello", "world" }</pre><pre class="brush: ceylon">[ new, *elements ]</pre><p>When an enumeration expression is executed:</p><div class="itemizedlist"><ul type="disc"><li><p>first, each listed argument or spread argument is evaluated in 
+                    turn in the calling body, and</p></li><li><p>if the argument list has a comprehension, a comprehension instance, 
+                    as defined in <a href="execution.html#comprehensionevaluation" title="8.6.&nbsp;Evaluation of comprehensions">&sect;8.6 Evaluation of comprehensions</a>, is obtained, 
+                    and then</p></li><li><p>the resulting argument values are packaged into an instance of 
+                    <tt class="literal">Iterable</tt> or <tt class="literal">Sequence</tt>, and this 
+                    object is the resulting value of the enumeration expression, unless</p></li><li><p>there are no arguments, and no comprehension, in which case the 
+                    resulting value of the enumeration expression is the object 
+                    <tt class="literal">empty</tt>.</p></li></ul></div><p>In the case of an iterable enumeration, the concrete class of the resulting
+            value is not specified here. In the case of a tuple enumeration it is always
+            <tt class="literal">Tuple</tt>, <tt class="literal">Empty</tt>, or <tt class="literal">Sequence</tt>.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="spreadevaluation"></a>8.4.7.&nbsp;Evaluation of spread arguments and comprehensions</h3></div></div><div></div></div><p>A spread argument, as defined in <a href="expressions.html#spreadarguments" title="6.6.5.&nbsp;Spread arguments">&sect;6.6.5 Spread arguments</a>, produces 
+            multiple values by iterating the iterable object to which the spread operator 
+            is applied.</p><p>When a spread argument expression type is a subtype of <tt class="literal">Sequential</tt>,
+            the behavior does not depend upon where the spread argument occurs:</p><div class="itemizedlist"><ul type="disc"><li><p>If it occurs as an argument, the sequence produced by evaluating 
+                    the expression is passed directly to the parameter.</p></li><li><p>If it occurs in an enumeration expression, the sequence produced 
+                    by evaluating the expression is appended directly to the resulting
+                    iterable object or tuple.</p></li></ul></div><p>On the other hand, when a spread argument expression type is not a subtype of 
+            <tt class="literal">Sequential</tt>, the behavior depends upon where the spread argument
+            occurs:</p><div class="itemizedlist"><ul type="disc"><li><p>If it occurs as an argument to a variadic parameter in a positional
+                    argument list, the values produced by a spread argument are evaluated 
+                    immediately and packaged into an instance of <tt class="literal">Sequence</tt>
+                    and passed to the variadic parameter, unless there are no values, in 
+                    which case the object <tt class="literal">empty</tt> is passed to the variadic 
+                    parameter.</p></li><li><p>If it occurs as an argument to a parameter of type 
+                    <tt class="literal">Iterable</tt> at the end of a named argument list, the
+                    iterable object produced by evaluating the expression is passed directly 
+                    to the parameter.</p></li><li><p>If it occurs in a tuple enumeration, the values produced by a 
+                    spread argument are evaluated immediately and packaged into an instance 
+                    of <tt class="literal">Sequence</tt> and appended to the resulting tuple.</p></li><li><p>If it occurs in an iterable enumeration, the iterable object 
+                    produced by evaluating the expression is chained directly to the 
+                    resulting iterable object.</p></li></ul></div><p>Likewise, a comprehension, as defined in <a href="expressions.html#comprehensions" title="6.6.6.&nbsp;Comprehensions">&sect;6.6.6 Comprehensions</a>, 
+            produces multiple values, as specified by <a href="execution.html#comprehensionevaluation" title="8.6.&nbsp;Evaluation of comprehensions">&sect;8.6 Evaluation of comprehensions</a>. 
+            The behavior depends upon where the comprehension occurs:</p><div class="itemizedlist"><ul type="disc"><li><p>If it occurs as an argument to a variadic parameter in a positional
+                    argument list, the values produced by the comprehension instance are 
+                    evaluated immediately, packaged into an instance of <tt class="literal">Sequence</tt>,
+                    and passed to the variadic parameter, unless there are no values, in 
+                    which case the object <tt class="literal">empty</tt> is passed to the variadic 
+                    parameter.</p></li><li><p>If it occurs as an argument to a parameter of type 
+                    <tt class="literal">Iterable</tt> at the end of a named argument list, the 
+                    comprehension instance is packaged into an iterable object that produces 
+                    the values of the comprehension on demand, and this iterable object is 
+                    passed directly to the parameter. The concrete class of this object is 
+                    not specified here.</p></li><li><p>If it occurs in a tuple enumeration, the values produced by the 
+                    comprehension instance are evaluated immediately, packaged into an instance 
+                    of <tt class="literal">Sequence</tt>, and appended to the resulting tuple.</p></li><li><p>If it occurs in an iterable enumeration, the comprehension instance
+                    is packaged into an iterable object that produces the values of the 
+                    comprehension on demand, and this iterable object is chained directly to 
+                    the resulting iterable object. The concrete class of this object is not 
+                    specified here.</p></li></ul></div></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="operatorexpressions"></a>8.5.&nbsp;Operator expressions</h2></div></div><div></div></div><p>Most operator expression are defined in terms of function invocation, value 
+        evaluation, or a combination of invocations and evaluations, as specified in
+        <a href="expressions.html#operators" title="6.8.&nbsp;Operators">&sect;6.8 Operators</a>. The semantics of evaluation of an operator expression 
+        therefore follows from the above definitions of evaluation and invocation and from 
+        its definition in terms of evaluation and invocation.</p><p>However, this specification allows the compiler to take advantage of the
+        optimized support for primitive value types provided by the virtual machine
+        environment.</p><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="operatorexpressionoptimization"></a>8.5.1.&nbsp;Operator expression optimization</h3></div></div><div></div></div><p>As a special exception to the rules, the compiler is permitted to optimize 
+            certain operations upon certain types in the module <tt class="literal">ceylon.language</tt>. 
+            These types are: <tt class="literal">Integer</tt>, <tt class="literal">Float</tt>, 
+            <tt class="literal">Character</tt>, <tt class="literal">Range</tt>, <tt class="literal">Entry</tt>, 
+            <tt class="literal">String</tt>, <tt class="literal">Array</tt>, and <tt class="literal">Tuple</tt>.</p><p>Thus, the tables in the previous chapter define semantics only. The compiler 
+            may emit bytecode or compiled JavaScript that produces the same value at runtime as 
+            the pseudo-code that defines the operator, without actually executing any invocation, 
+            for the following operators:</p><div class="itemizedlist"><ul type="disc"><li><p>all arithmetic operators,</p></li><li><p>the comparison and equality operators <tt class="literal">==</tt>,
+                    <tt class="literal">!=</tt>, <tt class="literal">&lt;=&gt;</tt>, <tt class="literal">&lt;</tt>,
+                    <tt class="literal">&gt;</tt>, <tt class="literal">&lt;=</tt>, <tt class="literal">&gt;=</tt>
+                    when the argument expression types are built-in numeric types, and</p></li><li><p>the <tt class="literal">Range</tt> and <tt class="literal">Entry</tt> construction 
+                    operators <tt class="literal">..</tt> and <tt class="literal">-&gt;</tt>.</p></li></ul></div><p>In all operator expressions, the arguments of the operator must be evaluated 
+            from left to right when the expression is executed. In certain cases, depending upon 
+            the definition of the operator, evaluation of the leftmost argument expression results 
+            in a value that causes the final value of the operator expression to be produced 
+            immediately without evaluation of the remaining argument expressions. Optimizations 
+            performed by the Ceylon compiler must not alter these behaviours.</p><i><span class="comment"><p>Note: this restriction exists to ensure that any effects are not 
+            changed by the optimizations.</p></span></i></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="numericoperations"></a>8.5.2.&nbsp;Numeric operations</h3></div></div><div></div></div><p>The arithmetic operations defined in <a href="expressions.html#arithmetic" title="6.8.10.&nbsp;Arithmetic operators">&sect;6.8.10 Arithmetic operators</a> for
+            values of type <tt class="literal">Integer</tt> and <tt class="literal">Float</tt> are
+            defined in terms of methods of the interface <tt class="literal">Numeric</tt>. 
+            However, these methods themselves make use of the native operations of the 
+            underlying virtual machine. Likewise, values of type <tt class="literal">Integer</tt> 
+            and <tt class="literal">Float</tt> are actually represented in terms of a format 
+            native to the virtual machine.</p><p>It follows that the precise behavior of numeric operations depends 
+            upon the virtual machine upon which the program executes. However, certain 
+            behaviours are common to supported virtual machines:</p><div class="itemizedlist"><ul type="disc"><li><p>Values of type <tt class="literal">Float</tt> are represented 
+                    according to the IEEE 754 specification, <span class="emphasis"><em>IEEE Standard 
+                    for Binary Floating-Point Arithmetic</em></span>, and floating point
+                    numeric operations conform to this specification. Where possible,
+                    a double-precision 64-bit representation is used. Note that even 
+                    though <tt class="literal">Float</tt> has a 64-bit representation on 
+                    both Java and JavaScript virtual machines, the actual range of 
+                    representable values differs.</p></li><li><p>Where possible, values of type <tt class="literal">Integer</tt> are 
+                    represented in two's complement form using a fixed bit length. Where 
+                    possible, a 64-bit representation is used. Overflow and underflow 
+                    wrap silently. This is the case for the Java Virtual Machine.</p></li><li><p>Otherwise, values of type <tt class="literal">Integer</tt> are 
+                    represented according to the IEEE 754 specification. This is the 
+                    case for JavaScript virtual machines.</p></li></ul></div><p>Platform-dependent behavior of numeric operations is defined in the
+            Java Language Specification, and the ECMAScript Language Specification.</p><i><span class="comment"><p>It might be argued that having platform-dependent behavior 
+            for numeric operations opens up the same portability concerns that affected
+            languages like C in the past. However, the cross-platform virtual machines
+            supported by Ceylon already provide a layer of indirection that substantially
+            eases portability concerns. Of course, numeric code is not guaranteed to be
+            completely portable between the Java and JavaScript virtual machines, but
+            it's difficult to imagine how such a level of portability could reasonably 
+            be achieved.</p></span></i></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="comprehensionevaluation"></a>8.6.&nbsp;Evaluation of comprehensions</h2></div></div><div></div></div><p>When a comprehension, as specified in <a href="expressions.html#comprehensions" title="6.6.6.&nbsp;Comprehensions">&sect;6.6.6 Comprehensions</a>, 
+        is evaluated, a reference to the comprehension, together with a reference to 
+        the current frame or instance of every containing body, are packaged together 
+        into a <span class="emphasis"><em>comprehension instance</em></span>. A comprehension instance 
+        is not considered a value in the sense of <a href="execution.html#objectinstancesidentity" title="8.1.&nbsp;Object instances, identity, and reference passing">&sect;8.1 Object instances, identity, and reference passing</a>. 
+        Instead, it is a stream of values, each produced by evaluating the expression 
+        clause of the comprehension.</p><p>A comprehension consists of a series of clauses. Each clause of a 
+        comprehension, except for the expression clause that terminates the list of 
+        clauses, produces a stream of <span class="emphasis"><em>frames</em></span>. A frame is a set 
+        of values for iteration variables and condition variables declared by the 
+        clause and its parent clauses.</p><i><span class="comment"><p>Note: each child clause can be viewed as a body nested inside 
+        the parent clause. The lifecycle of comprehension frames reflects this model.
+        </p></span></i><p>Evaluation of an expression occurring in a comprehension clause occurs
+        in the context of the packaged frames associated with the comprehension
+        instance together with a comprehension frame associated with the clause.</p><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="forclause"></a>8.6.1.&nbsp;<tt class="literal">for</tt> clause</h3></div></div><div></div></div><p>The expression which produces the source stream for a child 
+            <tt class="literal">for</tt> clause may refer to an iteration variable of a
+            parent <tt class="literal">for</tt> clause. In this case the child clause is 
+            considered <span class="emphasis"><em>correlated</em></span>. Otherwise it is considered 
+            <span class="emphasis"><em>uncorrelated</em></span>.</p><p>In either case, the child clause produces a stream of frames. 
+            For each frame produced by the parent clause, and for each value
+            produced by the source stream of the child clause, the child clause
+            produces a frame consisting of the parent clause frame extended
+            by the iteration variable value defined by the child clause.</p><p>This comprehension has a correlated <tt class="literal">for</tt> clause. 
+            For each character <tt class="literal">c</tt> in each string <tt class="literal">w</tt> 
+            in <tt class="literal">words</tt>, the child <tt class="literal">for</tt> clause 
+            produces the frame <tt class="literal">{ String word=w; Character char=c; }</tt>.</p><pre class="brush: ceylon">for (word in words) for (char in word) char</pre><p>This comprehension has an uncorrelated <tt class="literal">for</tt> clause. 
+            For each string <tt class="literal">n</tt> in <tt class="literal">nouns</tt>, and each 
+            string <tt class="literal">a</tt> in <tt class="literal">adjectives</tt>, the child 
+            <tt class="literal">for</tt> clause produces the frame 
+            <tt class="literal">{ String noun=n; String adj=a; }</tt>.</p><pre class="brush: ceylon">for (noun in nouns) for (adj in adjectives) adj + " " + noun</pre></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="ifclause"></a>8.6.2.&nbsp;<tt class="literal">if</tt> clause</h3></div></div><div></div></div><p>A child <tt class="literal">if</tt> clause filters its parent clause frames. 
+            For every frame produced by the parent clause which satisfies the condition 
+            list of the child clause, the child clause produces that frame, extended by 
+            any condition variable defined by the child clause.</p><p>This comprehension has an <tt class="literal">if</tt> clause. For
+            each object <tt class="literal">o</tt> in <tt class="literal">objects</tt> that
+            is a nonempty <tt class="literal">String</tt>, the <tt class="literal">if</tt> clause 
+            produces the frame <tt class="literal">{ Object obj=o; String str=o; }</tt>.</p><pre class="brush: ceylon">for (obj in objects) if (is String str=obj, !str.empty) str</pre></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="expressionclause"></a>8.6.3.&nbsp;Expression clause</h3></div></div><div></div></div><p>As specified in <a href="expressions.html#comprehensions" title="6.6.6.&nbsp;Comprehensions">&sect;6.6.6 Comprehensions</a>, every comprehension ends 
+            in an expression clause. An expression clause produces a single value for each 
+            frame produced by its parent clause, by evaluating the expression in the frame. 
+            These resulting values are the values returned by the whole comprehension.</p></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="concurrency"></a>8.7.&nbsp;Concurrency</h2></div></div><div></div></div><p>Neither this specification nor the module <tt class="literal">ceylon.language</tt>
+        provide any facility to initiate or control concurrent execution of a program
+        written in Ceylon. However, a Ceylon program executing on the Java Virtual Machine
+        may interact with Java libraries (and other Ceyon modules) that make use of 
+        concurrency.</p><p>In this scenario, the execution of a Ceylon program is governed by the rules 
+        laid out by the Java programming language's execution model (Chapter 17 of the Java 
+        Language Specification). Ceylon references belonging to a class or interface are 
+        considered <span class="emphasis"><em>fields</em></span> in the sense of the JLS. Any such refence
+        not explicitly declared <tt class="literal">variable</tt> is considered a 
+        <span class="emphasis"><em>final field</em></span>. Evaluation of a reference is considered a 
+        <span class="emphasis"><em>use</em></span> operation, and assignment to or specification of a variable
+        reference is considered an <span class="emphasis"><em>assign</em></span> operation, again in terms of 
+        the JLS.</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="annotations.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="index.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="modulesystem.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter&nbsp;7.&nbsp;Annotations&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;Chapter&nbsp;9.&nbsp;Module system</td></tr></table></div></body></html>

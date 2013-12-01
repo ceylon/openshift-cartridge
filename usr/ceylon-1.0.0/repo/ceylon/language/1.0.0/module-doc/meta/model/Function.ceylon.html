@@ -1,0 +1,31 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>Function.ceylon</title><link href='../../.resources/favicon.ico' rel='shortcut icon'/>
+<link href='../../.resources/shCore.css' rel='stylesheet' type='text/css'/>
+<link href='../../.resources/shThemeDefault.css' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '../../.resources/'</script><script src='../../.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='../../.resources/shCore.js' type='text/javascript'></script><script src='../../.resources/shAutoloader.js' type='text/javascript'></script><script src='../../.resources/shBrushCeylon.js' type='text/javascript'></script><script src='../../.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre class='brush: ceylon'>&quot;&quot;&quot;A function model represents the model of a Ceylon function that you can invoke and inspect.
+   
+   A function is a toplevel binding, declared on a package.
+   
+   This is a [[FunctionModel]] that you can also invoke:
+   
+       shared String foo(String name) =&gt; &quot;Hello &quot;+name;
+       
+       void test(){
+           Function&lt;String,[String]&gt; f = `foo`;
+           // This will print: Hello Stef
+           print(f(&quot;Stef&quot;));
+       }
+ &quot;&quot;&quot;
+shared interface Function&lt;out Type=Anything, in Arguments=Nothing&gt;
+        satisfies FunctionModel&lt;Type, Arguments&gt; &amp; Callable&lt;Type, Arguments&gt;
+        given Arguments satisfies Anything[] {
+    
+    &quot;Type-unsafe function application, to be used when the argument types are unknown until runtime.
+     
+     This has the same behaviour as invoking this `Function` directly, but exchanges compile-time type
+     safety with runtime checks.&quot;
+    throws(`class IncompatibleTypeException`, &quot;If any argument is not assignable to this function&apos;s corresponding parameter&quot;)
+    throws(`class InvocationException`, &quot;If there are not enough or too many provided arguments&quot;)
+    shared formal Type apply(Anything* arguments);
+}
+</pre></body></html>

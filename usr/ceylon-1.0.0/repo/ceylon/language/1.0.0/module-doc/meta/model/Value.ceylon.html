@@ -1,0 +1,40 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>Value.ceylon</title><link href='../../.resources/favicon.ico' rel='shortcut icon'/>
+<link href='../../.resources/shCore.css' rel='stylesheet' type='text/css'/>
+<link href='../../.resources/shThemeDefault.css' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '../../.resources/'</script><script src='../../.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='../../.resources/shCore.js' type='text/javascript'></script><script src='../../.resources/shAutoloader.js' type='text/javascript'></script><script src='../../.resources/shBrushCeylon.js' type='text/javascript'></script><script src='../../.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre class='brush: ceylon'>&quot;&quot;&quot;A value model represents the model of a Ceylon value that you can read and inspect.
+   
+   A value is a toplevel binding, declared on a package.
+   
+   This is a [[ValueModel]] that you can query for a value declaration&apos;s current value:
+   
+       shared String foo = &quot;Hello&quot;;
+       
+       void test(){
+           Value&lt;String&gt; val = `foo`;
+           // This will print: Hello
+           print(val.get());
+       }
+ &quot;&quot;&quot;
+shared interface Value&lt;out Get=Anything, in Set=Nothing&gt;
+        satisfies ValueModel&lt;Get, Set&gt; {
+
+    &quot;Reads the current value for this value binding. Note that in the case of getter
+     values, this can throw if the getter throws.&quot;
+    shared formal Get get();
+    
+    &quot;Changes this variable&apos;s value to the given new value. Note that in the case of
+     setter attributes, this can throw if the setter throws.&quot;
+    shared formal void set(Set newValue);
+
+    &quot;Non type-safe equivalent to [[Value.set]], to be used when you don&apos;t know the 
+     variable type at compile-time. This only works if the underlying value is 
+     variable. Note that if the underlying variable is a setter, this can throw 
+     exceptions thrown in the setter block.&quot;
+    throws(`class IncompatibleTypeException`, 
+           &quot;If the specified new value is not of a subtype of this variable&apos;s type&quot;)
+    throws(`class MutationException`, 
+           &quot;If this value is not variable&quot;)
+    shared formal void setIfAssignable(Anything newValue);
+}
+</pre></body></html>

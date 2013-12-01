@@ -1,0 +1,76 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>StringBuilder.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/shCore.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/shThemeDefault.css' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/shCore.js' type='text/javascript'></script><script src='.resources/shAutoloader.js' type='text/javascript'></script><script src='.resources/shBrushCeylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre class='brush: ceylon'>&quot;Since strings are immutable, this class is used for
+ constructing a string by incrementally appending 
+ characters to the empty string. This class is mutable 
+ but threadsafe.&quot;
+shared native class StringBuilder() {
+    
+    &quot;The resulting string. If no characters have been
+     appended, the empty string.&quot;
+    shared actual native String string;
+    
+    &quot;Append the characters in the given string.&quot;
+    shared native StringBuilder append(String string);
+    
+    &quot;Append the characters in the given strings.&quot;
+    shared StringBuilder appendAll({String*} strings) {
+        for (s in strings) {
+            append(s);
+        }
+        return this;
+    }
+    
+    &quot;Append the given character.&quot;
+    shared StringBuilder appendCharacter(Character character) {
+        append(character.string);
+        return this;
+    }
+    
+    &quot;Append a newline character.&quot;
+    shared StringBuilder appendNewline() {
+        appendCharacter(&apos;\n&apos;);
+        return this;
+    }
+    
+    &quot;Append a space character.&quot;
+    shared StringBuilder appendSpace() {
+        appendCharacter(&apos; &apos;);
+        return this;
+    }
+
+    &quot;Remove all content and return to initial state.&quot;
+    shared native StringBuilder reset();
+
+    &quot;Insert a `String` at the specified position. If the 
+     position is beyond the end of the current string, 
+         the new content is simply appended to the current 
+         content. If the position is a negative number, the 
+         new content is inserted at index 0.&quot;
+    shared native StringBuilder insert(Integer index, 
+            String string);
+
+    &quot;Insert a `Character` at the specified position. If 
+     the position is beyond the end of the current string, 
+     the new content is simply appended to the current 
+     content. If the position is a negative number, the 
+     new content is inserted at index 0.&quot;
+    shared native StringBuilder insertCharacter(Integer index, 
+            Character character);
+
+    &quot;Deletes the specified number of characters from the
+     current content, starting at the specified position.
+     If the position is beyond the end of the current 
+     content, nothing is deleted. If the number of 
+     characters to delete is greater than the available 
+     characters from the given position, the content is 
+     truncated at the given position.&quot;
+    shared native StringBuilder delete(Integer index, Integer length);
+
+    &quot;Returns the size of the current content.&quot;
+    shared native Integer size;
+
+}
+</pre></body></html>

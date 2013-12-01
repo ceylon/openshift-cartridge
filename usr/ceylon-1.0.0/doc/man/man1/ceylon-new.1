@@ -1,0 +1,50 @@
+'\" -*- coding: us-ascii -*-
+.if \n(.g .ds T< \\FC
+.if \n(.g .ds T> \\F[\n[.fam]]
+.de URL
+\\$2 \(la\\$1\(ra\\$3
+..
+.if \n(.g .mso www.tmac
+.TH "ceylon new" 1 "11 November 2013" "" ""
+.SH NAME
+ceylon new \- Generates a new Ceylon project
+.SH SYNOPSIS
+'nh
+.fi
+.ad l
+\fBceylon new\fR \kx
+.if (\nx>(\n(.l/2)) .nr x (\n(.l/5)
+'in \n(.iu+\nxu
+[--cwd=\fIdir\fR] [--define=\fIkey>=<value\fR...] [--verbose[=\fIflags\fR]] hello-world [--ant=\fIvalue\fR] [--eclipse=\fIvalue\fR] [--eclipse-project-name=\fIvalue\fR] [--module-name=\fIvalue\fR] [--module-version=\fIvalue\fR] [--] {dir}
+'in \n(.iu-\nxu
+.ad b
+'hy
+.SH DESCRIPTION
+Generates a new project, prompting for information as necessary
+.SS "THE hello-world SUBCOMMAND"
+.SH OPTIONS
+.TP 
+--cwd=\fIdir\fR
+Specifies the current working directory for this tool. (default: the directory where the tool is run from)
+.TP 
+--define=\fIkey>=<value\fR, -D \fIkey>=<value\fR
+Set a system property
+.TP 
+--verbose[=\fIflags\fR]
+Produce verbose output. If no \*(T<flags\*(T> are given then be verbose about everything, otherwise just be verbose about the flags which are present. Allowed flags include: \*(T<all\*(T>, \*(T<loader\*(T>.
+.SS "OPTIONS FOR hello-world SUBCOMMAND"
+.TP 
+--ant=\fIvalue\fR
+This option is not documented.
+.TP 
+--eclipse=\fIvalue\fR
+This option is not documented.
+.TP 
+--eclipse-project-name=\fIvalue\fR
+This option is not documented.
+.TP 
+--module-name=\fIvalue\fR
+This option is not documented.
+.TP 
+--module-version=\fIvalue\fR
+This option is not documented.

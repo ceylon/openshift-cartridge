@@ -1,0 +1,58 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>zip.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/shCore.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/shThemeDefault.css' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/shCore.js' type='text/javascript'></script><script src='.resources/shAutoloader.js' type='text/javascript'></script><script src='.resources/shBrushCeylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre class='brush: ceylon'>&quot;Given two streams, form a new stream consisting of
+ all entries where, for any given index in the resulting
+ stream, the key of the entry is the element occurring 
+ at the same index in the first stream, and the item is 
+ the element occurring at the same index in the second 
+ stream. The length of the resulting stream is the 
+ length of the shorter of the two given streams.
+ 
+ Thus:
+ 
+     zipEntries(keys,items)[i]==keys[i]-&gt;items[i]
+ 
+ for every `0&lt;=i&lt;min({keys.size,items.size})`.&quot;
+shared {&lt;Key-&gt;Item&gt;*} zipEntries&lt;Key,Item&gt;
+        ({Key*} keys, {Item*} items)
+        given Key satisfies Object
+        given Item satisfies Object
+        =&gt; mapPairs(Entry&lt;Key,Item&gt;, keys, items);
+
+&quot;Given two streams, form a new stream consisting of
+ all pairs where, for any given index in the resulting
+ stream, the first element of the pair is the element 
+ occurring at the same index in the first stream, and 
+ the second element of the pair is the element occurring 
+ at the same index in the second stream. The length of 
+ the resulting stream is the length of the shorter of the 
+ two given streams.
+ 
+ Thus:
+ 
+     zipPairs(xs,ys)[i]==[xs[i],ys[i]]
+ 
+ for every `0&lt;=i&lt;min({xs.size,ys.size})`.&quot;
+shared {[First,Second]*} zipPairs&lt;First,Second&gt;
+        ({First*} firstElements, {Second*} secondElements)
+        =&gt; mapPairs((First first,Second second) =&gt; [first,second],
+                firstElements, secondElements);
+
+&quot;Given a stream of values, and a stream of tuples, produce
+ a new stream of tuples formed by prepending the values in
+ the first stream to the tuples in the second stream. The 
+ length of the resulting stream is the length of the shorter 
+ of the two given streams.
+ 
+ Thus:
+ 
+     zip(heads, tails)[i]==[heads[i],*tails[i]]
+ 
+ for every `0&lt;=i&lt;min({heads.size,tails.size})`.&quot;
+shared {Tuple&lt;Element|Head,Head,Tail&gt;*} zip&lt;Element,Head,Tail&gt;
+        ({Head*} heads, {Tail*} tails)
+        given Tail satisfies Element[]
+        =&gt; mapPairs(Tuple&lt;Element|Head,Head,Tail&gt;, heads, tails);
+</pre></body></html>

@@ -1,12 +1,12 @@
 Name: ceylon
 Cartridge-Short-Name: CEYLON
-Display-Name: Ceylon 0.5
+Display-Name: Ceylon 1.0.0
 Description: "Ceylon is a language for writing large programs in teams. Ceylon has a powerful static type system that prevents many bugs while letting you express more, more easily: union types, intersection types, higher order functions, mixin inheritance, and enumerated types."
-Version: '0.5'
+Version: '1.0.0'
 License: "Please visit ceylon website for license details."
 License-Url: http://ceylon-lang.org/code/licenses/
 Vendor: Red Hat
-Cartridge-Version: '0.0.1'
+Cartridge-Version: '0.1.0'
 Cartridge-Vendor: ceylonlangorg
 Source-Url: https://github.com/matejonnet/openshift-cartridge-ceylon.git
 Categories:
@@ -45,9 +45,9 @@ Cart-Data:
     Type: environment
     Description: "Unique ID which identified the gear. This value changes between gears."
 Provides:
-  - ceylon-0.5
+  - ceylon-1.0.0
   - "ceylon"
-  - "ceylon(version) = 0.5"
+  - "ceylon(version) = 1.0.0"
 Publishes:
   publish-http-url:
     Type: "NET_TCP:httpd-proxy-info"
@@ -74,7 +74,7 @@ Scaling:
   Max: -1
 Group-Overrides:
   - components:
-    - ceylon-0.5
+    - ceylon-1.0.0
     - web_proxy
 Endpoints:
   - Private-IP-Name:   IP

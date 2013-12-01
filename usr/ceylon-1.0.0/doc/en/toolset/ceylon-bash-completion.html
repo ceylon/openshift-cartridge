@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html><head><meta charset='UTF-8'/>
+<title>ceylon bash-completion</title>
+<link rel='stylesheet' type='text/css' href='bootstrap.min.css'/>
+<link rel='stylesheet' type='text/css' href='doc-tool.css'/>
+</head>
+<body>
+<div class='navbar navbar-inverse navbar-static-top'>
+<div class='navbar-inner'>
+<a class='tool-header' href='index.html'>
+<i class='tool-logo'></i>
+<span class='tool-label'>The Ceylon Toolset</span>
+<span><code class='tool-name'>ceylon bash-completion</code></span>
+<span class='tool-version'>1.0.0 (No More Mr Nice Guy)</span>
+</a>
+<ul class='nav pull-right'><li class='divider-vertical'/><li id='infoDropdown' class='dropdown'><a href='#' title='Show keyboard shortcuts [Shortcut: ?]' role='button' class='dropdown-toggle' data-toggle='dropdown'><i class='icon-info'></i></a><ul id='info-dropdown-panel' class='dropdown-menu'><h4>Keyboard Shortcuts</h4><li class='divider'></li><div id='info-common-shortcuts'><div id='?'><span class='key badge'>?</span><span class='info muted'>Open this information panel</span></div><div id='i'><span class='key badge'>i</span><span class='info muted'>Jump to tool index</span></div><div id='s'><span class='key badge'>s</span><span class='info muted'>Jump to synopsis</span></div><div id='d'><span class='key badge'>d</span><span class='info muted'>Jump to description</span></div><div id='o'><span class='key badge'>o</span><span class='info muted'>Jump to options</span></div></div></ul></li></ul></div>
+</div>
+<div class='sub-navbar'>
+<div class='sub-navbar-inner'><div><code class='sub-navbar-tool'>ceylon bash-completion</code></div>
+<div class='sub-navbar-summary'><p>A tool which provides completion suggestions for the Bash shell.</p>
+</div>
+</div><div class='sub-navbar-menu'>
+<a href='index.html'><span title='Jump to tool index [Shortcut: I]'><span class='accesskey'>I</span>ndex</span></a><a href='#section-synopsis'><span title='Jump to tool synopsis [Shortcut: S]'><span class='accesskey'>S</span>ynopsis</span></a><a href='#section-description'><span title='Jump to tool description [Shortcut: D]'><span class='accesskey'>D</span>escription</span></a><a href='#section-options'><span title='Jump to tool options [Shortcut: O]'><span class='accesskey'>O</span>ptions</span></a></div></div>
+<div class='container-fluid'>
+<div class='section section-synopsis'>
+<table class='table table-condensed table-bordered'>
+<thead>
+<tr class='table-header' title='Click for expand/collapse'><td colspan='1' id='section-synopsis'><i class='icon-expand'></i><h2>Synopsis</h2>
+</td></tr>
+</thead>
+<tbody>
+<tr><td><div class='synopsis'><code>ceylon bash-completion  [<a href='#option--cword'>--cword</a>=&lt;value&gt;] [--] [&lt;arguments...&gt;]</code></div>
+</td></tr></tbody></table></div>
+
+<div class='section section-description'>
+<table class='table table-condensed table-bordered'>
+<thead>
+<tr class='table-header' title='Click for expand/collapse'><td colspan='1' id='section-description'><i class='icon-expand'></i><h2> Description</h2>
+</td></tr>
+</thead>
+<tbody>
+<tr><td><p>The <code>&lt;arguments&gt;</code> are the elements of the <code>${COMP_WORDS}</code> bash array variable.</p>
+
+<p>The tool inspects the <code>&lt;arguments&gt;</code> and writes its completions to standard output.Currently the tool can complete</p>
+
+<ul>
+<li>tool names (except tools names which are arguments to another tool),</li>
+<li>long option names,</li>
+<li>long option values <strong>if</strong> the setter type is a <code>java.lang.File</code> or a subclass  of <code>java.lang.Enum</code>.</li>
+</ul>
+</td></tr></tbody></table></div>
+<div class='section section-options'>
+<table class='table table-condensed table-bordered'>
+<thead>
+<tr class='table-header' title='Click for expand/collapse'><td colspan='2' id='section-options'><i class='icon-expand'></i><h2>Options</h2>
+</td></tr>
+</thead>
+<tbody>
+<tr><td class='span3' id='option--cword'><code>--cword=value</code></td>
+<td class='option-description'><p>The index in the <code>&lt;arguments&gt;</code> of the argument being completed, i.e. The value of <code>${COMP_CWORD}</code>.</p>
+</td>
+</tr></tbody></table></div></div><script type='text/javascript' src='jquery-1.8.2.min.js'></script><script type='text/javascript' src='bootstrap.min.js'></script><script type='text/javascript' src='doc-tool.js'></script><script type='text/javascript'>init();</script></body></html>

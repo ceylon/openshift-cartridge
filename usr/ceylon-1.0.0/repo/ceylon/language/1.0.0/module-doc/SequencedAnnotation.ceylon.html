@@ -1,0 +1,31 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>SequencedAnnotation.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/shCore.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/shThemeDefault.css' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/shCore.js' type='text/javascript'></script><script src='.resources/shAutoloader.js' type='text/javascript'></script><script src='.resources/shBrushCeylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre class='brush: ceylon'>
+&quot;&quot;&quot;An annotation that may occur multiple times at a single program element, 
+   and only on certain program elemenets.
+ 
+   A sequenced annotation is declared simply by having the annotation class
+   satisfy SequencedAnnotation instead of [[Annotation]]. For example 
+   the following would only be allowed on `class` declarations, 
+   functions or methods:
+ 
+       alias ExecutableDeclaration 
+              =&gt; ClassOrInterfaceDeclaration|FunctionDeclaration
+       &quot;Documents a pattern that the annotated element is particpating in&quot;
+       final annotation class Pattern(String name) 
+               satisfies SequencedAnnotation&lt;Pattern, ExecutableDeclaration&gt; {
+       }
+   
+   At runtime a [[ceylon.language.meta.declaration::Declaration]] instance 
+   can be queried for its `SequencedAnnotation`s of a certain type using 
+   [[ceylon.language.meta::annotations]] or [[ceylon.language.meta::sequencedAnnotations]].
+ &quot;&quot;&quot;
+see(`interface Annotation`)
+shared interface SequencedAnnotation&lt;out Value, in ProgramElement=Annotated&gt;
+        of Value
+        satisfies ConstrainedAnnotation&lt;Value,Value[],ProgramElement&gt;
+        given Value satisfies SequencedAnnotation&lt;Value,ProgramElement&gt;
+        given ProgramElement satisfies Annotated {}
+</pre></body></html>

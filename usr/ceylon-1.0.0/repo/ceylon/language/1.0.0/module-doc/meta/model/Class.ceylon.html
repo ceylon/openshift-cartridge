@@ -1,0 +1,33 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>Class.ceylon</title><link href='../../.resources/favicon.ico' rel='shortcut icon'/>
+<link href='../../.resources/shCore.css' rel='stylesheet' type='text/css'/>
+<link href='../../.resources/shThemeDefault.css' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '../../.resources/'</script><script src='../../.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='../../.resources/shCore.js' type='text/javascript'></script><script src='../../.resources/shAutoloader.js' type='text/javascript'></script><script src='../../.resources/shBrushCeylon.js' type='text/javascript'></script><script src='../../.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre class='brush: ceylon'>&quot;&quot;&quot;A class model represents the model of a Ceylon class that you can instantiate and inspect.
+   
+   A class is a toplevel type, declared on a package.
+   
+   This is a [[ClassModel]] that you can also invoke to instantiate new instances of the class:
+   
+       shared class Foo(String name){
+           shared String hello =&gt; &quot;Hello &quot;+name;
+       }
+       
+       void test(){
+           Class&lt;Foo,[String]&gt; c = `Foo`;
+           // This will print: Hello Stef
+           print(c(&quot;Stef&quot;).hello);
+       }
+ &quot;&quot;&quot;
+shared interface Class&lt;out Type=Anything, in Arguments=Nothing&gt;
+    satisfies ClassModel&lt;Type, Arguments&gt; &amp; Callable&lt;Type, Arguments&gt;
+    given Arguments satisfies Anything[] {
+    
+    &quot;Type-unsafe initialiser application, to be used when the argument types are unknown until runtime.
+     
+     This has the same behaviour as invoking this `Class` directly, but exchanges compile-time type
+     safety with runtime checks.&quot;
+    throws(`class IncompatibleTypeException`, &quot;If any argument is not assignable to this initialiser&apos;s corresponding parameter&quot;)
+    throws(`class InvocationException`, &quot;If there are not enough or too many provided arguments&quot;)
+    shared formal Type apply(Anything* arguments);
+}
+</pre></body></html>

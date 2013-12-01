@@ -1,0 +1,14 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>GenericDeclaration.ceylon</title><link href='../../.resources/favicon.ico' rel='shortcut icon'/>
+<link href='../../.resources/shCore.css' rel='stylesheet' type='text/css'/>
+<link href='../../.resources/shThemeDefault.css' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '../../.resources/'</script><script src='../../.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='../../.resources/shCore.js' type='text/javascript'></script><script src='../../.resources/shAutoloader.js' type='text/javascript'></script><script src='../../.resources/shBrushCeylon.js' type='text/javascript'></script><script src='../../.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre class='brush: ceylon'>&quot;A declaration that can have type parameters.&quot;
+shared interface GenericDeclaration {
+    
+    &quot;The list of type parameters declared on this generic declaration.&quot;
+    shared formal TypeParameter[] typeParameterDeclarations;
+    
+    &quot;Finds a type parameter by name. Returns `null` if not found.&quot;
+    shared formal TypeParameter? getTypeParameterDeclaration(String name);
+}
+</pre></body></html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>runtime.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/shCore.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/shThemeDefault.css' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/shCore.js' type='text/javascript'></script><script src='.resources/shAutoloader.js' type='text/javascript'></script><script src='.resources/shBrushCeylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre class='brush: ceylon'>&quot;Machine (Virtual or not) on which the current process is running.
+ 
+ Holds information about runtime name, version and about inherent limitations
+ like minimum/maximum values that can be represented by the runtime.&quot;
+shared native object runtime  {
+    
+    &quot;Returns the name of the runtime / virtual machine this process is running on.&quot;
+    shared native String name;
+    
+    &quot;Returns the version of the runtime / virtual machine this process is running on.&quot;
+    shared native String version;
+    
+    &quot;The number of bits used to represent the value of an `Integer`.&quot;
+    shared native Integer integerSize;
+    
+    &quot;The minimum `Integer` value that can be represented by the runtime.
+     
+     It is the minimum `Integer` that can be distinguished from its successor
+     using below formula:
+     
+     `Integer(n-1) = Integer(n) - 1` with `Integer(0) = 0`&quot;
+    shared native Integer minIntegerValue;
+
+    &quot;The maximum `Integer` value that can be represented by the runtime.
+     
+     It is the maximum `Integer` that can be distinguished from its predecessor
+     using below formula:
+     
+     `Integer(n+1) = Integer(n) + 1` with `Integer(0) = 0`&quot;
+    shared native Integer maxIntegerValue;
+    
+    string =&gt; &quot;runtime [``name`` / ``version``]&quot;;
+}
+</pre></body></html>

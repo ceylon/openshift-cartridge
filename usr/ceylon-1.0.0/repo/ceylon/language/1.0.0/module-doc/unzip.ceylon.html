@@ -1,0 +1,46 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>unzip.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/shCore.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/shThemeDefault.css' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/shCore.js' type='text/javascript'></script><script src='.resources/shAutoloader.js' type='text/javascript'></script><script src='.resources/shBrushCeylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre class='brush: ceylon'>&quot;Given a stream of tuples, return two streams. The
+ first stream produces the first elements of the
+ given tuples, and the second stream produces the
+ remaining elements of the given tuples.
+ 
+ Thus:
+ 
+     unzip(tuples)[i]==[tuples[i].first,*tuples[i].rest]&quot;
+shared [{Head*}, {Tail*}] unzip&lt;Element,Head,Tail&gt;
+        ({Tuple&lt;Element|Head,Head,Tail&gt;*} tuples)
+        given Tail satisfies Element[]
+        =&gt; [tuples.map((Tuple&lt;Element|Head,Head,Tail&gt; tuple) =&gt; tuple.first),
+            tuples.map((Tuple&lt;Element|Head,Head,Tail&gt; tuple) =&gt; tuple.rest)];
+
+&quot;Given a stream of pairs, return two streams. The
+ first stream produces the first elements of the
+ given pairs, and the second stream produces the
+ second elements of the given pairs.
+ 
+ Thus:
+ 
+     unzipPairs(pairs)[i]==[pairs[i][0],pairs[i][1]]&quot;
+shared [{First*}, {Second*}] unzipPairs&lt;First,Second&gt;
+        ({[First,Second]*} pairs)
+        =&gt; [pairs.map(([First,Second] pair) =&gt; pair[0]),
+            pairs.map(([First,Second] pair) =&gt; pair[1])];
+
+&quot;Given a stream of entries, return two streams. The
+ first stream produces the keys of the given entries, 
+ and the second stream produces the items of the given 
+ entries.
+ 
+ Thus:
+ 
+     unzipEntries(entries)[i]==[entries[i].key,entries[i].item]&quot;
+shared [{Key*}, {Item*}] unzipEntries&lt;Key,Item&gt;
+        ({&lt;Key-&gt;Item&gt;*} entries)
+        given Key satisfies Object
+        given Item satisfies Object
+        =&gt; [entries.map(Entry&lt;Key,Item&gt;.key),
+            entries.map(Entry&lt;Key,Item&gt;.item)];
+</pre></body></html>

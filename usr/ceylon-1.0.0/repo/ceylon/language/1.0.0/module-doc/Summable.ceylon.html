@@ -1,0 +1,24 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>Summable.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/shCore.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/shThemeDefault.css' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/shCore.js' type='text/javascript'></script><script src='.resources/shAutoloader.js' type='text/javascript'></script><script src='.resources/shBrushCeylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre class='brush: ceylon'>&quot;Abstraction of types which support a binary addition
+ operator `x + y`. For [[numeric types|Numeric]], this 
+ is just familiar numeric addition. For [[String]], it 
+ is string concatenation.
+ 
+ In general, the addition operation should be a 
+ binary associative operation.&quot;
+see (`class String`, `interface Numeric`)
+by (&quot;Gavin&quot;)
+shared interface Summable&lt;Other&gt; of Other
+        given Other satisfies Summable&lt;Other&gt; {
+
+    &quot;The result of adding the given value to this value. 
+     This operation should never perform any kind of 
+     mutation upon either the receiving value or the 
+     argument value.&quot;
+    shared formal Other plus(Other other);
+    
+}
+</pre></body></html>

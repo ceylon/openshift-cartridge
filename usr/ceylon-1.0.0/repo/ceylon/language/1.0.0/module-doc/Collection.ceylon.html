@@ -1,0 +1,59 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>Collection.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/shCore.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/shThemeDefault.css' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/shCore.js' type='text/javascript'></script><script src='.resources/shAutoloader.js' type='text/javascript'></script><script src='.resources/shBrushCeylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre class='brush: ceylon'>&quot;Represents an iterable collection of elements of finite 
+ size. `Collection` is the abstract supertype of `List`,
+ `Map`, and `Set`.
+ 
+ A `Collection` forms a `Category` of its elements.
+ 
+ All `Collection`s are `Cloneable`. If a collection is
+ immutable, it is acceptable that `clone` produce a
+ reference to the collection itself. If a collection is
+ mutable, `clone` should produce an immutable collection
+ containing references to the same elements, with the
+ same structure as the original collection&amp;mdash;that 
+ is, it should produce an immutable shallow copy of the
+ collection.&quot;
+see (`interface List`, `interface Map`, `interface Set`)
+shared interface Collection&lt;out Element&gt;
+        satisfies {Element*} &amp;
+                  Cloneable&lt;Collection&lt;Element&gt;&gt; {
+    
+    &quot;Determine if the collection is empty, that is, if 
+     it has no elements.&quot;
+    shared actual default Boolean empty =&gt; size==0;
+    
+    &quot;Return `true` if the given object is an element of
+     this collection. In this default implementation,
+     and in most refining implementations, return `false`
+     otherwise. An acceptable refining implementation
+     may return `true` for objects which are not 
+     elements of the collection, but this is not 
+     recommended. (For example, the `contains()` method 
+     of `String` returns `true` for any substring of the
+     string.)&quot;
+    shared actual default Boolean contains(Object element) {
+        for (elem in this) {
+            if (exists elem, elem==element) {
+                return true;
+            }
+        }
+        else {
+            return false;
+        }
+    }
+        
+    &quot;A string of form `\&quot;{ x, y, z }\&quot;` where `x`, `y`, 
+     and `z` are the `string` representations of the 
+     elements of this collection, as produced by the
+     iterator of the collection, or the string `\&quot;{}\&quot;` 
+     if this collection is empty. If the collection 
+     iterator produces the value `null`, the string
+     representation contains the string `\&quot;null\&quot;`.&quot;
+    shared actual default String string =&gt; 
+            empty then &quot;{}&quot; else &quot;{ ``commaList(this)`` }&quot;;
+    
+}
+</pre></body></html>

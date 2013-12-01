@@ -1,0 +1,24 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>flatten.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/shCore.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/shThemeDefault.css' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/shCore.js' type='text/javascript'></script><script src='.resources/shAutoloader.js' type='text/javascript'></script><script src='.resources/shBrushCeylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre class='brush: ceylon'>&quot;Given a function with a single parameter of tuple type 
+ `[P1, P2, ..., Pn]`, return a function with multiple 
+ parameters of type `P1`, `P2`, ..., `Pn`.
+ 
+ That is, if `fun` has type `W([X,Y,Z])` then 
+ `flatten(fun)` has type `W(X,Y,Z)`.&quot;
+see(`function unflatten`)
+shared native Callable&lt;Return,Args&gt; flatten&lt;Return,Args&gt;(Return tupleFunction(Args tuple))
+        given Args satisfies Anything[];
+
+&quot;Given a function with parameter types 
+ `P1`, `P2`, ..., `Pn`, return a function with a single
+ parameter of tuple type `[P1, P2, ..., Pn]`.
+ 
+ That is, if `fun` has type `W(X,Y,Z)` then 
+ `unflatten(fun)` has type `W([X,Y,Z])`.&quot;
+see(`function flatten`)
+shared native Return unflatten&lt;Return,Args&gt;(Callable&lt;Return,Args&gt; flatFunction)(Args args)
+        given Args satisfies Anything[];
+</pre></body></html>

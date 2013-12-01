@@ -1,0 +1,27 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>Attribute.ceylon</title><link href='../../.resources/favicon.ico' rel='shortcut icon'/>
+<link href='../../.resources/shCore.css' rel='stylesheet' type='text/css'/>
+<link href='../../.resources/shThemeDefault.css' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '../../.resources/'</script><script src='../../.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='../../.resources/shCore.js' type='text/javascript'></script><script src='../../.resources/shAutoloader.js' type='text/javascript'></script><script src='../../.resources/shBrushCeylon.js' type='text/javascript'></script><script src='../../.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre class='brush: ceylon'>&quot;&quot;&quot;An attribute model represents the model of a Ceylon attribute that you can read and inspect.
+   
+   An attribute is a member value: it is declared on classes or interfaces.
+   
+   This is both a [[ValueModel]] and a [[Member]]: you can invoke it with an instance value
+   to bind it to that instance and obtain a [[Value]]:
+   
+       class Outer(){
+           shared String foo = &quot;Hello&quot;;
+       }
+       
+       void test(){
+           Attribute&lt;Outer,String&gt; attribute = `Outer.foo`;
+           Value&lt;String&gt; boundAttribute = attribute(Outer());
+           // This will print: Hello
+           print(boundAttribute.get());
+       }
+ &quot;&quot;&quot;
+shared interface Attribute&lt;in Container, out Get=Anything, in Set=Nothing&gt;
+        satisfies ValueModel&lt;Get,Set&gt; &amp; Member&lt;Container, Value&lt;Get,Set&gt;&gt; {
+    shared actual formal Value&lt;Get,Set&gt; bind(Object container);
+}
+</pre></body></html>

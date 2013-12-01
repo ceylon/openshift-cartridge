@@ -3,9 +3,10 @@ import ceylon.net.http { contentType }
 import ceylon.io.charset { utf8 }
 import ceylon.demo.net.todo.dao { TaskDAO }
 import ceylon.demo.net.todo.domain { createTask }
+import ceylon.html.serializer { NodeSerializer }
+import ceylon.html { BlockOrInline, Html }
 
-by "Matej Lazar"
-
+by ("Matej Lazar")
 shared void demo(Request request, Response response) {
     Session session = request.session;
     
@@ -36,10 +37,10 @@ shared void demo(Request request, Response response) {
         tasksDAO.delete(remove);
     }
 
-    HtmlBuilder htmlPage = HtmlBuilder("");
-    htmlPage.addToBody(title("Ceylon In Session ToDo List"));
-    htmlPage.addToBody(inputForm(q));
-    htmlPage.addToBody(taksList(tasksDAO.tasks(q), q));
-
-    response.writeString(htmlPage.html);
+    {BlockOrInline+} pageElements = {
+        inputForm(q),
+        taksList(tasksDAO.tasks(q), q)
+    };
+    Html html = wireFrame("", pageElements);
+    NodeSerializer(response.writeString).serialize(html);
 }

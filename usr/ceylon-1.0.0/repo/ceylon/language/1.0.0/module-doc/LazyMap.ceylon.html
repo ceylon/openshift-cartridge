@@ -1,0 +1,56 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>LazyMap.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/shCore.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/shThemeDefault.css' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/shCore.js' type='text/javascript'></script><script src='.resources/shAutoloader.js' type='text/javascript'></script><script src='.resources/shBrushCeylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre class='brush: ceylon'>&quot;A `Map` implementation that wraps an `Iterable` of 
+ entries. All operations, such as lookups, size, etc. 
+ are performed on the `Iterable`.&quot;
+by (&quot;Enrique Zamudio&quot;)
+shared class LazyMap&lt;out Key,out Item&gt;({&lt;Key-&gt;Item&gt;*} entries)
+    satisfies Map&lt;Key,Item&gt;
+        given Key satisfies Object
+        given Item satisfies Object {
+    
+    shared actual &lt;Key-&gt;Item&gt;? first =&gt; entries.first;
+    shared actual &lt;Key-&gt;Item&gt;? last =&gt; entries.last;
+    
+    shared actual LazyMap&lt;Key, Item&gt; clone =&gt; this;
+    
+    shared actual Integer size =&gt; entries.size;
+    
+    shared actual Item? get(Object key) =&gt;
+            entries.find((Key-&gt;Item e) =&gt; e.key==key)?.item;
+    
+    shared actual Iterator&lt;Key-&gt;Item&gt; iterator() =&gt;
+            entries.iterator();
+    
+    shared actual default Boolean equals(Object that) {
+        if (is Map&lt;Object,Object&gt; that) {
+            if (that.size==size) {
+                for (entry in this) {
+                    if (exists item = that[entry.key]) {
+                        if (item==entry.item) {
+                            continue;
+                        }
+                    }
+                    return false;
+                }
+                else {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    
+    shared actual default Integer hash {
+        variable Integer hashCode = 1;
+        for(elem in entries) {
+            hashCode *= 31;
+            hashCode += elem.hash;
+        }
+        return hashCode;
+    }
+    
+}
+</pre></body></html>

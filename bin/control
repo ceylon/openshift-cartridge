@@ -37,25 +37,28 @@ function start() {
 		export JAVA_OPTS
 
 		ceylon_repos=" --rep ${OPENSHIFT_REPO_DIR}.openshift/config/modules"
-		ceylon_repos="${ceylon_repos} --rep http://modules.ceylon-lang.org/test/"
-		ceylon_repos="${ceylon_repos} --rep ${OPENSHIFT_CEYLON_MODULES_REPO_DIR}"
+		ceylon_repos="${ceylon_repos} --rep http://modules.ceylon-lang.org/repo/1/"
+		ceylon_repos="${ceylon_repos} --rep ${OPENSHIFT_CEYLON_MODULES_REPO_DIR}/repo"
 		
 		source ${OPENSHIFT_REPO_DIR}.openshift/config/ceylon.properties
 
-		echo "Starting Ceylon module: ${run_module_id}. Using repos: ${ceylon_repos}"
-		echo "With JAVA_OPTS: ${JAVA_OPTS}"
+        run_params="run ${ceylon_repos} ${run_module_id}"
+
+		echo "Executing ${CEYLON_BIN_DIR}/ceylon" | tee -a ${CEYLON_LOG_PATH}
+		echo "With params: ${run_params}" | tee -a ${CEYLON_LOG_PATH}
+		echo "With JAVA_OPTS: ${JAVA_OPTS}" | tee -a ${CEYLON_LOG_PATH}
 
 		# Start
-		$CEYLON_BIN_DIR/ceylon run ${run_module_id} ${ceylon_repos} >> ${CEYLON_LOG_PATH} 2>&1 &
+		$CEYLON_BIN_DIR/ceylon ${run_params} >> ${CEYLON_LOG_PATH} 2>&1 &
 		ceylon_pid=$!
 		echo $ceylon_pid > $CEYLON_PID_FILE
+        echo "Ceylon started with pid: ${ceylon_pid}" | tee -a ${CEYLON_LOG_PATH}
 
 		if ! ishttpup; then
-			echo "Timed out waiting for http listening port"
+			echo "Timed out waiting for http listening port" | tee -a ${CEYLON_LOG_PATH}
 			exit 1
 		fi
 	fi
-
 }
 
 function stop() {
@@ -109,7 +112,7 @@ function tidy() {
 }
 
 function build() {
-	echo "Building Ceylon app..."
+	echo "Building Ceylon app..." | tee -a ${CEYLON_LOG_PATH}
 
 	JAVA_OPTS="-Dceylon.cache.repo=${OPENSHIFT_CEYLON_MODULES_REPO_DIR}/cache"
 	JAVA_OPTS="$JAVA_OPTS -Dcom.redhat.ceylon.common.tool.terminal.width=9999" #do not wrap output
@@ -119,13 +122,13 @@ function build() {
 
 	ceylon_repos=" --rep ${OPENSHIFT_REPO_DIR}.openshift/config/modules"
 	ceylon_repos="${ceylon_repos} --rep http://modules.ceylon-lang.org/test/"
-	ceylon_repos="${ceylon_repos} --rep ${OPENSHIFT_CEYLON_MODULES_REPO_DIR}"
+	ceylon_repos="${ceylon_repos} --rep ${OPENSHIFT_CEYLON_MODULES_REPO_DIR}/repo"
 
 	compile_files=`find ${OPENSHIFT_REPO_DIR}/source/ -name *\.ceylon -o -name *\.java`
 	printf "Compiling files:\n$compile_files\n"
-	${CEYLON_BIN_DIR}/ceylon compile --javac=-encoding=utf8 --src ${OPENSHIFT_REPO_DIR}/source --out ${OPENSHIFT_CEYLON_MODULES_REPO_DIR} ${ceylon_repos} ${compile_files}
+	${CEYLON_BIN_DIR}/ceylon compile --javac=-encoding=utf8 --src ${OPENSHIFT_REPO_DIR}/source --out ${OPENSHIFT_CEYLON_MODULES_REPO_DIR}/repo ${ceylon_repos} ${compile_files}
 	
-	echo "Ceylon build done."
+	echo "Ceylon build done." | tee -a ${CEYLON_LOG_PATH}
 }
 
 function deploy() {

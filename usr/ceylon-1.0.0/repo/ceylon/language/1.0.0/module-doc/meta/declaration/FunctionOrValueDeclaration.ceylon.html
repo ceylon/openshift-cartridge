@@ -1,0 +1,20 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>FunctionOrValueDeclaration.ceylon</title><link href='../../.resources/favicon.ico' rel='shortcut icon'/>
+<link href='../../.resources/shCore.css' rel='stylesheet' type='text/css'/>
+<link href='../../.resources/shThemeDefault.css' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '../../.resources/'</script><script src='../../.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='../../.resources/shCore.js' type='text/javascript'></script><script src='../../.resources/shAutoloader.js' type='text/javascript'></script><script src='../../.resources/shBrushCeylon.js' type='text/javascript'></script><script src='../../.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre class='brush: ceylon'>&quot;A function or value declaration.&quot;
+shared interface FunctionOrValueDeclaration
+    of FunctionDeclaration
+     | ValueDeclaration
+    satisfies NestableDeclaration {
+    
+    &quot;True if this function or value is a parameter to a [[FunctionalDeclaration]].&quot;
+    shared formal Boolean parameter;
+    
+    &quot;True if this function or value is a parameter and has a default value.&quot;
+    shared formal Boolean defaulted;
+    
+    &quot;True if this function or value is a parameter and is variadic (accepts a list of values).&quot;
+    shared formal Boolean variadic;
+}
+</pre></body></html>

@@ -1,0 +1,120 @@
+'\" -*- coding: us-ascii -*-
+.if \n(.g .ds T< \\FC
+.if \n(.g .ds T> \\F[\n[.fam]]
+.de URL
+\\$2 \(la\\$1\(ra\\$3
+..
+.if \n(.g .mso www.tmac
+.TH "ceylon doc" 1 "11 November 2013" "" ""
+.SH NAME
+ceylon doc \- Generates Ceylon API documentation from Ceylon source files
+.SH SYNOPSIS
+'nh
+.fi
+.ad l
+\fBceylon doc\fR \kx
+.if (\nx>(\n(.l/2)) .nr x (\n(.l/5)
+'in \n(.iu+\nxu
+[--cacherep=\fIurl\fR] [--cwd=\fIdir\fR] [--define=\fIkey>=<value\fR...] [--doc=\fIdirs\fR...] [--encoding=\fIencoding\fR] [--ignore-broken-link] [--ignore-missing-doc] [--link=\fIdir-or-url\fR...] [--maven-overrides=\fIurl\fR] [--no-default-repositories] [--non-shared] [--offline] [--out=\fIdir-or-url\fR] [--pass=\fIsecret\fR] [--rep=\fIurl\fR...] [--source=\fIdirs\fR...] [--source-code] [--src=\fIdir\fR...] [--sysrep=\fIurl\fR] [--user=\fIname\fR] [--verbose[=\fIflags\fR]] [--] {modules}\&...
+'in \n(.iu-\nxu
+.ad b
+'hy
+.SH DESCRIPTION
+The default module repositories are \*(T<modules\*(T> and http://modules.ceylon-lang.org/repo/1, and the default source directory is \*(T<source\*(T>. The default output module repository is \*(T<modules\*(T>.
+.PP
+The \*(T<<modules>\*(T> are the names (with an optional version) of the modules to compile the documentation of.
+.PP
+The documentation compiler searches for compilation units belonging to the specified modules in the specified source directories and in source archives in the specified module repositories. For each specified module, the compiler generates a set of XHTML pages in the module documentation directory (the module-doc directory) of the specified output module repository.
+.PP
+The compiler searches for source in the following locations:
+.TP 0.2i
+\(bu
+source archives in the specified repositories, and
+.TP 0.2i
+\(bu
+module directories in the specified source directories.
+.PP
+If no version identifier is specified for a module, the module is assumed to exist in a source directory.
+.SH OPTIONS
+.TP 
+--cacherep=\fIurl\fR
+Specifies the folder to use for caching downloaded modules. (default: \*(T<~/.ceylon/cache\*(T>)
+.TP 
+--cwd=\fIdir\fR
+Specifies the current working directory for this tool. (default: the directory where the tool is run from)
+.TP 
+--define=\fIkey>=<value\fR, -D \fIkey>=<value\fR
+Set a system property
+.TP 
+--doc=\fIdirs\fR
+A directory containing your module documentation (default: \*(T<./doc\*(T>)
+.TP 
+--encoding=\fIencoding\fR
+Sets the encoding used for reading source files (default: platform-specific)
+.TP 
+--ignore-broken-link
+Do not print warnings about broken links.
+.TP 
+--ignore-missing-doc
+Do not print warnings about missing documentation.
+.TP 
+--link=\fIdir-or-url\fR
+The URL or path of a module repository containing documentation for external dependencies.
+
+The URL must use one of the supported protocols (http://, https:// or file://) or be a path to a directory. The argument can start with a module name prefix, separated from the URL by a \*(T<=\*(T> character, so that only those external modules whose name begins with the prefix will be linked using that URL.
+Can be specified multiple times.
+
+Examples:
+
+.nf
+\*(T<\-\-link http://modules.ceylon\-lang.org/repo/1
+\-\-link ceylon.math=http://modules.ceylon\-lang.org/repo/1
+\-\-link com.example=http://example.com/ceylondoc/\*(T>
+.fi
+.TP 
+--maven-overrides=\fIurl\fR
+Specifies the xml file to use to load Maven artifact overrides.
+.TP 
+--no-default-repositories
+Indicates that the default repositories should not be used.
+.TP 
+--non-shared
+Includes documentation for package-private declarations.
+.TP 
+--offline
+Enables offline mode that will prevent the module loader from connecting to remote repositories.
+.TP 
+--out=\fIdir-or-url\fR
+The URL of the module repository where output should be published (default: \*(T<./out\*(T>)
+.TP 
+--pass=\fIsecret\fR
+Sets the password for use with an authenticated output repository.
+.TP 
+--rep=\fIurl\fR
+Specifies a module repository containing dependencies. Can be specified multiple times. (default: \*(T<modules\*(T>, \*(T<~/.ceylon/repo\*(T>, http://modules.ceylon-lang.org/repo/1)
+.TP 
+--source=\fIdirs\fR
+An alias for \*(T<\-\-src\*(T> (default: \*(T<./source\*(T>)
+.TP 
+--source-code
+Includes source code in the generated documentation.
+.TP 
+--src=\fIdir\fR
+A directory containing Ceylon and/or Java source code (default: \*(T<./source\*(T>)
+.TP 
+--sysrep=\fIurl\fR
+Specifies the system repository containing essential modules. (default: \*(T<$CEYLON_HOME/repo\*(T>)
+.TP 
+--user=\fIname\fR
+Sets the user name for use with an authenticated output repository.
+.TP 
+--verbose[=\fIflags\fR]
+Produce verbose output. If no \*(T<flags\*(T> are given then be verbose about everything, otherwise just be verbose about the flags which are present. Allowed flags include: \*(T<all\*(T>, \*(T<loader\*(T>.
+.SH EXAMPLE
+The following would compile the \*(T<org.hibernate\*(T> module source code found in the \*(T<~/projects/hibernate/src\*(T> directory to the repository \*(T<~/projects/hibernate/build\*(T>:
+.PP
+.nf
+\*(T<ceylon doc org.hibernate/3.0.0.beta \e
+    \-\-src ~/projects/hibernate/src \e
+    \-\-out ~/projects/hibernate/build\*(T>
+.fi

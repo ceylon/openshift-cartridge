@@ -1,0 +1,31 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>ConstrainedAnnotation.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/shCore.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/shThemeDefault.css' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/shCore.js' type='text/javascript'></script><script src='.resources/shAutoloader.js' type='text/javascript'></script><script src='.resources/shBrushCeylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre class='brush: ceylon'>&quot;An annotation constrained to appear only on certain 
+ program elements, and only with certain values. 
+ 
+ This interface should not be satisfied directly. 
+ Instead either [[OptionalAnnotation]] or [[SequencedAnnotation]] 
+ should be satisfied.&quot;
+see(`interface Annotation`)
+shared interface ConstrainedAnnotation&lt;out Value=Annotation, 
+                                       out Values=Anything, 
+                                       in ProgramElement=Nothing&gt; 
+        of Value
+        //Note: adding the following constraint would
+        //      make ConstrainedAnnotation a GADT, which
+        //      the language does not currently support 
+        //of OptionalAnnotation&lt;Value,ProgramElement&gt; | 
+        //   SequencedAnnotation&lt;Value,ProgramElement&gt;
+        satisfies Annotation
+        given Value satisfies Annotation
+        given ProgramElement satisfies Annotated {
+    
+    &quot;Can this annotation can occur on the given program 
+     element?&quot;
+    shared Boolean occurs(Annotated programElement) =&gt;
+            programElement is ProgramElement;
+    
+}
+</pre></body></html>
