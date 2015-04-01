@@ -1,0 +1,137 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>Character.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;&quot;&quot;A 32-bit [Unicode][] character.
+   
+   Literal characters may be written between single quotes:
+   
+       &apos; &apos;
+       &apos;\n&apos;
+       &apos;\{#03C0}&apos;
+       &apos;\{GREEK SMALL LETTER PI}&apos;
+   
+   Every `Character` has a unique [[Integer]]-valued Unicode 
+   _code point_.
+   
+       Integer piCodePoint = &apos;\{GREEK SMALL LETTER PI}&apos;.integer; // #03C0
+       Character pi = #03C0.character; // GREEK SMALL LETTER PI
+   
+   Characters are [[Enumerable]], so character ranges may be
+   produced using the [[measure]] and [[span]] operators.
+   
+       value lowerLatinLetters = &apos;a&apos;..&apos;z&apos;;
+       value upperLatinLetters = &apos;A&apos;:26;
+   
+   Characters have a [[natural order|Comparable]] determined
+   by their Unicode code points. So, for example, `&apos;a&apos;&lt;&apos;b&apos;`,
+   since `&apos;a&apos;.integer&lt;&apos;b&apos;.integer`.
+   
+   [Unicode]: http://www.unicode.org/&quot;&quot;&quot;
+see (`class String`)
+by (&quot;Gavin&quot;)
+shared final native class Character(Character character)
+        extends Object()
+        satisfies Comparable&lt;Character&gt; &amp; 
+                  Enumerable&lt;Character&gt; {
+    
+    &quot;A string containing just this character.&quot;
+    shared actual native String string;
+    
+    &quot;The lowercase representation of this character, in the
+     [[system]] default locale.&quot;
+    shared native Character lowercased;
+    
+    &quot;The uppercase representation of this character, in the
+     [[system]] default locale.&quot;
+    shared native Character uppercased;
+    
+    &quot;The title case representation of this character.&quot;
+    shared native Character titlecased;
+    
+    &quot;Determine if this is a lowercase representation of the
+     character. That is, if its Unicode general category is 
+     *Ll*.&quot;
+    shared native Boolean lowercase;
+    
+    &quot;Determine if this is an uppercase representation of the
+     character. That is, if its Unicode general category is 
+     *Lu*.&quot;
+    shared native Boolean uppercase;
+    
+    &quot;Determine if this is a title case representation of the
+     character. That is, if its Unicode general category is 
+     *Lt*.&quot;
+    shared native Boolean titlecase;
+
+    &quot;Determine if this character is a numeric digit. That 
+     is, if its Unicode general category is *Nd*.&quot;
+    shared native Boolean digit;
+
+    &quot;Determine if this character is a letter. That is, if 
+     its Unicode general category is *Lu*, *Ll*, *Lt*, *Lm*,
+     or *Lo*.&quot;
+    shared native Boolean letter;
+
+    &quot;Determine if this character is a whitespace character. 
+     The following characters are whitespace characters:
+     
+     - *LINE FEED*, `\\n` or `\\{#000A}`,
+     - *FORM FEED*, `\\f` or `\\{#000C}`,
+     - *CARRIAGE RETURN*, `\\r` or `\\{#000D}`,
+     - *HORIZONTAL TABULATION*, `\\t` or `\\{#0009}`,
+     - *VERTICAL TABULATION*, `\\{#000B}`,
+     - *FILE SEPARATOR*, `\\{#001C}`,
+     - *GROUP SEPARATOR*, `\\{#001D}`,
+     - *RECORD SEPARATOR*, `\\{#001E}`,
+     - *UNIT SEPARATOR*, `\\{#001F}`, and
+     - any Unicode character in the general category *Zs*, 
+       *Zl*, or *Zp* that is not a non-breaking space.&quot;
+    shared native Boolean whitespace;
+    
+    &quot;Determine if this character is an ISO control 
+     character.&quot;
+    shared native Boolean control;
+    
+    /*&quot;The general category of the character&quot;
+    shared native CharacterCategory category;*/
+    
+    /*&quot;The directionality of the character.&quot;
+    shared native CharacterDirectionality directionality;*/
+    
+    &quot;The Unicode code point of the character.&quot;
+    shared native Integer integer;
+    
+    &quot;Compare this character with the given string character, 
+     according to the Unicode code points of the characters.&quot;
+    shared actual native Comparison compare(Character other);
+    
+    &quot;Determines if the given object is a character with the
+     same code point as this character.&quot;
+    shared actual native Boolean equals(Object that);
+    
+    &quot;The code point of the character.&quot;
+    shared actual native Integer hash;
+    
+    &quot;The character with the unicode code point that is one
+     greater than this character.&quot;
+    throws (`class OverflowException`,
+        &quot;if there is no such character&quot;)
+    shared actual native Character predecessor;
+
+    &quot;The character with the unicode code point that is one
+     less than this character.&quot;
+    throws (`class OverflowException`,
+        &quot;if there is no such character&quot;)
+    shared actual native Character successor;
+    
+    shared actual native Character neighbour(Integer offset);
+    shared actual native Integer offset(Character other);
+    shared actual native Integer offsetSign(Character other);
+    
+    shared actual native Boolean largerThan(Character other); 
+    shared actual native Boolean smallerThan(Character other); 
+    shared actual native Boolean notSmallerThan(Character other); 
+    shared actual native Boolean notLargerThan(Character other); 
+}
+</pre></body></html>

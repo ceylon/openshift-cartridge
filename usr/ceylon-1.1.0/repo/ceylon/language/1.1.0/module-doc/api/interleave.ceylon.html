@@ -1,0 +1,50 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>interleave.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;Given one or more argument [[streams|iterables]], return a
+ stream containing elements of the given streams. The 
+ elements are ordered first according to their position in 
+ the argument stream, and then according to the stream in 
+ which they occur. The resulting stream contains exactly the 
+ same number of elements from each stream.
+ 
+ For example, the expression
+ 
+     interleave(1..5, \&quot;-+\&quot;.cycled)
+ 
+ results in the stream 
+ `{ 1, &apos;-&apos;, 2, &apos;+&apos;, 3, &apos;-&apos;, 4, &apos;+&apos;, 5, &apos;-&apos; }`.&quot;
+see (`function Iterable.interpose`)
+shared Iterable&lt;Element,Absent&gt;
+        interleave&lt;Element,Absent&gt;
+        (Iterable&lt;Element,Absent&gt;+ iterables) 
+        given Absent satisfies Null {
+    object interleaved satisfies Iterable&lt;Element,Absent&gt; {
+        size =&gt; min { for (it in iterables) it.size } * iterables.size;
+        empty =&gt; package.any { for (it in iterables) it.empty };
+        shared actual Iterator&lt;Element&gt; iterator() {
+            object iterator satisfies Iterator&lt;Element&gt; {
+                value iterators 
+                        = iterables.collect((Iterable&lt;Element&gt; it) 
+                    =&gt; it.iterator());
+                variable value which = 0;
+                shared actual Element|Finished next() {
+                    assert (exists iter = iterators[which]);
+                    if (!is Finished next = iter.next()) {
+                        if (++which&gt;=iterators.size) {
+                            which = 0;
+                        }
+                        return next;
+                    }
+                    else {
+                        return finished;
+                    }
+                }
+            }
+            return iterator;
+        }
+    }
+    return interleaved;
+}
+</pre></body></html>

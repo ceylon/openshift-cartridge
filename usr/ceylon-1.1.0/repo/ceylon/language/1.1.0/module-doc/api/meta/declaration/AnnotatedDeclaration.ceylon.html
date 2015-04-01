@@ -1,0 +1,41 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>AnnotatedDeclaration.ceylon</title><link href='../../.resources/favicon.ico' rel='shortcut icon'/>
+<link href='../../.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '../../.resources/'</script><script src='../../.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='../../.resources/rainbow.min.js' type='text/javascript'></script><script src='../../.resources/ceylon.js' type='text/javascript'></script><script src='../../.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>import ceylon.language{AnnotationType = Annotation}
+
+&quot;Declaration which can be annotated, such as:
+ 
+ - [[NestableDeclaration]]
+ - [[Module]]
+ - [[Package]]
+ 
+ You can query annotations that are placed on a given annotated declaration with:
+ 
+ &quot;
+shared sealed interface AnnotatedDeclaration of NestableDeclaration
+                                       | Module
+                                       | Package
+    satisfies Declaration &amp; Annotated {
+
+    &quot;&quot;&quot;The annotation instances of the given 
+       annotation type on this declaration.
+       
+       For example, you can list all the [[See|ceylon.language::See]] 
+       annotations on [[List|ceylon.language::List]]
+       with the following code:
+       
+           for(annot in `interface List`.annotations&lt;See&gt;()){
+               for(elems in annot.programElements){
+                   print(&quot;See: ``elems``&quot;);
+               }
+           }
+       
+       Alternatively, you can use the [[ceylon.language.meta::annotations]] 
+       function.
+    &quot;&quot;&quot;
+    
+    shared formal Annotation[] annotations&lt;out Annotation&gt;()
+        given Annotation satisfies AnnotationType;
+}
+</pre></body></html>

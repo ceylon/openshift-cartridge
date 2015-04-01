@@ -1,0 +1,172 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>Integer.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;An exact representation of a positive whole number, 
+ negative whole number, or zero. The largest and smallest 
+ representable values are platform-dependent:
+ 
+ - For the JVM runtime, integer values between
+   -2&lt;sup&gt;63&lt;/sup&gt; and 2&lt;sup&gt;63&lt;/sup&gt;-1 may be represented 
+   without overflow.
+ - For the JavaScript runtime, integer values with a
+   magnitude no greater than 2&lt;sup&gt;53&lt;/sup&gt; may be
+   represented without loss of precision.
+ 
+ Overflow or loss of precision occurs silently (with no 
+ exception raised).
+ 
+ An integer is considered equal to its [[float]] 
+ representation. That is, for every integer `int`, the 
+ expression `int.float==int` evaluates to `true`.
+ 
+ An integer is represented as a sequence of bits. Not all of 
+ the bits in the representation may be addressed by the 
+ methods inherited from [[Binary]]:
+ 
+ - For the JVM runtime, the bits at all indices (0 to 63) 
+   are addressable.
+ - For the JavaScript runtime, the bits at indices 0 to 31 
+   are addressable.
+ 
+ Literal integers may be written in decimal, hexadecimal, or
+ binary notation:
+ 
+     8660
+     #21D4
+     $10000111010100
+ 
+ Underscores may be used to group digits:
+ 
+     8660
+     #21_D4
+     $10_0001_1101_0100&quot;
+see (`value runtime.integerSize`,
+     `function parseInteger`)
+shared native final class Integer(Integer integer)
+        extends Object()
+        satisfies Integral&lt;Integer&gt; &amp;
+                  Binary&lt;Integer&gt; &amp; 
+                  Exponentiable&lt;Integer,Integer&gt; {
+    
+    &quot;The UTF-32 character with this UCS code point.&quot;
+    throws (`class OverflowException`,
+            &quot;if there is no such character&quot;)
+    shared native Character character;
+    
+    shared actual native Integer plus(Integer other);
+    shared actual native Integer minus(Integer other);
+    shared actual native Integer times(Integer other);
+    shared actual native Integer divided(Integer other);
+    shared actual native Integer remainder(Integer other);
+    shared actual native Integer power(Integer other);
+    
+    shared actual native Boolean equals(Object that);
+    shared actual native Integer hash;
+    shared actual native Comparison compare(Integer other);
+    
+    &quot;If the `index` is for an addressable bit, the value of 
+     that bit. Otherwise false.&quot;
+    shared actual native Boolean get(Integer index);
+    
+    &quot;If the `index` is for an addressable bit, an instance 
+     with the same addressable bits as this instance, but 
+     with that bit cleared. Otherwise an instance with the 
+     same addressable bits as this instance.&quot;
+    shared actual native Integer clear(Integer index);
+    
+    &quot;If the `index` is for an addressable bit, an instance 
+     with the same addressable bits as this instance, but 
+     with that bit flipped. Otherwise an instance with the 
+     same addressable bits as this instance.&quot;
+    shared actual native Integer flip(Integer index);
+    
+    &quot;If the `index` is for an addressable bit, an instance 
+     with the same addressable bits as this instance, but 
+     with that bit set to `bit`. Otherwise an instance with 
+     the same addressable bits as this instance.&quot;
+    shared actual native Integer set(Integer index, Boolean bit);
+    
+    shared actual native Integer not;
+    shared actual native Integer or(Integer other);
+    shared actual native Integer xor(Integer other);
+    shared actual native Integer and(Integer other);
+    
+    &quot;If shift is in the range of addressable bits 
+     (`0..runtime.integerAddressableSize-1`), shift the 
+     addressable bits to the right by `shift` positions, 
+     with sign extension. Otherwise shift the addressable 
+     bits to the right by `(bits + (shift % bits)) % bits` 
+     where `bits=runtime.integerAddressableSize`.&quot;
+    shared actual native Integer rightArithmeticShift(Integer shift);
+    
+    &quot;If shift is in the range of addressable bits 
+     (`0..runtime.integerAddressableSize-1`), shift the 
+     addressable bits to the right by `shift` positions, 
+     with zero extension. Otherwise shift the addressable 
+     bits to the right by `(bits + (shift % bits)) % bits` 
+     where `bits=runtime.integerAddressableSize`.&quot;
+    shared actual native Integer rightLogicalShift(Integer shift);
+    
+    &quot;If shift is in the range of addressable bits 
+     (`0..runtime.integerAddressableSize-1`), shift the 
+     addressable bits to the left by `shift` positions.
+     Otherwise shift the addressable bits to the left by 
+     `(bits + (shift % bits)) % bits` where 
+     `bits=runtime.integerAddressableSize`.&quot;
+    shared actual native Integer leftLogicalShift(Integer shift);
+    
+    &quot;The number, represented as a [[Float]], if such a 
+     representation is possible.&quot;
+    throws (`class OverflowException`,
+        &quot;if the number cannot be represented as a `Float`
+         without loss of precision&quot;)
+    shared native Float float;
+    
+    shared actual native Integer predecessor;
+    shared actual native Integer successor;
+    shared actual native Integer neighbour(Integer offset);
+    shared actual native Integer offset(Integer other);
+    shared actual native Integer offsetSign(Integer other);
+    
+    shared actual native Boolean unit;
+    shared actual native Boolean zero;
+    
+    &quot;Determine if this integer is even.
+     
+     An integer `i` is even if there exists an integer `k` 
+     such that:
+     
+         i == 2*k
+     
+     Thus, `i` is even if and only if `i%2 == 0`.&quot;
+    shared native Boolean even;
+    
+    shared actual native Integer magnitude;    
+    shared actual native Integer sign;
+    shared actual native Boolean negative;
+    shared actual native Boolean positive;
+    
+    shared actual native Integer wholePart;
+    shared actual native Integer fractionalPart;
+    
+    shared actual native Integer negated;
+    
+    shared actual native Integer timesInteger(Integer integer);    
+    shared actual native Integer plusInteger(Integer integer);
+    shared actual native Integer powerOfInteger(Integer integer);
+    
+    shared actual native String string;
+
+    shared actual native Boolean largerThan(Integer other); 
+    shared actual native Boolean smallerThan(Integer other); 
+    shared actual native Boolean notSmallerThan(Integer other); 
+    shared actual native Boolean notLargerThan(Integer other); 
+    
+    &quot;A [[Byte]] whose [[signed|Byte.signed]] and
+     [[unsigned|Byte.unsigned]] interpretations are 
+     congruent modulo 256 to this integer.&quot;
+    shared native Byte byte;
+    
+}
+</pre></body></html>

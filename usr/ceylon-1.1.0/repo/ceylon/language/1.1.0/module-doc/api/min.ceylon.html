@@ -1,0 +1,35 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>min.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;Given a stream of [[Comparable]] values, return the 
+ smallest value in the stream, or `null` if the stream is
+ empty.
+ 
+ For any nonempty stream `it`, `min(it)` evaluates to the 
+ first element of `it` such that for every element `e` of 
+ `it`, `min(it) &lt;= e`.&quot;
+see (`interface Comparable`, 
+     `function max`,
+     `function smallest`)
+shared Absent|Value min&lt;Value,Absent&gt;
+        (Iterable&lt;Value,Absent&gt; values) 
+        given Value satisfies Comparable&lt;Value&gt;
+        given Absent satisfies Null {
+    value it = values.iterator();
+    if (!is Finished first = it.next()) {
+        variable value min = first;
+        while (!is Finished val = it.next()) {
+            if (val&lt;min) {
+                min = val;
+            }
+        }
+        return min;
+    }
+    else {
+        &quot;iterable must be empty&quot;
+        assert (is Absent null);
+        return null;
+    }
+}
+</pre></body></html>

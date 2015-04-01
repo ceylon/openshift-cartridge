@@ -1,0 +1,186 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>Singleton.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;A [[Sequence]] with exactly one element, which may be null.&quot;
+shared class Singleton&lt;out Element&gt;(Element element)
+        extends Object()
+        satisfies [Element+] {
+    
+    &quot;Returns `0`.&quot;
+    shared actual Integer lastIndex =&gt; 0;
+    
+    &quot;Returns `1`.&quot;
+    shared actual Integer size =&gt; 1;
+    
+    &quot;Returns the element contained in this `Singleton`.&quot;
+    shared actual Element first =&gt; element;
+    
+    &quot;Returns the element contained in this `Singleton`.&quot;
+    shared actual Element last =&gt; element;
+    
+    &quot;Returns `Empty`.&quot;
+    shared actual Empty rest =&gt; [];
+    
+    &quot;Returns the contained element, if the specified 
+     index is `0`.&quot;
+    shared actual Element? getFromFirst(Integer index) {
+        if (index==0) {
+            return element;
+        }
+        else {
+            return null;
+        }
+    }
+    
+    &quot;Returns a `Singleton` with the same element.&quot;
+    shared actual Singleton&lt;Element&gt; clone() =&gt; this;
+    
+    string =&gt; &quot;[`` element?.string else &quot;&lt;null&gt;&quot; ``]&quot;;
+    
+    shared actual default Iterator&lt;Element&gt; iterator() {
+        object iterator
+                satisfies Iterator&lt;Element&gt; {
+            variable Boolean done = false;
+            shared actual Element|Finished next() {
+                if (done) {
+                    return finished;
+                }
+                else {
+                    done=true;
+                    return element;
+                }
+            }
+            string =&gt; &quot;``outer.string``.iterator()&quot;;
+        }
+        return iterator;
+    }
+    
+    &quot;Returns a `Singleton` if the given starting index 
+     is `0` and the given `length` is greater than `0`.
+     Otherwise, returns an instance of `Empty`.&quot;
+    shared actual Empty|Singleton&lt;Element&gt; measure
+            (Integer from, Integer length) 
+            =&gt; from&lt;=0 &amp;&amp; from+length&gt;0 then this else [];
+    
+    &quot;Returns a `Singleton` if the given starting index 
+     is `0`. Otherwise, returns an instance of `Empty`.&quot;
+    shared actual Empty|Singleton&lt;Element&gt; span
+            (Integer from, Integer to) 
+            =&gt; from &lt;= 0 &amp;&amp; to &gt;= 0 || 
+               from &gt;= 0 &amp;&amp; to &lt;= 0
+                   then this else [];
+    
+    shared actual Empty|Singleton&lt;Element&gt; spanTo
+            (Integer to) =&gt; to&lt;0 then [] else this;
+
+    shared actual Empty|Singleton&lt;Element&gt; spanFrom
+            (Integer from) =&gt; from&gt;0 then [] else this;
+
+    &quot;Return this singleton.&quot;
+    shared actual Singleton&lt;Element&gt; reversed =&gt; this;
+    
+    &quot;A `Singleton` can be equal to another `List` if 
+     that `List` has only one element which is equal to 
+     this `Singleton`\&apos;s element.&quot;
+    shared actual Boolean equals(Object that) {
+        if (exists element) {
+            if (is List&lt;Anything&gt; that) {
+                if (that.size==1) {
+                    if (exists elem = that.first) {
+                        return elem==element;
+                    }
+                }
+            }
+            return false;
+        } 
+        return false;
+    }
+    
+    shared actual Integer hash =&gt; 31 + (element?.hash else 0);
+    
+    &quot;Returns `true` if the specified element is this 
+     `Singleton`\&apos;s element.&quot;
+    shared actual Boolean contains(Object element) {
+        if (exists e=this.element) {
+            return e==element;
+        }
+        return false;
+    }
+    
+    &quot;Returns `1` if this `Singleton`\&apos;s element
+     satisfies the predicate, or `0` otherwise.&quot;
+    shared actual Integer count
+            (Boolean selecting(Element element)) 
+            =&gt; selecting(element) then 1 else 0;
+    
+    shared actual Singleton&lt;Result&gt; map&lt;Result&gt;
+            (Result collecting(Element e)) 
+            =&gt; Singleton(collecting(element));
+    
+    shared actual Singleton&lt;Element&gt;|[] filter
+            (Boolean selecting(Element e)) 
+            =&gt; selecting(element) then this else [];
+    
+    shared actual Result fold&lt;Result&gt;(Result initial)
+            (Result accumulating(Result partial, Element e)) 
+            =&gt; accumulating(initial, element);
+    
+    shared actual Element reduce&lt;Result&gt;(
+            Result accumulating(Result|Element partial, Element e)) 
+            =&gt; element;
+    
+    shared actual Singleton&lt;Result&gt; collect&lt;Result&gt;
+            (Result collecting(Element element)) 
+            =&gt; Singleton(collecting(element));
+    
+    shared actual Singleton&lt;Element&gt;|[] select
+            (Boolean selecting(Element element)) 
+            =&gt; selecting(element) then this else [];
+    
+    shared actual Element? find
+            (Boolean selecting(Element&amp;Object e)) {
+        if (exists element, selecting(element)) {
+            return element;
+        }
+        return null;
+    }
+    
+    shared actual default Element? findLast
+            (Boolean selecting(Element&amp;Object elem)) 
+            =&gt; find(selecting);
+    
+    shared actual Singleton&lt;Element&gt; sort
+            (Comparison comparing(Element a, Element b)) 
+            =&gt; this;
+    
+    shared actual Boolean any
+            (Boolean selecting(Element e)) 
+            =&gt; selecting(element);
+    
+    shared actual Boolean every
+            (Boolean selecting(Element e)) 
+            =&gt; selecting(element);
+    
+    shared actual Singleton&lt;Element&gt;|Empty skip(Integer skipping)
+            =&gt; skipping&lt;1 then this else [];
+    
+    shared actual Singleton&lt;Element&gt;|Empty take(Integer taking)
+            =&gt; taking&gt;0 then this else [];
+    
+    shared actual Singleton&lt;Element&amp;Object&gt;|Empty coalesced {
+        if (exists element) {
+            return Singleton(element);
+        }
+        else {
+            return [];
+        }
+    }
+    
+    shared actual {Element|Other+}
+            chain&lt;Other,OtherAbsent&gt;(Iterable&lt;Other,OtherAbsent&gt; other) 
+            given OtherAbsent satisfies Null 
+            =&gt; other.follow(element);
+    
+}
+</pre></body></html>

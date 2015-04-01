@@ -1,0 +1,38 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>print.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;Print a line to the standard output of the virtual machine 
+ process, printing the given value\&apos;s `string`, or `&lt;null&gt;` 
+ if the value is `null`.
+ 
+ This function is a shortcut for:
+ 
+     process.writeLine(line?.string else \&quot;&lt;null&gt;\&quot;)
+ 
+ and is intended mainly for debugging purposes.&quot;
+see (`function process.writeLine`)
+by (&quot;Gavin&quot;)
+shared void print(Anything val) 
+        =&gt; process.writeLine(stringify(val));
+
+&quot;Print multiple values to the standard output of the virtual 
+ machine process as a single line of text, separated by a
+ given character sequence.&quot;
+by (&quot;Gavin&quot;)
+see (`function process.write`)
+shared void printAll({Anything*} values,
+        &quot;A character sequence to use to separate the values&quot;
+        String separator=&quot;, &quot;) {
+    if (exists first = values.first) {
+        process.write(stringify(first));
+        for (val in values.rest) {
+            process.write(separator);
+            process.write(stringify(val));
+        }
+    }
+    process.write(operatingSystem.newline);
+}
+
+String stringify(Anything val) =&gt; val?.string else &quot;&lt;null&gt;&quot;;
+</pre></body></html>

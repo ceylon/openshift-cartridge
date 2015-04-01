@@ -1,0 +1,150 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>Ranged.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;Abstract supertype of _ranged streams_ mapping a range of 
+ discrete indices to elements of the stream, and supporting 
+ operations that produce a subrange of indexed elements. The 
+ type parameter [[Subrange]] abstracts the type of the 
+ resulting subrange. A subrange may be obtained from an 
+ instance of `Ranged` using the _span_ and _measure_ 
+ operators.
+ 
+ Often, in a [[List]] or sorted map for example, an index
+ and its element are distinct values. Sometimes, in a sorted 
+ set for example, the index and element are identical.
+ 
+ The _span_ operator accepts the first and last indices of 
+ the subrange.
+ 
+     print(\&quot;hello world\&quot;[0..5]); //prints \&quot;hello\&quot;
+     print(\&quot;hello world\&quot;[6..6]); //prints \&quot;w\&quot;
+ 
+ If the last index is smaller than the first index, the
+ subrange is reversed.
+ 
+     print(\&quot;hello world\&quot;[5..0]); //prints \&quot;olleh\&quot;
+ 
+ If the range of indices identified by the first and last
+ indices is outside the range of indices of this object, an
+ empty subrange is produced.
+ 
+     print(\&quot;hello world\&quot;[-5..-1]); //prints \&quot;\&quot;
+     print(\&quot;hello world\&quot;[11..11]); //prints \&quot;\&quot;
+ 
+ The first index may be omitted, implying that the subrange
+ extends forward from the smallest possible index (in this
+ case `runtime.minIntegerValue-1`) to the given index.
+ 
+     print(\&quot;hello world\&quot;[...5]) //prints \&quot;hello\&quot;
+ 
+ If the first index is before the first index of this object, 
+ an empty subrange is produced. (A reversed subrange is 
+ never produced.)
+ 
+     print(\&quot;hello world\&quot;[-5...]); //prints \&quot;\&quot;
+ 
+ The last index may be omitted, implying that the subrange 
+ extends forward from the given index to the largest 
+ possible index (in this case `runtime.maxIntegerValue+1`).
+ 
+     print(\&quot;hello world\&quot;[6...]) //prints \&quot;world\&quot;
+ 
+ If the last index is after the last index of this object, 
+ an empty subrange is produced. (A reversed subrange is 
+ never produced.)
+ 
+     print(\&quot;hello world\&quot;[11...]); //prints \&quot;\&quot;
+ 
+ The _measure_ operator accepts the first index and maximum 
+ length of the subrange.
+ 
+     print(\&quot;hello world\&quot;[6:5]) //prints \&quot;world\&quot;
+     print(\&quot;hello world\&quot;[6:0]) //prints \&quot;\&quot;
+ 
+ If the length is nonpositive, the subrange is empty. If the
+ range of indices identified by the first index and length
+ is outside the range of indices of this object, an empty
+ subrange is produced. (A reversed subrange is never 
+ produced.)
+ 
+     print(\&quot;hello world\&quot;[-3:3]) //prints \&quot;\&quot;
+     print(\&quot;hello world\&quot;[11:3]) //prints \&quot;\&quot;
+     print(\&quot;hello world\&quot;[6:-3]) //prints \&quot;\&quot;
+ 
+ The span and measure operations must be consistent. That is, 
+ for every pair of indices `x` and `y` in the ranged object 
+ `ranged` such that `y` does not occur before `x` and the 
+ span `ranged[x..y]` has length `n`:
+ 
+ - `ranged[x..y]==ranged[x:n]`.&quot;
+see (`interface List`, 
+     `interface Sequence`, 
+     `class String`)
+shared interface Ranged&lt;in Index, out Element, out Subrange&gt; 
+        of Subrange
+        satisfies {Element*}
+        given Subrange satisfies Ranged&lt;Index,Element,Subrange&gt; {
+    
+    &quot;Obtain a span containing the elements between the two 
+     given indices. 
+     
+     The span should contain elements of this stream, 
+     starting from the element at the given [[starting 
+     index|from]], and ending with the element at the given 
+     [[ending index|to]], in the same order as they are 
+     produced by the [[iterator]] of the stream, except when 
+     the ending index occurs earlier than the starting index, 
+     in which case they occur in the opposite order.
+     
+     When one or both of the given indices does not belong 
+     to this ranged stream, the behavior is implementation 
+     dependent.&quot;
+    shared formal Subrange span(Index from, Index to);
+   
+    &quot;Obtain a span containing the elements between the given
+     [[starting index|from]] and the last index of this 
+     ranged object.
+     
+     The span should contain elements of this stream, 
+     starting from the element at the given [[starting 
+     index|from]], in the same order as they are produced by 
+     the [[iterator]] of the stream.
+     
+     When the given index does not belong to this ranged 
+     stream, the behavior is implementation dependent.&quot;
+    shared formal Subrange spanFrom(Index from);
+
+    &quot;Obtain a span containing the elements between the first 
+     index of this ranged stream and given [[end index|to]].
+     
+     The span should contain elements of this stream, up to 
+     the element at the given [[ending index|to]], in the 
+     same order as they are produced by the [[iterator]] of
+     the stream.
+     
+     When the given index does not belong to this ranged 
+     stream, the behavior is implementation dependent.&quot;
+    shared formal Subrange spanTo(Index to);
+ 
+    &quot;Obtain a measure containing the mapped values starting 
+     from the given [[starting index|from]], with the given 
+     [[length]]. If `length&lt;=0`, the resulting measure is 
+     empty.
+     
+     The measure should contain the given [[number|length]] 
+     of elements of this stream, starting from the element 
+     at the given [[starting index|from]], in the same order 
+     as they are produced by the [[iterator]] of the stream. 
+     In the case where the iterator would be exhausted 
+     before [[length]] elements are produced, the resulting 
+     measure contains only those elements which were 
+     produced before the iterator was exhausted, and the 
+     length of the measure is less then the given `length`.
+     
+     When the given index does not belong to this ranged 
+     object, the behavior is implementation dependent.&quot;
+    shared formal Subrange measure(Index from, Integer length);
+    
+}
+</pre></body></html>

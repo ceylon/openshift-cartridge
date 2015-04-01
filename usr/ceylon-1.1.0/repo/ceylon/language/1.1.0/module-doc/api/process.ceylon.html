@@ -1,0 +1,74 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>process.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;Represents the current process (instance of the virtual
+ machine).&quot;
+by (&quot;Gavin&quot;, &quot;Tako&quot;)
+see (`value language`, `value runtime`, `value system`,
+     `value operatingSystem`)
+shared native object process {
+    
+    &quot;The command line arguments to the virtual machine.&quot;
+    shared native String[] arguments;
+    
+    &quot;Determine if an argument of form `-name` or `--name` 
+     was specified among the command line arguments to 
+     the virtual machine.&quot;
+    shared native Boolean namedArgumentPresent(String name);
+
+    &quot;The value of the first argument of form `-name=value`, 
+     `--name=value`, or `-name value` specified among the 
+     command line arguments to the virtual machine, if
+     any.&quot;
+    shared native String? namedArgumentValue(String name);
+
+    &quot;The value of the given system property of the virtual
+     machine, if any.&quot;
+    shared native String? propertyValue(String name);
+
+    &quot;Print a string to the standard output of the virtual
+     machine process.&quot;
+    shared native void write(String string);
+    
+    &quot;Print a line to the standard output of the virtual 
+     machine process.&quot;
+    see (`function print`)
+    shared void writeLine(String line=&quot;&quot;) { 
+        write(line);
+        write(operatingSystem.newline); 
+    }
+    
+    &quot;Flush the standard output of the virtual machine 
+     process.&quot;
+    shared native void flush();
+    
+    &quot;Print a string to the standard error of the virtual 
+     machine process.&quot;
+    shared native void writeError(String string);
+    
+    &quot;Print a line to the standard error of the virtual 
+     machine process.&quot;
+    shared void writeErrorLine(String line=&quot;&quot;) { 
+        writeError(line);
+        writeError(operatingSystem.newline);
+    }
+    
+    &quot;Flush the standard error of the 
+     virtual machine process.&quot;
+    shared native void flushError();
+    
+    &quot;Read a line of input text from the standard input of 
+     the virtual machine process. Returns a line of text 
+     after removal of line-termination characters, or `null`
+     to indicate the standard input has been closed.&quot;
+    shared native String? readLine();
+    
+    &quot;Force the virtual machine to terminate with the given
+     exit code.&quot;
+    shared native void exit(Integer code);
+    
+    string =&gt; &quot;process&quot;;
+    
+}
+</pre></body></html>

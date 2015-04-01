@@ -1,0 +1,86 @@
+'\" -*- coding: us-ascii -*-
+.if \n(.g .ds T< \\FC
+.if \n(.g .ds T> \\F[\n[.fam]]
+.de URL
+\\$2 \(la\\$1\(ra\\$3
+..
+.if \n(.g .mso www.tmac
+.TH "ceylon copy" 1 "9 October 2014" "" ""
+.SH NAME
+ceylon copy \- Copies modules from one module repository to another
+.SH SYNOPSIS
+'nh
+.fi
+.ad l
+\fBceylon copy\fR \kx
+.if (\nx>(\n(.l/2)) .nr x (\n(.l/5)
+'in \n(.iu+\nxu
+[--all] [--cacherep=\fIurl\fR] [--cwd=\fIdir\fR] [--define=\fIkey>=<value\fR...] [--docs] [--js] [--jvm] [--maven-overrides=\fIurl\fR] [--no-default-repositories] [--offline] [--out=\fIurl\fR] [--pass=\fIsecret\fR] [--rep=\fIurl\fR...] [--scripts] [--src] [--sysrep=\fIurl\fR] [--timeout=\fIseconds\fR] [--user=\fIname\fR] [--verbose[=\fIflags\fR]] [--with-dependencies] [--] {module}\&...
+'in \n(.iu-\nxu
+.ad b
+'hy
+.SH DESCRIPTION
+Copies a module or a set of modules from one repository to another. If set for recursive copying it will also copy all the module's dependencies and their dependencies until the entire module tree has been copied.
+.SH OPTIONS
+.TP 
+--all
+Include everything (jvm,js,docs,src) (default: false)
+.TP 
+--cacherep=\fIurl\fR
+Specifies the folder to use for caching downloaded modules. (default: \*(T<~/.ceylon/cache\*(T>)
+.TP 
+--cwd=\fIdir\fR
+Specifies the current working directory for this tool. (default: the directory where the tool is run from)
+.TP 
+--define=\fIkey>=<value\fR, -D \fIkey>=<value\fR
+Set a system property
+.TP 
+--docs
+Include documentation (default: false)
+.TP 
+--js
+Include modules compiled for the JSVM (.js) (default: true)
+.TP 
+--jvm
+Include modules compiled for the JVM (.car) (default: true)
+.TP 
+--maven-overrides=\fIurl\fR
+Specifies the xml file to use to load Maven artifact overrides.
+.TP 
+--no-default-repositories
+Indicates that the default repositories should not be used.
+.TP 
+--offline, -L
+Enables offline mode that will prevent connections to remote repositories.
+.TP 
+--out=\fIurl\fR, -o \fIurl\fR
+Specifies the output module repository (which must be publishable). (default: \*(T<./modules\*(T>)
+.TP 
+--pass=\fIsecret\fR
+Sets the password for use with an authenticated output repository(no default).
+.TP 
+--rep=\fIurl\fR
+Specifies a module repository containing dependencies. Can be specified multiple times. (default: \*(T<modules\*(T>, \*(T<~/.ceylon/repo\*(T>, \*(T<http://modules.ceylon\-lang.org/repo/1\*(T>)
+.TP 
+--scripts
+Include scripts (default: false)
+.TP 
+--src
+Include sources (default: false)
+.TP 
+--sysrep=\fIurl\fR
+Specifies the system repository containing essential modules. (default: \*(T<$CEYLON_HOME/repo\*(T>)
+.TP 
+--timeout=\fIseconds\fR, -T \fIseconds\fR
+Sets the timeout for connections to remote repositories, use 0 for no timeout (default: 20).
+.TP 
+--user=\fIname\fR
+Sets the user name for use with an authenticated output repository(no default).
+.TP 
+--verbose[=\fIflags\fR], -d
+Produce verbose output. If no \*(T<flags\*(T> are given then be verbose about everything, otherwise just be verbose about the flags which are present. Allowed flags include: \*(T<all\*(T>, \*(T<loader\*(T>, \*(T<files\*(T>.
+.TP 
+--with-dependencies, -r
+Recursively copy all dependencies
+.SH REPOSITORIES
+Repositories like those specified with the \*(T<\-\-rep\*(T> or \*(T<\-\-out\*(T> options can be file paths, HTTP urls to remote servers or can be names of repositories when prepended with a \*(T<+\*(T> symbol. These names refer to repositories defined in the configuration file or can be any of the following predefined names \*(T<+SYSTEM\*(T>, \*(T<+CACHE\*(T>, \*(T<+LOCAL\*(T>, \*(T<+USER\*(T> or \*(T<+REMOTE\*(T>. For more information see http://ceylon-lang.org/documentation/1.0/reference/tool/config

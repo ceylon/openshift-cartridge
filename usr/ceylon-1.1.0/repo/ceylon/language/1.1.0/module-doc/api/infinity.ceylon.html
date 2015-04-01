@@ -1,0 +1,17 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>infinity.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;An instance of [[Float]] representing positive infinity, 
+ \{#221E}, the result of dividing a positive number by zero. 
+ Negative infinity, -\{#221E}, the result of dividing a
+ negative number by zero, is the additive inverse `-infinity`.
+ 
+ Note that any floating-point computation that results in a
+ positive value too large to be represented as a `Float` is 
+ \&quot;rounded up\&quot; to `infinity`. Likewise, any floating-point 
+ computation that yields a negative value whose magnitude is
+ too large to be represented as a `Float` is \&quot;rounded down\&quot; 
+ to `-infinity`.&quot;
+shared Float infinity = 1.0/0.0;
+</pre></body></html>

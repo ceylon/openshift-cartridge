@@ -1,0 +1,62 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>Integral.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;&quot;&quot;Abstraction of integral numeric types. That is, types 
+   with no fractional part, including [[Integer]].
+   
+   The division operation for integral numeric types results 
+   in a remainder. Therefore, integral numeric types have 
+   [[an operation|remainder]], denoted by the _remainder_
+   operator `%`, to determine the remainder of any division 
+   operation.
+   
+       if (n%2==0) {
+           print(&quot;Even!&quot;);
+       }
+   
+   Division and the remainder operation should satisfy: 
+   
+   - `x == (x/y)*y + x%y`
+   
+   for any instance `y` other than `0`.
+   
+   All `Integral` numeric types are also [[Enumerable]], so 
+   ranges of integral values may be produced using the 
+   [[measure]] and [[span]] operators.
+       
+       // Iterate from 0 to 100 inclusive
+       for (i in 0..100) {
+           print(&quot;The square of ``i`` is ``i^2``&quot;);
+       }
+       
+       // Iterate all indices of the array, 
+       // from 0 to array.size-1
+       for (i in 0:array.size) {
+           print(array[i]);
+       }&quot;&quot;&quot;
+see (`class Integer`)
+by (&quot;Gavin&quot;)
+shared interface Integral&lt;Other&gt; of Other
+        satisfies Number&lt;Other&gt; &amp; 
+                  Enumerable&lt;Other&gt;
+        given Other satisfies Integral&lt;Other&gt; {
+    
+    &quot;The remainder, after dividing this number by the given 
+     number.&quot;
+    see (`function Numeric.divided`)
+    shared formal Other remainder(Other other);
+    
+    &quot;Determine if the number is the additive identity.&quot;
+    shared formal Boolean zero;
+    
+    &quot;Determine if the number is the multiplicative identity.&quot;
+    shared formal Boolean unit;
+    
+    &quot;Determine if this number is a factor of the given 
+     number.&quot;
+    shared Boolean divides(Other other) 
+            =&gt; (other % (this of Other)).zero;
+    
+}
+</pre></body></html>

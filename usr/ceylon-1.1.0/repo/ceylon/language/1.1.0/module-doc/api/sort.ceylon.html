@@ -1,0 +1,24 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>sort.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;Sort the given elements according to their 
+ [[natural order|Comparable]], returning a new 
+ [[sequence|Sequential]].
+ 
+ Note that [[Iterable.sort]] may be used to sort any stream
+ according to a given comparator function.&quot;
+see (`interface Comparable`,
+     `function Iterable.sort`)
+shared Element[] sort&lt;Element&gt;({Element*} elements) 
+        given Element satisfies Comparable&lt;Element&gt; {
+    value array = Array(elements);
+    if (array.empty) {
+        return [];
+    }
+    else {
+        array.sortInPlace(byIncreasing(identity&lt;Element&gt;));
+        return ArraySequence(array);
+    }
+}
+</pre></body></html>

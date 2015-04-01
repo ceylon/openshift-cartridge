@@ -1,0 +1,36 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>Type.ceylon</title><link href='../../.resources/favicon.ico' rel='shortcut icon'/>
+<link href='../../.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '../../.resources/'</script><script src='../../.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='../../.resources/rainbow.min.js' type='text/javascript'></script><script src='../../.resources/ceylon.js' type='text/javascript'></script><script src='../../.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>import ceylon.language.meta.model { AppliedType = Type }
+
+&quot;A closed type.
+ 
+ A closed type is a type which is fully resolved and bound and contains no open type variables.
+ All instance types are closed at runtime.
+ 
+ You have only four sorts of types:
+ 
+ - [[ClassOrInterface]]
+ - [[UnionType]]
+ - [[IntersectionType]]
+ - [[nothingType]]
+&quot;
+shared sealed interface Type&lt;out Type=Anything&gt; /* of ClassOrInterface
+                                 | UnionType
+                                 | IntersectionType
+                                 | nothingType */ {
+    
+    &quot;True if the given instance is of this type, or is of a subtype of this type.&quot;
+    shared formal Boolean typeOf(Anything instance);
+
+    &quot;True if this type is a supertype of the given type, or if both types are the same.&quot;
+    shared formal Boolean supertypeOf(AppliedType&lt;Anything&gt; type);
+    
+    &quot;True if this type is a subtype of the given type, or if both types are the same.&quot;
+    shared default Boolean subtypeOf(AppliedType&lt;Anything&gt; type) =&gt; type.supertypeOf(this);
+
+    &quot;True if the given type is a exactly this type.&quot;
+    shared formal Boolean exactly(AppliedType&lt;Anything&gt; type);
+}
+</pre></body></html>

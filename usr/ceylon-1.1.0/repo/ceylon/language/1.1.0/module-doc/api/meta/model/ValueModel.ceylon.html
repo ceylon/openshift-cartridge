@@ -1,0 +1,25 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>ValueModel.ceylon</title><link href='../../.resources/favicon.ico' rel='shortcut icon'/>
+<link href='../../.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '../../.resources/'</script><script src='../../.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='../../.resources/rainbow.min.js' type='text/javascript'></script><script src='../../.resources/ceylon.js' type='text/javascript'></script><script src='../../.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>import ceylon.language.meta.declaration {
+    ValueDeclaration
+}
+import ceylon.language.meta.model {
+    ClosedType = Type
+}
+
+&quot;&quot;&quot;A value model represents the model of a Ceylon value that you can inspect.
+   
+   A value model can be either a toplevel [[Value]] or a member [[Attribute]].
+ &quot;&quot;&quot;
+shared sealed interface ValueModel&lt;out Get=Anything, in Set=Nothing&gt;
+        satisfies Model {
+
+    &quot;This value&apos;s declaration.&quot;
+    shared formal actual ValueDeclaration declaration;
+    
+    &quot;This value&apos;s closed type.&quot;
+    shared formal ClosedType&lt;Get&gt; type;
+}
+</pre></body></html>

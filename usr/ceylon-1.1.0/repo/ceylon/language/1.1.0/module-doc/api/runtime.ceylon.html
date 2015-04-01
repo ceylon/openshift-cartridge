@@ -1,0 +1,62 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>runtime.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;Represents the machine and virtual machine on which the 
+ current process is executing.
+ 
+ Holds information about runtime name, version and about 
+ inherent limitations like minimum/maximum values that can 
+ be represented by the runtime.&quot;
+see (`value process`, `value language`, `value system`,
+     `value operatingSystem`)
+shared native object runtime  {
+    
+    &quot;The name of the runtime / virtual machine this process 
+     is running on.&quot;
+    shared native String name;
+    
+    &quot;The version of the runtime / virtual machine this 
+     process is running on.&quot;
+    shared native String version;
+    
+    &quot;The number of bits used to represent the value of an 
+     [[Integer]].&quot;
+    see (`class Integer`)
+    shared native Integer integerSize;
+    
+    &quot;The number of bits of [[Integer]] instances which may 
+     be manipulated via the methods inherited from
+     [[Binary]].&quot;
+    shared native Integer integerAddressableSize;
+    
+    &quot;The minimum [[Integer]] value that can be represented 
+     by the runtime.
+     
+     It is the minimum `Integer` that can be distinguished 
+     from its successor using below formula:
+     
+     `Integer(n-1) = Integer(n) - 1` with `Integer(0) = 0`&quot;
+    see (`class Integer`)
+    shared native Integer minIntegerValue;
+
+    &quot;The maximum [[Integer]] value that can be represented 
+     by the runtime.
+     
+     It is the maximum `Integer` that can be distinguished 
+     from its predecessor using below formula:
+     
+     `Integer(n+1) = Integer(n) + 1` with `Integer(0) = 0`&quot;
+    see (`class Integer`)
+    shared native Integer maxIntegerValue;
+    
+    &quot;The maximum size of an [[Array]] that is possible for 
+     this runtime. Note that this is a theoretical limit 
+     only. In practice it is usually impossible to allocate 
+     an array of this size, due to memory constraints.&quot;
+    see (`class Array`)
+    shared native Integer maxArraySize;
+    
+    string =&gt; &quot;runtime [``name`` / ``version``]&quot;;
+}
+</pre></body></html>

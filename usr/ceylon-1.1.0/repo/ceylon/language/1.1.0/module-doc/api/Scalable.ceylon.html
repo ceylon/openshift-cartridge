@@ -1,0 +1,46 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>Scalable.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;Abstract supertype of types that support scaling by a 
+ numeric factor. Examples of such types include vectors and 
+ matrices. The _scale_ operator `**` accepts a scale factor
+ as its first operand, and an instance of `Scalable` as its
+ second operand.
+ 
+     Vector scaled = 2.0 ** Vector(x,y,z);
+ 
+ Concrete classes which implement this interface should
+ satisfy:
+ 
+ - `x == 1**x`
+ - `a ** (b ** x) == a*b ** x`
+ 
+ where `1` denotes the multiplicative identity of the 
+ numeric scaling type.
+ 
+ Concrete classes which implement this interface are
+ encouraged to also satisfy [[Invertible]], in which case, 
+ the following identity should be satisfied:
+ 
+ - `-x == -1**x`
+ 
+ Concrete classes which implement this interface and which
+ also satisfy [[Summable]] should satisfy:
+ 
+ - `x+x == 2**x`
+ - `a ** (x+y) == a**x + a**y`
+ 
+ The [[scaling type|Scale]] must be a [[numeric|Numeric]]
+ type, but is not required to be [[Number]], since a complex
+ number scaling type should be allowed.&quot;
+by (&quot;Gavin&quot;)
+shared interface Scalable&lt;in Scale, out Value&gt; of Value 
+        given Value satisfies Scalable&lt;Scale,Value&gt; 
+        given Scale satisfies Numeric&lt;Scale&gt; {
+    
+    &quot;Scale this value by the given scale factor.&quot;
+    shared formal Value scale(Scale scalar);
+    
+}
+</pre></body></html>

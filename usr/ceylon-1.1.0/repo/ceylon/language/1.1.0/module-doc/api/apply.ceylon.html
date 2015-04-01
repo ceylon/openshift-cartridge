@@ -1,0 +1,35 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>apply.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;Applies an arbitrary [[Callable]] to the given 
+ [[arguments|args]]. The arguments must be packaged into a 
+ [[Tuple]] whose type is compatible with the `Callable` type. 
+ 
+ For example, given the following argument tuple:
+ 
+      [Boolean(Character), Boolean, Boolean] tuple
+          = [Character.whitespace, true, false];
+ 
+ We can apply [[String.split]] to the arguments given in
+ `tuple` as follows:
+ 
+     String string = ... ;
+     {String*} strings = apply(string.split, tuple);
+ 
+ Application may be abbreviated using the spread operator:
+ 
+     String string = ... ;
+     {String*} strings = string.split(*tuple)
+ 
+ In practice, this behaves as if the `Callable` were called 
+ with the elements of the tuple as its arguments. The
+ examples above are both equivalent to:
+ 
+     string.split(Character.whitespace, true, false)&quot;
+see (`function unflatten`)
+shared Return apply&lt;Return,Args&gt;
+            (Callable&lt;Return,Args&gt; f, Args args)
+        given Args satisfies Anything[]
+        =&gt; unflatten(f)(args);
+</pre></body></html>

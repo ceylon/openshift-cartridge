@@ -1,0 +1,32 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>operatingSystem.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;Represents the operating system on which the current 
+ process is running.&quot;
+see (`value process`, `value runtime`, `value language`,
+    `value system`)
+shared native object operatingSystem {
+    
+    &quot;Returns the name of the operating system this process 
+     is running on.&quot;
+    shared native String name;
+    
+    &quot;Returns the version of the operating system this 
+     process is running on.&quot;
+    shared native String version;
+    
+    &quot;The line ending character sequence on this platform.&quot;
+    shared native String newline;
+    
+    &quot;The character used on this platform to separate the 
+     folder/file elements of a path.&quot;
+    shared native String fileSeparator;
+    
+    &quot;The character used on this platform to use as a 
+     separator between several paths in a list of paths.&quot;
+    shared native String pathSeparator;
+    
+    string =&gt; &quot;operating system [``name`` / ``version``]&quot;;
+}
+</pre></body></html>

@@ -1,0 +1,65 @@
+'\" -*- coding: us-ascii -*-
+.if \n(.g .ds T< \\FC
+.if \n(.g .ds T> \\F[\n[.fam]]
+.de URL
+\\$2 \(la\\$1\(ra\\$3
+..
+.if \n(.g .mso www.tmac
+.TH "ceylon format" 1 "9 October 2014" "" ""
+.SH NAME
+ceylon format \- format Ceylon source code 
+.SH SYNOPSIS
+'nh
+.fi
+.ad l
+\fBceylon format\fR \kx
+.if (\nx>(\n(.l/2)) .nr x (\n(.l/5)
+'in \n(.iu+\nxu
+'in \n(.iu-\nxu
+.ad b
+'hy
+.SH DESCRIPTION
+.nf
+\*(T<ceylon run ceylon.formatter source
+\*(T>.fi
+.PP
+or, if you\(cqre worried about it breaking your source code (which shouldn\(cqt happen \(en
+if anything bad happens, error recovery kicks in and the original file is destroyed)
+or you just want to test it out:
+.PP
+.nf
+\*(T<ceylon run ceylon.formatter source \-\-to source\-formatted
+\*(T>.fi
+.PP
+You can also format multiple folders at the same time:
+.PP
+.nf
+\*(T<ceylon run ceylon.formatter source \-\-and test\-source \-\-to formatted
+\*(T>.fi
+.PP
+which will recreate the \(oqsource\(cq and \(oqtest-source\(cq folders inside the new \(oqformatted\(cq folder.
+.PP
+OPTIONS
+.PP
+--help
+Print this help message.
+.PP
+--version
+Print version information. The first line is always just the module name and version
+in the format that \(oqceylon run\(cq understands (\(lqceylon.formatter/x.y.z\(rq), which might be
+useful for scripts.
+.PP
+--${option name}=${option value}
+Set a formatting option. See the documentation of the FormattingOptions class for a list of
+options. The most useful ones are:
+.PP
+.nf
+\*(T<\-\-maxLineLength
+    The maximum line length, or \(lqunlimited\(rq.
+
+\-\-indentMode
+    The indentation mode. Syntax: \(lqx spaces\(rq or \(lqy\-wide tabs\(rq or \(lqmix x\-wide tabs, y spaces\(rq.
+
+\-\-lineBreak
+    \(lqlf\(rq, \(lqcrlf\(rq, or \(lqos\(rq for the operating system\(cqs native line breaks.\*(T>
+.fi

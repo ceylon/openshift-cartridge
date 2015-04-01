@@ -1,0 +1,23 @@
+'\" -*- coding: us-ascii -*-
+.if \n(.g .ds T< \\FC
+.if \n(.g .ds T> \\F[\n[.fam]]
+.de URL
+\\$2 \(la\\$1\(ra\\$3
+..
+.if \n(.g .mso www.tmac
+.TH "ceylon build" 1 "9 October 2014" "" ""
+.SH NAME
+ceylon build \- Runs your ceylon.build script 
+.SH SYNOPSIS
+'nh
+.fi
+.ad l
+\fBceylon build\fR \kx
+.if (\nx>(\n(.l/2)) .nr x (\n(.l/5)
+'in \n(.iu+\nxu
+'in \n(.iu-\nxu
+.ad b
+'hy
+.SH DESCRIPTION
+This command compiles and runs your build
+project, written for ceylon.build

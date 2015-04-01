@@ -1,0 +1,80 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>Throwable.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>import ceylon.language { printTrace=printStackTrace }
+
+&quot;The abstract supertype of values indicating exceptional 
+ conditions. An exception may be raised using the `throw` 
+ statement, and handled using the `catch` clause of the `try` 
+ statement. An instance of `Throwable` may be passed from
+ `throw` to `catch`.
+     
+     void tryToDoIt() {
+         if (canDoIt()) {
+             doIt();
+         }
+         else {
+             throw CantDoIt(); //the Throwable
+         }
+     }
+     
+     try {
+         tryToDoIt();
+     }
+     catch (CantDoIt e) {
+         e.printStackTrace();
+     }
+ 
+ An instance of `Throwable` represents a problem, typically 
+ an _unexpected failure_. Either:
+ 
+ - a unrecoverable error in the program, especially an 
+   [[AssertionError]], or
+ - a transient, and possibly-recoverable [[Exception]].
+ 
+ The use of the exceptions facility to manage _expected 
+ failures_, that is, failures that are usually handled by 
+ the immediate caller of an operation, is discouraged. 
+ Instead, the failure should be represented as a return 
+ value of the operation being called.
+ 
+ For example, nonexistence of a file should not result in an 
+ exception. Instead, an `openFile()` operation should return 
+ the type `File?`, where a `null` return value indicates 
+ nonexistence. On the other hand, failure to read from an
+ already open file could result in an `Exception`.&quot;
+by (&quot;Gavin&quot;, &quot;Tom&quot;)
+shared abstract sealed native 
+class Throwable(description=null, cause=null) {
+    
+    &quot;The underlying cause of this exception.&quot;
+    shared Throwable? cause;
+    
+    &quot;A description of the problem.&quot;
+    String? description;
+    
+    &quot;A message describing the problem. This default 
+     implementation returns the description, if any, or 
+     otherwise the message of the cause, if any.&quot;
+    see (`value cause`)
+    shared default String message 
+            =&gt; description else cause?.message else &quot;&quot;;
+    
+    shared actual default String string 
+            =&gt; className(this) + &quot; \&quot;``message``\&quot;&quot;;
+    
+    &quot;Print the stack trace to the standard error of the 
+     virtual machine process.&quot;
+    see (`function printTrace`)
+    shared void printStackTrace() =&gt; printTrace(this);
+    
+    &quot;The given exception was suppressed in order to 
+     propagate this exception.&quot;
+    shared native void addSuppressed(Throwable suppressed);
+    
+    &quot;The exceptions that were suppressed in order to 
+     propagate this exception.&quot;
+    shared native Throwable[] suppressed;
+}
+</pre></body></html>

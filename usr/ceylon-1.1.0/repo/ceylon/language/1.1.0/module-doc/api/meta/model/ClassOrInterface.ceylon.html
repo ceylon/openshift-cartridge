@@ -1,0 +1,134 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>ClassOrInterface.ceylon</title><link href='../../.resources/favicon.ico' rel='shortcut icon'/>
+<link href='../../.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '../../.resources/'</script><script src='../../.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='../../.resources/rainbow.min.js' type='text/javascript'></script><script src='../../.resources/ceylon.js' type='text/javascript'></script><script src='../../.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>import ceylon.language.meta.declaration {
+    ClassOrInterfaceDeclaration,
+    TypeParameter
+}
+
+import ceylon.language.meta.model {
+    ClosedType = Type
+}
+
+&quot;Model of a class or interface that you can inspect.
+ 
+ The models of classes and interfaces are also closed types.&quot;
+shared sealed interface ClassOrInterface&lt;out Type=Anything&gt; 
+    of ClassModel&lt;Type, Nothing&gt; | InterfaceModel&lt;Type&gt;
+    satisfies Model &amp; Generic &amp; ClosedType&lt;Type&gt; {
+    
+    &quot;The declaration for this class or interface.&quot;
+    shared formal actual ClassOrInterfaceDeclaration declaration;
+
+    &quot;The extended closed type for this class or interface. Note that the [[Anything|ceylon.language::Anything]] type
+     has no extended type since it is the top of the type hierarchy.&quot;
+    shared formal ClassModel&lt;Anything, Nothing&gt;? extendedType;
+    
+    &quot;The list of closed types that this class or interface satisfies.&quot;
+    shared formal InterfaceModel&lt;Anything&gt;[] satisfiedTypes;
+
+    &quot;The list of case values for this type. This omits any case type to only contain case values.&quot;
+    shared formal Type[] caseValues;
+
+    // FIXME: move all these to Type
+    // FIXME: introduce MemberClassOrInterface?
+    // if I do that I have to give up the enumerated type of ClassModel | InterfaceModel here, so let&apos;s not do that for now,
+    // since I don&apos;t quite see what we would gain
+
+    &quot;Gets a member class or interface by name. Returns `null` if not found.&quot;
+    throws(`class IncompatibleTypeException`, &quot;If the specified `Container` or `Kind` type arguments are not compatible with the actual result.&quot;)
+    throws(`class TypeApplicationException`, &quot;If the specified closed type argument values are not compatible with the actual result&apos;s type parameters.&quot;)
+    shared formal Member&lt;Container, Kind&gt;? getClassOrInterface&lt;Container=Nothing, Kind=ClassOrInterface&lt;Anything&gt;&gt;(String name, ClosedType&lt;Anything&gt;* types)
+        given Kind satisfies ClassOrInterface&lt;Anything&gt;;
+
+    &quot;Gets a member class or interface by name. Returns `null` if not found.&quot;
+    throws(`class IncompatibleTypeException`, &quot;If the specified `Container` or `Kind` type arguments are not compatible with the actual result.&quot;)
+    throws(`class TypeApplicationException`, &quot;If the specified closed type argument values are not compatible with the actual result&apos;s type parameters.&quot;)
+    shared formal Member&lt;Container, Kind&gt;? getDeclaredClassOrInterface&lt;Container=Nothing, Kind=ClassOrInterface&lt;Anything&gt;&gt;(String name, ClosedType&lt;Anything&gt;* types)
+        given Kind satisfies ClassOrInterface&lt;Anything&gt;;
+
+    &quot;Gets a member class by name. Returns `null` if not found.&quot;
+    throws(`class IncompatibleTypeException`, &quot;If the specified `Container`, `Type` or `Arguments` type arguments are not compatible with the actual result, 
+                                               or if the corresponding member is not a `MemberClass`.&quot;)
+    throws(`class TypeApplicationException`, &quot;If the specified closed type argument values are not compatible with the actual result&apos;s type parameters.&quot;)
+    shared formal MemberClass&lt;Container, Type, Arguments&gt;? getClass&lt;Container=Nothing, Type=Anything, Arguments=Nothing&gt;(String name, ClosedType&lt;Anything&gt;* types)
+        given Arguments satisfies Anything[];
+
+    &quot;Gets a member class by name. Returns `null` if not found.&quot;
+    throws(`class IncompatibleTypeException`, &quot;If the specified `Container`, `Type` or `Arguments` type arguments are not compatible with the actual result, 
+                                               or if the corresponding member is not a `MemberClass`.&quot;)
+    throws(`class TypeApplicationException`, &quot;If the specified closed type argument values are not compatible with the actual result&apos;s type parameters.&quot;)
+    shared formal MemberClass&lt;Container, Type, Arguments&gt;? getDeclaredClass&lt;Container=Nothing, Type=Anything, Arguments=Nothing&gt;(String name, ClosedType&lt;Anything&gt;* types)
+        given Arguments satisfies Anything[];
+
+    &quot;Gets a member interface by name. Returns `null` if not found.&quot;
+    throws(`class IncompatibleTypeException`, &quot;If the specified `Container` or `Type` type arguments are not compatible with the actual result, 
+                                               or if the corresponding member is not a `MemberInterface`.&quot;)
+    throws(`class TypeApplicationException`, &quot;If the specified closed type argument values are not compatible with the actual result&apos;s type parameters.&quot;)
+    shared formal MemberInterface&lt;Container, Type&gt;? getInterface&lt;Container=Nothing, Type=Anything&gt;(String name, ClosedType&lt;Anything&gt;* types);
+    
+    &quot;Gets a member interface by name. Returns `null` if not found.&quot;
+    throws(`class IncompatibleTypeException`, &quot;If the specified `Container` or `Type` type arguments are not compatible with the actual result, 
+                                               or if the corresponding member is not a `MemberInterface`.&quot;)
+    throws(`class TypeApplicationException`, &quot;If the specified closed type argument values are not compatible with the actual result&apos;s type parameters.&quot;)
+    shared formal MemberInterface&lt;Container, Type&gt;? getDeclaredInterface&lt;Container=Nothing, Type=Anything&gt;(String name, ClosedType&lt;Anything&gt;* types);
+    
+    &quot;Gets a method by name. Returns `null` if not found.&quot;
+    throws(`class IncompatibleTypeException`, &quot;If the specified `Container`, `Type` or `Arguments` type arguments are not compatible with the actual result.&quot;)
+    throws(`class TypeApplicationException`, &quot;If the specified closed type argument values are not compatible with the actual result&apos;s type parameters.&quot;)
+    shared formal Method&lt;Container, Type, Arguments&gt;? getMethod&lt;Container=Nothing, Type=Anything, Arguments=Nothing&gt;(String name, ClosedType&lt;Anything&gt;* types)
+        given Arguments satisfies Anything[];
+
+    &quot;Gets a method by name. Returns `null` if not found.&quot;
+    throws(`class IncompatibleTypeException`, &quot;If the specified `Container`, `Type` or `Arguments` type arguments are not compatible with the actual result.&quot;)
+    throws(`class TypeApplicationException`, &quot;If the specified closed type argument values are not compatible with the actual result&apos;s type parameters.&quot;)
+    shared formal Method&lt;Container, Type, Arguments&gt;? getDeclaredMethod&lt;Container=Nothing, Type=Anything, Arguments=Nothing&gt;(String name, ClosedType&lt;Anything&gt;* types)
+        given Arguments satisfies Anything[];
+    
+    &quot;Gets an attribute by name. Returns `null` if not found.&quot;
+    throws(`class IncompatibleTypeException`, &quot;If the specified `Container`, `Get` or `Set` type arguments are not compatible with the actual result.&quot;)
+    shared formal Attribute&lt;Container, Get, Set&gt;? getAttribute&lt;Container=Nothing, Get=Anything, Set=Nothing&gt;(String name);
+
+    &quot;Gets an attribute by name. Returns `null` if not found.&quot;
+    throws(`class IncompatibleTypeException`, &quot;If the specified `Container`, `Get` or `Set` type arguments are not compatible with the actual result.&quot;)
+    shared formal Attribute&lt;Container, Get, Set&gt;? getDeclaredAttribute&lt;Container=Nothing, Get=Anything, Set=Nothing&gt;(String name);
+
+    &quot;Gets a list of attributes matching the given container and attribute type, annotated with all the
+     specified annotations, which are directly declared on this type.&quot;
+    shared formal Attribute&lt;Container, Get, Set&gt;[] getDeclaredAttributes&lt;Container=Nothing, Get=Anything, Set=Nothing&gt;(ClosedType&lt;Annotation&gt;* annotationTypes);
+
+    &quot;Gets a list of attributes matching the given container and attribute type, annotated with all the
+     specified annotations, which are declared on this type or inherited.&quot;
+    shared formal Attribute&lt;Container, Get, Set&gt;[] getAttributes&lt;Container=Nothing, Get=Anything, Set=Nothing&gt;(ClosedType&lt;Annotation&gt;* annotationTypes);
+
+    &quot;Gets a list of methods matching the given container, return and parameter types, annotated with all the
+     specified annotations, which are directly declared on this type.&quot;
+    shared formal Method&lt;Container, Type, Arguments&gt;[] getDeclaredMethods&lt;Container=Nothing, Type=Anything, Arguments=Nothing&gt;(ClosedType&lt;Annotation&gt;* annotationTypes)
+        given Arguments satisfies Anything[];
+
+    &quot;Gets a list of methods matching the given container, return and parameter types, annotated with all the
+     specified annotations, which are declared on this type or inherited.&quot;
+    shared formal Method&lt;Container, Type, Arguments&gt;[] getMethods&lt;Container=Nothing, Type=Anything, Arguments=Nothing&gt;(ClosedType&lt;Annotation&gt;* annotationTypes)
+            given Arguments satisfies Anything[];
+
+    &quot;Gets a list of member classes matching the given container, return and parameter types, annotated with all the
+     specified annotations, which are directly declared on this type.&quot;
+    shared formal MemberClass&lt;Container, Type, Arguments&gt;[] getDeclaredClasses&lt;Container=Nothing, Type=Anything, Arguments=Nothing&gt;(ClosedType&lt;Annotation&gt;* annotationTypes)
+            given Arguments satisfies Anything[];
+    
+    &quot;Gets a list of member classes matching the given container, return and parameter types, annotated with all the
+     specified annotations, which are declared on this type or inherited.&quot;
+    shared formal MemberClass&lt;Container, Type, Arguments&gt;[] getClasses&lt;Container=Nothing, Type=Anything, Arguments=Nothing&gt;(ClosedType&lt;Annotation&gt;* annotationTypes)
+            given Arguments satisfies Anything[];
+
+    &quot;Gets a list of interfaces matching the given container and interface types, annotated with all the
+     specified annotations, which are directly declared on this type.&quot;
+    shared formal MemberInterface&lt;Container, Type&gt;[] getDeclaredInterfaces&lt;Container=Nothing, Type=Anything&gt;(ClosedType&lt;Annotation&gt;* annotationTypes);
+    
+    &quot;Gets a list of interfaces matching the given container and interface types, annotated with all the
+     specified annotations, which are declared on this type or inherited.&quot;
+    shared formal MemberInterface&lt;Container, Type&gt;[] getInterfaces&lt;Container=Nothing, Type=Anything&gt;(ClosedType&lt;Annotation&gt;* annotationTypes);
+}
+
+</pre></body></html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>Array.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;A fixed-sized array of mutable elements. An _empty_ array 
+ is an array of [[size]] `0`. Any element of an array may be
+ set to a new value.
+ 
+     value array = Array { \&quot;hello\&quot;, \&quot;world\&quot; };
+     array.set(0, \&quot;goodbye\&quot;);
+ 
+ This class is provided primarily to support interoperation 
+ with Java, and for some performance-critical low-level 
+ programming tasks.&quot;
+shared final native class Array&lt;Element&gt;({Element*} elements) 
+        extends Object()
+        satisfies List&lt;Element&gt; &amp;
+                  Ranged&lt;Integer, Element, Array&lt;Element&gt;&gt; {
+	
+	//&quot;Get the element at the specified index, or `null` if
+	// the index falls outside the bounds of this array.&quot;
+	//shared actual native Element? get(Integer index);
+	
+	&quot;Get the element at the specified index, where the array
+	 is indexed from the _end_ of the array, or `null` if
+	 the index falls outside the bounds of this array.&quot;
+	shared actual native Element? getFromLast(Integer index);
+	
+	&quot;Get the element at the specified index, or `null` if
+	 the index falls outside the bounds of this array.&quot;
+	shared actual native Element? getFromFirst(Integer index);
+	
+    &quot;Replace the existing element at the specified index 
+     with the given element.&quot;
+    throws (`class AssertionError`, 
+            &quot;if the given index is out of bounds, that is, 
+             if `index&lt;0` or if `index&gt;lastIndex`&quot;)
+    shared native void set(
+            &quot;The index of the element to replace.&quot;
+            Integer index, 
+            &quot;The new element.&quot;
+            Element element);
+    
+    &quot;Efficiently copy the elements in the segment
+     `sourcePosition:length` of this array to the segment 
+     `destinationPosition:length` of the given 
+     [[array|destination]].&quot;
+    shared native void copyTo(
+        &quot;The array into which to copy the elements.&quot; 
+        Array&lt;Element&gt; destination,
+        &quot;The index of the first element in this array to 
+         copy.&quot;  
+        Integer sourcePosition = 0, 
+        &quot;The index in the given array into which to 
+         copy the first element.&quot;
+        Integer destinationPosition = 0, 
+        &quot;The number of elements to copy.&quot;
+        Integer length = size-sourcePosition);
+    
+    shared actual native Integer? lastIndex;
+    
+    shared actual native Element? first;
+    shared actual native Element? last;
+    
+    &quot;A new array with the same elements as this array.&quot;
+    shared actual native Array&lt;Element&gt; clone();
+    
+    shared actual native Boolean empty;
+    shared actual native Integer size;
+    shared actual native Boolean defines(Integer index);
+    shared actual native Iterator&lt;Element&gt; iterator();
+    shared actual native Boolean contains(Object element);
+    shared actual native Element[] sequence();
+    
+    shared actual native Integer count(Boolean selecting(Element element));
+    
+    shared actual native Array&lt;Element&gt; span(Integer from, Integer to);
+    shared actual native Array&lt;Element&gt; spanFrom(Integer from);
+    shared actual native Array&lt;Element&gt; spanTo(Integer to);
+    shared actual native Array&lt;Element&gt; measure(Integer from, Integer length);
+        
+    shared actual native {Element*} skip(Integer skipping);
+    shared actual native {Element*} take(Integer taking);
+    shared actual native {Element*} by(Integer step);
+
+    &quot;Reverses the order of the current elements in this 
+     array. This operation modifies the array.&quot;
+    shared native void reverseInPlace();
+    
+    &quot;Sorts the elements in this array according to the 
+     order induced by the given 
+     [[comparison function|comparing]]. This operation 
+     modifies the array.&quot;
+    shared native void sortInPlace(
+        &quot;A comparison function that compares pairs of
+         elements of the array.&quot;
+        Comparison comparing(Element x, Element y));
+    
+    shared actual native Element[] sort(
+        Comparison comparing(Element x, Element y));
+    
+}
+</pre></body></html>

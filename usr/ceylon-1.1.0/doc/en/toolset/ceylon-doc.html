@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html><head><meta charset='UTF-8'/>
+<title>ceylon doc</title>
+<link rel='stylesheet' type='text/css' href='bootstrap.min.css'/>
+<link rel='stylesheet' type='text/css' href='doc-tool.css'/>
+</head>
+<body>
+<div class='navbar navbar-inverse navbar-static-top'>
+<div class='navbar-inner'>
+<a class='tool-header' href='index.html'>
+<i class='tool-logo'></i>
+<span class='tool-label'>The Ceylon Toolset</span>
+<span><code class='tool-name'>ceylon doc</code></span>
+<span class='tool-version'>1.1.0 (Ultimate Ship The Second)</span>
+</a>
+<ul class='nav pull-right'><li class='divider-vertical'/><li id='infoDropdown' class='dropdown'><a href='#' title='Show keyboard shortcuts [Shortcut: ?]' role='button' class='dropdown-toggle' data-toggle='dropdown'><i class='icon-info'></i></a><ul id='info-dropdown-panel' class='dropdown-menu'><h4>Keyboard Shortcuts</h4><li class='divider'></li><div id='info-common-shortcuts'><div id='?'><span class='key badge'>?</span><span class='info muted'>Open this information panel</span></div><div id='i'><span class='key badge'>i</span><span class='info muted'>Jump to tool index</span></div><div id='s'><span class='key badge'>s</span><span class='info muted'>Jump to synopsis</span></div><div id='d'><span class='key badge'>d</span><span class='info muted'>Jump to description</span></div><div id='o'><span class='key badge'>o</span><span class='info muted'>Jump to options</span></div></div></ul></li></ul></div>
+</div>
+<div class='sub-navbar'>
+<div class='sub-navbar-inner'><div><code class='sub-navbar-tool'>ceylon doc</code></div>
+<div class='sub-navbar-summary'><p>Generates Ceylon API documentation from Ceylon source files</p>
+</div>
+</div><div class='sub-navbar-menu'>
+<a href='index.html'><span title='Jump to tool index [Shortcut: I]'><span class='accesskey'>I</span>ndex</span></a><a href='#section-synopsis'><span title='Jump to tool synopsis [Shortcut: S]'><span class='accesskey'>S</span>ynopsis</span></a><a href='#section-description'><span title='Jump to tool description [Shortcut: D]'><span class='accesskey'>D</span>escription</span></a><a href='#section-options'><span title='Jump to tool options [Shortcut: O]'><span class='accesskey'>O</span>ptions</span></a></div></div>
+<div class='container-fluid'>
+<div class='section section-synopsis'>
+<table class='table table-condensed table-bordered'>
+<thead>
+<tr class='table-header' title='Click for expand/collapse'><td colspan='1' id='section-synopsis'><i class='icon-expand'></i><h2>Synopsis</h2>
+</td></tr>
+</thead>
+<tbody>
+<tr><td><div class='synopsis'><code>ceylon doc  [<a href='#option--cacherep'>--cacherep</a>=&lt;url&gt;] [<a href='#option--cwd'>--cwd</a>=&lt;dir&gt;] [<a href='#option--define'>--define</a>=&lt;key&gt;=&lt;value&gt;...] [<a href='#option--doc'>--doc</a>=&lt;dirs&gt;...] [<a href='#option--encoding'>--encoding</a>=&lt;encoding&gt;] [<a href='#option--footer'>--footer</a>=&lt;footer&gt;] [<a href='#option--header'>--header</a>=&lt;header&gt;] [<a href='#option--ignore-broken-link'>--ignore-broken-link</a>] [<a href='#option--ignore-missing-doc'>--ignore-missing-doc</a>] [<a href='#option--ignore-missing-throws'>--ignore-missing-throws</a>] [<a href='#option--link'>--link</a>=&lt;dir-or-url&gt;...] [<a href='#option--maven-overrides'>--maven-overrides</a>=&lt;url&gt;] [<a href='#option--no-default-repositories'>--no-default-repositories</a>] [<a href='#option--non-shared'>--non-shared</a>] [<a href='#option--offline'>--offline</a>] [<a href='#option--out'>--out</a>=&lt;url&gt;] [<a href='#option--pass'>--pass</a>=&lt;secret&gt;] [<a href='#option--rep'>--rep</a>=&lt;url&gt;...] [<a href='#option--source'>--source</a>=&lt;dirs&gt;...] [<a href='#option--source-code'>--source-code</a>] [<a href='#option--src'>--src</a>=&lt;dir&gt;...] [<a href='#option--sysrep'>--sysrep</a>=&lt;url&gt;] [<a href='#option--timeout'>--timeout</a>=&lt;seconds&gt;] [<a href='#option--user'>--user</a>=&lt;name&gt;] [<a href='#option--verbose'>--verbose</a>[=&lt;flags&gt;]] [--] [&lt;modules...&gt;]</code></div>
+</td></tr></tbody></table></div>
+
+<div class='section section-description'>
+<table class='table table-condensed table-bordered'>
+<thead>
+<tr class='table-header' title='Click for expand/collapse'><td colspan='1' id='section-description'><i class='icon-expand'></i><h2> Description</h2>
+</td></tr>
+</thead>
+<tbody>
+<tr><td><p>The default module repositories are <code>modules</code> and <code>http://modules.ceylon-lang.org/repo/1</code>, and the default source directory is <code>source</code>. The default output module repository is <code>modules</code>.</p>
+
+<p>The <code>&lt;modules&gt;</code> are the names (with an optional version) of the modules to compile the documentation of.</p>
+
+<p>The documentation compiler searches for compilation units belonging to the specified modules in the specified source directories and in source archives in the specified module repositories. For each specified module, the compiler generates a set of XHTML pages in the module documentation directory (the module-doc directory) of the specified output module repository.</p>
+
+<p>The compiler searches for source in the following locations:</p>
+
+<ul>
+<li>source archives in the specified repositories, and</li>
+<li>module directories in the specified source directories.</li>
+</ul>
+
+<p>If no version identifier is specified for a module, the module is assumed to exist in a source directory.</p>
+</td></tr></tbody></table></div>
+<div class='section section-options'>
+<table class='table table-condensed table-bordered'>
+<thead>
+<tr class='table-header' title='Click for expand/collapse'><td colspan='2' id='section-options'><i class='icon-expand'></i><h2>Options</h2>
+</td></tr>
+</thead>
+<tbody>
+<tr><td class='span3' id='option--cacherep'><code>--cacherep=url</code></td>
+<td class='option-description'><p>Specifies the folder to use for caching downloaded modules. (default: <code>~/.ceylon/cache</code>)</p>
+</td>
+</tr><tr><td class='span3' id='option--cwd'><code>--cwd=dir</code></td>
+<td class='option-description'><p>Specifies the current working directory for this tool. (default: the directory where the tool is run from)</p>
+</td>
+</tr><tr><td class='span3' id='option--define'><code>--define=key&gt;=&lt;value</code>, <code id='option-D'>-D key&gt;=&lt;value</code></td>
+<td class='option-description'><p>Set a system property</p>
+</td>
+</tr><tr><td class='span3' id='option--doc'><code>--doc=dirs</code></td>
+<td class='option-description'><p>A directory containing your module documentation (default: <code>./doc</code>)</p>
+</td>
+</tr><tr><td class='span3' id='option--encoding'><code>--encoding=encoding</code></td>
+<td class='option-description'><p>Sets the encoding used for reading source files (default: platform-specific)</p>
+</td>
+</tr><tr><td class='span3' id='option--footer'><code>--footer=footer</code></td>
+<td class='option-description'><p>Sets the footer text to be placed at the bottom of each page.</p>
+</td>
+</tr><tr><td class='span3' id='option--header'><code>--header=header</code></td>
+<td class='option-description'><p>Sets the header text to be placed at the top of each page.</p>
+</td>
+</tr><tr><td class='span3' id='option--ignore-broken-link'><code>--ignore-broken-link</code></td>
+<td class='option-description'><p>Do not print warnings about broken links.</p>
+</td>
+</tr><tr><td class='span3' id='option--ignore-missing-doc'><code>--ignore-missing-doc</code></td>
+<td class='option-description'><p>Do not print warnings about missing documentation.</p>
+</td>
+</tr><tr><td class='span3' id='option--ignore-missing-throws'><code>--ignore-missing-throws</code></td>
+<td class='option-description'><p>Do not print warnings about missing throws annotation.</p>
+</td>
+</tr><tr><td class='span3' id='option--link'><code>--link=dir-or-url</code></td>
+<td class='option-description'><p>The URL or path of a module repository containing documentation for external dependencies.</p>
+
+<p>The URL must use one of the supported protocols (http://, https:// or file://) or be a path to a directory. The argument can start with a module name prefix, separated from the URL by a <code>=</code> character, so that only those external modules whose name begins with the prefix will be linked using that URL.
+Can be specified multiple times.</p>
+
+<p>Examples:</p>
+
+<pre><code>--link http://modules.ceylon-lang.org/repo/1
+--link ceylon.math=http://modules.ceylon-lang.org/repo/1
+--link com.example=http://example.com/ceylondoc/</code></pre>
+</td>
+</tr><tr><td class='span3' id='option--maven-overrides'><code>--maven-overrides=url</code></td>
+<td class='option-description'><p>Specifies the xml file to use to load Maven artifact overrides.</p>
+</td>
+</tr><tr><td class='span3' id='option--no-default-repositories'><code>--no-default-repositories</code></td>
+<td class='option-description'><p>Indicates that the default repositories should not be used.</p>
+</td>
+</tr><tr><td class='span3' id='option--non-shared'><code>--non-shared</code></td>
+<td class='option-description'><p>Includes documentation for package-private declarations.</p>
+</td>
+</tr><tr><td class='span3' id='option--offline'><code>--offline</code></td>
+<td class='option-description'><p>Enables offline mode that will prevent the module loader from connecting to remote repositories.</p>
+</td>
+</tr><tr><td class='span3' id='option--out'><code>--out=url</code>, <code id='option-o'>-o url</code></td>
+<td class='option-description'><p>Specifies the output module repository (which must be publishable). (default: <code>./modules</code>)</p>
+</td>
+</tr><tr><td class='span3' id='option--pass'><code>--pass=secret</code></td>
+<td class='option-description'><p>Sets the password for use with an authenticated output repository(no default).</p>
+</td>
+</tr><tr><td class='span3' id='option--rep'><code>--rep=url</code></td>
+<td class='option-description'><p>Specifies a module repository containing dependencies. Can be specified multiple times. (default: <code>modules</code>, <code>~/.ceylon/repo</code>, <code>http://modules.ceylon-lang.org/repo/1</code>)</p>
+</td>
+</tr><tr><td class='span3' id='option--source'><code>--source=dirs</code></td>
+<td class='option-description'><p>An alias for <code>--src</code> (default: <code>./source</code>)</p>
+</td>
+</tr><tr><td class='span3' id='option--source-code'><code>--source-code</code></td>
+<td class='option-description'><p>Includes source code in the generated documentation.</p>
+</td>
+</tr><tr><td class='span3' id='option--src'><code>--src=dir</code></td>
+<td class='option-description'><p>A directory containing Ceylon and/or Java source code (default: <code>./source</code>)</p>
+</td>
+</tr><tr><td class='span3' id='option--sysrep'><code>--sysrep=url</code></td>
+<td class='option-description'><p>Specifies the system repository containing essential modules. (default: <code>$CEYLON_HOME/repo</code>)</p>
+</td>
+</tr><tr><td class='span3' id='option--timeout'><code>--timeout=seconds</code>, <code id='option-T'>-T seconds</code></td>
+<td class='option-description'><p>Sets the timeout for connections to remote repositories, use 0 for no timeout (default: 20).</p>
+</td>
+</tr><tr><td class='span3' id='option--user'><code>--user=name</code></td>
+<td class='option-description'><p>Sets the user name for use with an authenticated output repository(no default).</p>
+</td>
+</tr><tr><td class='span3' id='option--verbose'><code>--verbose[=flags]</code>, <code id='option-d'>-d</code></td>
+<td class='option-description'><p>Produce verbose output. If no <code>flags</code> are given then be verbose about everything, otherwise just be verbose about the flags which are present. Allowed flags include: <code>all</code>, <code>loader</code>.</p>
+</td>
+</tr></tbody></table></div><div class='section'>
+<table class='table table-condensed table-bordered'>
+<thead>
+<tr class='table-header' title='Click for expand/collapse'><td colspan='1'><i class='icon-expand'></i><h2> EXAMPLE</h2>
+</td></tr>
+</thead>
+<tbody>
+<tr><td><p>The following would compile the <code>org.hibernate</code> module source code found in the <code>~/projects/hibernate/src</code> directory to the repository <code>~/projects/hibernate/build</code>:</p>
+
+<pre><code>ceylon doc org.hibernate/3.0.0.beta \
+    --src ~/projects/hibernate/src \
+    --out ~/projects/hibernate/build
+</code></pre>
+</td></tr></tbody></table></div>
+<div class='section'>
+<table class='table table-condensed table-bordered'>
+<thead>
+<tr class='table-header' title='Click for expand/collapse'><td colspan='1'><i class='icon-expand'></i><h2> Repositories</h2>
+</td></tr>
+</thead>
+<tbody>
+<tr><td><p>Repositories like those specified with the <code>--rep</code> or <code>--out</code> options can be file paths, HTTP urls to remote servers or can be names of repositories when prepended with a <code>+</code> symbol. These names refer to repositories defined in the configuration file or can be any of the following predefined names <code>+SYSTEM</code>, <code>+CACHE</code>, <code>+LOCAL</code>, <code>+USER</code> or <code>+REMOTE</code>. For more information see http://ceylon-lang.org/documentation/1.0/reference/tool/config</p>
+</td></tr></tbody></table></div>
+</div><script type='text/javascript' src='jquery-1.8.2.min.js'></script><script type='text/javascript' src='bootstrap.min.js'></script><script type='text/javascript' src='doc-tool.js'></script><script type='text/javascript'>init();</script></body></html>

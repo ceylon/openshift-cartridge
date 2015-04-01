@@ -1,0 +1,124 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>Byte.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;An 8-bit byte. A `Byte` value represents a congruence class
+ of [[integers|Integer]] modulo 256, and may be interpreted 
+ as:
+ 
+ - an [[unsigned]] integer value in the range `0..255`, or 
+ - a [[signed]] integer value in the range `-128..127`. 
+ 
+ `Byte` is not considered a full numeric type, supporting 
+ only:
+ 
+ - [[bitwise|Binary]] operations, and 
+ - addition and subtraction modulo 256.
+ 
+ `Byte`s with modular addition form a [[mathematical 
+ group|Invertible]]. Thus, every byte `b` has an additive
+ inverse `-b` where:
+ 
+     (-b).signed == -b.signed
+     (-b).unsigned == b.unsigned==0 then 0 else 256 - b.unsigned
+ 
+ `Byte` is a [[recursive enumerable type|Enumerable]]. For
+ example, the range:
+ 
+     254.byte .. 1.byte
+     
+ contains the values `254.byte, 255.byte, 0.byte, 1.byte`.
+ 
+ `Byte` does not have a [[total order|Comparable]] because
+ any such order would:
+  
+ - be inconsistent with the definition of [[successor]] and 
+   [[predecessor]] under modular addition, and
+ - would depend on interpretation of the `Byte` value as
+   signed or unsigned.
+ 
+ Thus, to compare the magnitude of two bytes, it is 
+ necessary to first convert them to either their `signed` or 
+ `unsigned` integer values.
+ 
+ `Byte`s are useful mainly because they can be efficiently 
+ stored in an [[Array]].&quot;
+shared native final class Byte(congruent) 
+        extends Object()
+        satisfies Binary&lt;Byte&gt; &amp; 
+                  Invertible&lt;Byte&gt; &amp;
+                  Enumerable&lt;Byte&gt; {
+    
+    &quot;An integer member of the congruence class of the 
+     resulting `Byte`.
+     
+     For any integer `x&gt;=0`:
+     
+         x.byte.unsigned == x % 256
+         x.byte.signed == x % 256
+     
+     And for an integer `x&lt;0`:
+     
+         x.byte.unsigned == 256 + x % 256
+         x.byte.signed == x % 256
+     
+     And for any integers `x` and `y` which are congruent
+     modulo 256:
+     
+         x.byte == y.byte&quot;
+    Integer congruent;
+    
+    //shared [Boolean, Boolean, Boolean, Boolean, Boolean, Boolean, Boolean, Boolean] bits;
+    
+    &quot;Whether this byte is even.&quot;
+    shared native Boolean even;
+    
+    &quot;Whether this byte is zero.&quot;
+    shared native Boolean zero;
+    
+    &quot;Whether this byte is one.&quot;
+    shared native Boolean unit;
+    
+    &quot;This byte interpreted as an unsigned integer in the
+     range `0..255`.&quot;
+    shared native Integer unsigned;
+    
+    &quot;This byte interpreted as a signed integer in the range 
+     `-128..127`.&quot;
+    shared native Integer signed;
+    
+    &quot;The additive inverse of this byte. For any integer `x`:
+     
+         (-x.byte).signed = -x.byte.signed&quot;
+    shared actual native Byte negated;
+    
+    &quot;The modulo 256 sum of this byte and the given byte.&quot;
+    shared actual native Byte plus(Byte other);
+    
+    shared actual native Byte and(Byte other);
+    shared actual native Byte flip(Integer index);
+    shared actual native Boolean get(Integer index);
+    shared actual native Byte leftLogicalShift(Integer shift);
+    shared actual native Byte not;
+    shared actual native Byte or(Byte other);
+    shared actual native Byte rightArithmeticShift(Integer shift);
+    shared actual native Byte rightLogicalShift(Integer shift);
+    shared actual native Byte set(Integer index, Boolean bit);
+    shared actual native Byte xor(Byte other);
+    
+    shared actual native Byte predecessor;
+    shared actual native Byte successor;
+    
+    shared actual native Byte neighbour(Integer offset);
+    shared actual native Integer offset(Byte other);
+    shared actual native Integer offsetSign(Byte other);
+    
+    shared actual native Boolean equals(Object that);
+    shared actual native Integer hash;
+    
+    &quot;The [[unsigned]] interpretation of this byte as a 
+     string.&quot;
+    shared actual native String string;
+    
+}
+</pre></body></html>
