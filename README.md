@@ -4,4 +4,4 @@ Login to [OpenShift](https://openshift.redhat.com/app/console/application_types)
 
 Provide url to cartridge definition and continue with your application deployment.
 
-Cartridge definition url: https://raw.github.com/matejonnet/openshift-cartridge-ceylon/master/metadata/manifest.yml
+Cartridge definition url: https://raw.github.com/ceylon/openshift-cartridge/master/metadata/manifest.yml
