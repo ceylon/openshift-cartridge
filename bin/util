@@ -42,16 +42,10 @@ function killtree() {
 
 # Check if the server http port is up
 function ishttpup() {
-    if test -x /usr/sbin/lsof;
-    then
-        LSOF=/usr/sbin/lsof;
-    else
-        LSOF=/usr/bin/lsof;
-    fi
     let count=0
     while [ ${count} -lt 30 ]
     do
-        if $LSOF -P -n -i "@${OPENSHIFT_CEYLON_IP}:8080" | grep "(LISTEN)" > /dev/null; then
+        if echo 2> /dev/null > "/dev/tcp/${OPENSHIFT_CEYLON_IP}/8080"; then
             echo "Found ${OPENSHIFT_CEYLON_IP}:8080 listening port"
             return 0
         fi
@@ -59,7 +53,5 @@ function ishttpup() {
         echo "Waiting for http server to boot on ${OPENSHIFT_CEYLON_IP}:8080 ... ($count/30)"
         sleep 2
     done
-    echo "here's what lsof tells me (you sort it out):"
-    $LSOF -P -n -i 
     return 1
 }
