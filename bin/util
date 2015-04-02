@@ -60,6 +60,6 @@ function ishttpup() {
         sleep 2
     done
     echo "here's what lsof tells me (you sort it out):"
-    $LSOF -P -n -i "@${OPENSHIFT_CEYLON_IP}:8080"
+    $LSOF -P -n -i 
     return 1
 }
