@@ -126,9 +126,8 @@ function build() {
 	ceylon_repos="${ceylon_repos} --rep http://modules.ceylon-lang.org/test/"
 	ceylon_repos="${ceylon_repos} --rep ${OPENSHIFT_CEYLON_MODULES_REPO_DIR}/repo"
 
-	compile_files=`find ${OPENSHIFT_REPO_DIR}/source/ -name *\.ceylon -o -name *\.java`
-	printf "Compiling files:\n$compile_files\n"
-	${CEYLON_BIN_DIR}/ceylon compile --javac=-encoding=utf8 --src ${OPENSHIFT_REPO_DIR}/source --out ${OPENSHIFT_CEYLON_MODULES_REPO_DIR}/repo ${ceylon_repos} ${compile_files}
+	printf "Compiling every module in ${OPENSHIFT_REPO_DIR}/source:\n"
+	${CEYLON_BIN_DIR}/ceylon compile --javac=-encoding=utf8 --src ${OPENSHIFT_REPO_DIR}/source --out ${OPENSHIFT_CEYLON_MODULES_REPO_DIR}/repo ${ceylon_repos}
 	
 	echo "Ceylon build done." | tee -a ${CEYLON_LOG_PATH}
 }
