@@ -8,7 +8,7 @@ License-Url: http://ceylon-lang.org/code/licenses/
 Vendor: Red Hat
 Cartridge-Version: '0.1.1'
 Cartridge-Vendor: ceylonlangorg
-Source-Url: https://github.com/matejonnet/openshift-cartridge-ceylon.git
+Source-Url: https://github.com/ceylon/openshift-cartridge.git
 Categories:
   - service
   - ceylon
