@@ -59,6 +59,7 @@ function ishttpup() {
         echo "Waiting for http server to boot on ${OPENSHIFT_CEYLON_IP}:8080 ... ($count/30)"
         sleep 2
     done
-
+    echo "here's what lsof tells me (you sort it out):"
+    $LSOF -P -n -i "@${OPENSHIFT_CEYLON_IP}:8080"
     return 1
 }
