@@ -56,6 +56,8 @@ function start() {
 
 		if ! ishttpup; then
 			echo "Timed out waiting for http listening port" | tee -a ${CEYLON_LOG_PATH}
+                        echo "Here's the log file (good luck):"
+                        cat ${CEYLON_LOG_PATH}
 			exit 1
 		fi
 	fi
