@@ -140,18 +140,16 @@ Table taksList(Collection<Task> tasks, String q) {
         
     }
 
-    value rows = SequenceBuilder<Tr>();
-    for (Task task in tasks) {
-        rows.append(
+    value rows = [
+        for (Task task in tasks)
             Tr {
                 column1(task),
                 column2(task)
             }
-        );
-    }
+    ];
        
     return Table {
         classNames = "table table-hover";
-        rows = rows.sequence;
+        rows = rows;
     };
 }

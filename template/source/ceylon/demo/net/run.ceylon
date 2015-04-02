@@ -25,7 +25,7 @@ shared void run() {
 
 void startServer(String files) {
     value resourceEndpoint = AsynchronousEndpoint {
-        path = startsWith("/css") or startsWith("/img") or startsWith("/js") or startsWith("/index.html");
+        path = startsWith("/css").or(startsWith("/img")).or(startsWith("/js")).or(startsWith("/index.html"));
         service => serveStaticFile(files);
     };
     
