@@ -126,6 +126,8 @@ function build() {
 	ceylon_repos="${ceylon_repos} --rep http://modules.ceylon-lang.org/test/"
 	ceylon_repos="${ceylon_repos} --rep ${OPENSHIFT_CEYLON_MODULES_REPO_DIR}/repo"
 
+	source ${OPENSHIFT_REPO_DIR}.openshift/config/ceylon.properties
+
 	printf "Compiling every module in ${OPENSHIFT_REPO_DIR}/source:\n"
 	${CEYLON_BIN_DIR}/ceylon compile --javac=-encoding=utf8 --src ${OPENSHIFT_REPO_DIR}/source --out ${OPENSHIFT_CEYLON_MODULES_REPO_DIR}/repo ${ceylon_repos}
 	
