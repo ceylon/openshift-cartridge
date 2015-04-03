@@ -68,4 +68,7 @@ On top of the [standard OpenShift ones](https://developers.openshift.com/en/mana
 You can customise how your application will be run in `.openshift/markers` by placing
 the following empty source files:
 
-`enable_jpda`: Will run your application with JPDA running on port 8787
+- `enable_aether`: Will add the aether repo to your compilation and run (there is more to it than just adding 
+  `--rep aether`, because we need to tell Maven where to cache stuff so we have to create folders and a
+  `settings.xml` and point to it, so just use this rather than deal with it yourself)
+- `enable_jpda`: Will run your application with JPDA running on port 8787
