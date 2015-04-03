@@ -3,6 +3,8 @@ Markers
 
 Adding marker files to this directory will have the following effects:
 
+enable_jpda - Will run your application with JPDA enabled on port 8787
+
 force_clean_build - Will remove all previous php pears and start installing
     required pears from scratch
 

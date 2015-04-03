@@ -1,47 +1,71 @@
-Feel free to change or remove this file, it is informational only.
+# Write your own application
 
+Start with the template, which contains a demo web application named `ceylon.demo.net` and contains the following structure:
 
-Notes about layout
-==================
+```
+- README               # Useful info
+- .openshift           # OpenShift-specific settings
+ - config              #  Configuration
+  - modules            #   Extra module repo where you can put your dependencies that cannot be found on Herd
+  - ceylon.properties  #   Your application Ceylon settings (see below)
+ - action_hooks        #  Action hooks to control application lifecycle
+ - cron                #  Cron jobs
+ - markers             #  OpenShift markers
+- modules              # Leave empty, it won't be used
+- source/...           # Your module source files
+- web-content/...      # The default template module's resources, you can remove it if you don't need it
+```
 
+You can replace the source module with the one you want to run, or if you only want to run a single module,
+see the Configuration section below. You can put any extra module dependency you want in `.openshift/config/modules`
+if they cannot be found on Herd. Then don't forget to specify your main module in `.openshift/config/ceylon.properties`
+and you're set!
 
-Note: Every time you push, everything in your remote repo dir is recreated.
-      Please store long term items (like an sqlite database) in the OpenShift
-      data directory, which will persist between pushes of your repo.
-      The OpenShift data directory is accessible relative to the remote repo
-      directory (../data) or via an environment variable OPENSHIFT_DATA_DIR.
+# Configuration of your application
 
+The following environment variables can be configured in `.openshift/config/ceylon.properties`:
 
-Environment Variables
-=====================
+- `ceylon_module`: the module you want to run
+- `ceylon_module_args`: arguments you want to pass to your module
+- `ceylon_repos`: list of repos for compile/run (has a default value)
+- `ceylon_args`: arguments passed to `ceylon run` and `ceylon compile`
+- `ceylon_run_args`: arguments passed to `ceylon run` (has a default value)
+- `ceylon_compile_args`: arguments passed to `ceylon compile`
+- `ceylon_encoding`: source file encoding (defaults to `utf8`)
+- `JAVA_OPTS`: JVM options use for both compilation and runtime
 
-OpenShift provides several environment variables to reference for ease
-of use.  The following list are some common variables but far from exhaustive:
+# Environment variables
 
-    $_ENV['OPENSHIFT_DATA_DIR']  - For persistent storage (between pushes)
-    $_ENV['OPENSHIFT_TMP_DIR']   - Temp storage (unmodified files deleted after 10 days)
+The following environment variables will be available to your application and configuration:
 
-When embedding a database using 'rhc cartridge add', you can reference
-environment variables for username, host and password. Example for mysql:
+- `CEYLON_HOME`: The Ceylon distribution path
+- `CEYLON_BIN_DIR`: The Ceylon distribution bin directory (contains the `ceylon` command)
 
-    $_ENV['OPENSHIFT_MYSQL_DB_HOST']      - DB host
-    $_ENV['OPENSHIFT_MYSQL_DB_PORT']      - DB Port
-    $_ENV['OPENSHIFT_MYSQL_DB_USERNAME']  - DB Username
-    $_ENV['OPENSHIFT_MYSQL_DB_PASSWORD']  - DB Password
+- `OPENSHIFT_CEYLON_MODULES_REPO_DIR`: The module repository where we compile your application
+- `OPENSHIFT_CEYLON_LOG_DIR`: The log dir for the Ceylon cartridge
+- `OPENSHIFT_CEYLON_RUN_DIR`: The run dir for the Ceylon cartridge
 
-When embedding a NoSQL database using 'rhc cartridge add', you can
-reference environment variables for username, host and password.
-Example for MongoDB:
-    $_ENV['OPENSHIFT_MONGODB_DB_HOST']      - NoSQL DB Host
-    $_ENV['OPENSHIFT_MONGODB_DB_PORT']      - NoSQL DB Port
-    $_ENV['OPENSHIFT_MONGODB_DB_USERNAME']  - NoSQL DB Username
-    $_ENV['OPENSHIFT_MONGODB_DB_PASSWORD']  - NoSQL DB Password
+- `CEYLON_LOG_PATH`: Path to the Ceylon cartridge log file
+- `CEYLON_PID_FILE`: Path to the Ceylon cartridge run PID file (the PID of your Ceylon application)
 
-To get a full list of environment variables, simply add a line in your
-.openshift/action_hooks/build script that says "export" and push.
+- `OPENSHIFT_CEYLON_IP`: The (local) IP your application should bind on
+- `OPENSHIFT_CEYLON_PORT`: The (local) port your application should bind on
 
+On top of the [standard OpenShift ones](https://developers.openshift.com/en/managing-environment-variables.html):
 
-Additional information
-======================
+- `OPENSHIFT_APP_DNS`: The public external DNS under which your app will be visible
+- `OPENSHIFT_APP_NAME`: Your application name
+- `OPENSHIFT_REPO_DIR`: Where your application will be checked out (where your source files will reside)
+- `OPENSHIFT_DATA_DIR`: A persistent data directory
+- `OPENSHIFT_TMP_DIR`: A temporary directory you can use
+- `OPENSHIFT_<database>_DB_HOST`: The host name or IP address used to connect to the database
+- `OPENSHIFT_<database>_DB_PORT`: The port the database server is listening on
+- `OPENSHIFT_<database>_DB_USERNAME`: The database administrative user name
+- `OPENSHIFT_<database>_DB_PASSWORD`: The database administrative user’s password
 
-Link to additional information will be here, when we have it :)
+# Markers
+
+You can customise how your application will be run in `.openshift/markers` by placing
+the following empty source files:
+
+`enable_jpda`: Will run your application with JPDA running on port 8787

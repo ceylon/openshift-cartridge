@@ -6,7 +6,11 @@ Provide url to cartridge definition and continue with your application deploymen
 
 Cartridge definition url: https://raw.github.com/ceylon/openshift-cartridge/master/metadata/manifest.yml
 
-# Testing the cartridge
+# Write your own Ceylon application
+
+All information is located in the template's [README](template/README).
+
+# Test the cartridge
 
 Create a test folder:
 

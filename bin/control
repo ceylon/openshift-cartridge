@@ -12,6 +12,33 @@ OPENSHIFT_CEYLON_RUN_DIR=${OPENSHIFT_CEYLON_DIR}run
 CEYLON_LOG_PATH=${OPENSHIFT_CEYLON_LOG_DIR}/ceylon.log
 CEYLON_PID_FILE=${OPENSHIFT_CEYLON_RUN_DIR}/ceylon.pid
 
+function setupCeylonArgs(){
+
+	JAVA_OPTS="$JAVA_OPTS -Dcom.redhat.ceylon.common.tool.terminal.width=9999" #do not wrap output
+
+	if test "${ENABLE_JPDA:-0}" -eq 1 -a "$1" = "run" ; then
+		JAVA_OPTS="$JAVA_OPTS -Xdebug -Xrunjdwp:transport=dt_socket,address=$OPENSHIFT_CEYLON_IP:8787,server=y,suspend=n"
+	fi
+	
+	export PRESERVE_JAVA_OPTS="true"
+	export JAVA_OPTS
+
+	# extra repo from the application
+	ceylon_repos=" --rep ${OPENSHIFT_REPO_DIR}.openshift/config/modules"
+	# our cache location
+	ceylon_repos="${ceylon_repos} --cacherep ${OPENSHIFT_CEYLON_MODULES_REPO_DIR}/cache"
+	# FIXME: pretty sure that is not required
+	ceylon_repos="${ceylon_repos} --rep http://modules.ceylon-lang.org/repo/1/"
+	# where we compile our modules
+	ceylon_repos="${ceylon_repos} --rep ${OPENSHIFT_CEYLON_MODULES_REPO_DIR}/repo"
+
+	# FIXME: those are only for the template
+	ceylon_run_args="--define server.bind.host=${OPENSHIFT_CEYLON_IP}"
+	ceylon_run_args="${ceylon_run_args} --define server.files.location=${OPENSHIFT_REPO_DIR}web-content/"
+	
+	source ${OPENSHIFT_REPO_DIR}.openshift/config/ceylon.properties
+}
+
 function start() {
 	
 	echo "Starting Ceylon cart"
@@ -23,26 +50,8 @@ function start() {
 	if isrunning; then
 		echo "Application is already running" 1>&2
 	else
-		JAVA_OPTS="-Dserver.bind.host=${OPENSHIFT_CEYLON_IP}"
-		JAVA_OPTS="$JAVA_OPTS -Dserver.files.location=${OPENSHIFT_REPO_DIR}web-content/"
-
-		JAVA_OPTS="$JAVA_OPTS -Dceylon.cache.repo=${OPENSHIFT_CEYLON_MODULES_REPO_DIR}/cache"
-		JAVA_OPTS="$JAVA_OPTS -Dcom.redhat.ceylon.common.tool.terminal.width=9999" #do not wrap output
-
-		if [ "${ENABLE_JPDA:-0}" -eq 1 ] ; then
-			JAVA_OPTS="$JAVA_OPTS -Xdebug -Xrunjdwp:transport=dt_socket,address=$OPENSHIFT_CEYLON_IP:8787,server=y,suspend=n"
-		fi
-		
-		export PRESERVE_JAVA_OPTS="true"
-		export JAVA_OPTS
-
-		ceylon_repos=" --rep ${OPENSHIFT_REPO_DIR}.openshift/config/modules"
-		ceylon_repos="${ceylon_repos} --rep http://modules.ceylon-lang.org/repo/1/"
-		ceylon_repos="${ceylon_repos} --rep ${OPENSHIFT_CEYLON_MODULES_REPO_DIR}/repo"
-		
-		source ${OPENSHIFT_REPO_DIR}.openshift/config/ceylon.properties
-
-        run_params="run ${ceylon_repos} ${run_module_id}"
+		setupCeylonArgs "run"
+        	run_params="run ${ceylon_args} ${ceylon_run_args} ${ceylon_repos} ${ceylon_module} ${ceylon_module_args}"
 
 		echo "Executing ${CEYLON_BIN_DIR}/ceylon" | tee -a ${CEYLON_LOG_PATH}
 		echo "With params: ${run_params}" | tee -a ${CEYLON_LOG_PATH}
@@ -52,7 +61,7 @@ function start() {
 		$CEYLON_BIN_DIR/ceylon ${run_params} >> ${CEYLON_LOG_PATH} 2>&1 &
 		ceylon_pid=$!
 		echo $ceylon_pid > $CEYLON_PID_FILE
-        echo "Ceylon started with pid: ${ceylon_pid}" | tee -a ${CEYLON_LOG_PATH}
+		echo "Ceylon started with pid: ${ceylon_pid}" | tee -a ${CEYLON_LOG_PATH}
 
 		if ! ishttpup; then
 			echo "Timed out waiting for http listening port" | tee -a ${CEYLON_LOG_PATH}
@@ -116,20 +125,11 @@ function tidy() {
 function build() {
 	echo "Building Ceylon app..." | tee -a ${CEYLON_LOG_PATH}
 
-	JAVA_OPTS="-Dceylon.cache.repo=${OPENSHIFT_CEYLON_MODULES_REPO_DIR}/cache"
-	JAVA_OPTS="$JAVA_OPTS -Dcom.redhat.ceylon.common.tool.terminal.width=9999" #do not wrap output
-
-	export JAVA_OPTS
-	export PRESERVE_JAVA_OPTS="true"
-
-	ceylon_repos=" --rep ${OPENSHIFT_REPO_DIR}.openshift/config/modules"
-	ceylon_repos="${ceylon_repos} --rep http://modules.ceylon-lang.org/test/"
-	ceylon_repos="${ceylon_repos} --rep ${OPENSHIFT_CEYLON_MODULES_REPO_DIR}/repo"
-
-	source ${OPENSHIFT_REPO_DIR}.openshift/config/ceylon.properties
+	setupCeylonArgs "compile"
 
 	printf "Compiling every module in ${OPENSHIFT_REPO_DIR}/source:\n"
-	${CEYLON_BIN_DIR}/ceylon compile --javac=-encoding=utf8 --src ${OPENSHIFT_REPO_DIR}/source --out ${OPENSHIFT_CEYLON_MODULES_REPO_DIR}/repo ${ceylon_repos}
+       	compile_params="compile ${ceylon_args} ${ceylon_compile_args} ${ceylon_repos} --encoding ${ceylon_encoding:-utf8} --src ${OPENSHIFT_REPO_DIR}/source --out ${OPENSHIFT_CEYLON_MODULES_REPO_DIR}/repo"
+	${CEYLON_BIN_DIR}/ceylon ${compile_params}
 	
 	echo "Ceylon build done." | tee -a ${CEYLON_LOG_PATH}
 }
