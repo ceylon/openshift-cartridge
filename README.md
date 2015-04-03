@@ -8,7 +8,7 @@ Cartridge definition url: https://raw.github.com/ceylon/openshift-cartridge/mast
 
 # Write your own Ceylon application
 
-All information is located in the template's [README](template/README).
+All information is located in the template's [README](template/README.md).
 
 # Test the cartridge
 
