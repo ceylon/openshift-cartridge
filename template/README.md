@@ -35,7 +35,7 @@ It's trivial to make your application run on OpenShift. Just take your existing 
 import:
 
 ```ceylon
-import ceylon.openshift "1.1.0";
+import ceylon.openshift "1.1.1";
 ```
 
 This will let you access OpenShift information:
@@ -49,20 +49,20 @@ void start(String host, int port){
 
 shared void run(){
   if(openshift.running){
-    start(openshift.ip, openshift.port);
+    start(openshift.ceylon.ip, openshift.ceylon.port);
   }else{
     start("localhost", 80);
   }
 }
 ```
 
-Similarly you can get information about your database. Read the [API docs for more information](https://modules.ceylon-lang.org/repo/1/ceylon/openshift/1.1.0/module-doc/api/openshift.object.html).
+Similarly you can get information about your database. Read the [API docs for more information](https://modules.ceylon-lang.org/repo/1/ceylon/openshift/1.1.1/module-doc/api/openshift.object.html).
 
 Now you just have to add the required OpenShift setup to your application, for which
 you can install the `ceylon openshift` command (only need to do this once):
 
 ```shell
-$ ceylon plugin install ceylon.openshift/1.1.0
+$ ceylon plugin install ceylon.openshift/1.1.1
 ```
 
 And now you just turn your Ceylon application into a Ceylon OpenShift application:
