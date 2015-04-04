@@ -1,6 +1,14 @@
-# Write your own application
+# Write your application from scratch
 
-Start with the template, which contains a demo web application named `ceylon.demo.net` and contains the following structure:
+You can either use the Web Console, or the following command-line to create your Ceylon OpenShift application
+from scratch:
+
+```shell
+$ rhc create-app ceylonapp https://raw.github.com/ceylon/openshift-cartridge/master/metadata/manifest.yml
+```
+
+When you use the Ceylon cartridge with no initial code repository, you will start with the template application,
+which contains a demo web application named `ceylon.demo.net` and contains the following structure:
 
 ```
 - README               # Useful info
@@ -20,6 +28,57 @@ You can replace the source module with the one you want to run, or if you only w
 see the Configuration section below. You can put any extra module dependency you want in `.openshift/config/modules`
 if they cannot be found on Herd. Then don't forget to specify your main module in `.openshift/config/ceylon.properties`
 and you're set!
+
+# Turn your Ceylon application into an OpenShift application:
+
+It's trivial to make your application run on OpenShift. Just take your existing application and add the following
+import:
+
+```ceylon
+import ceylon.openshift "1.1.0";
+```
+
+This will let you access OpenShift information:
+
+```ceylon
+import ceylon.openshift { openshift }
+
+void start(String host, int port){
+  // ...
+}
+
+shared void run(){
+  if(openshift.running){
+    start(openshift.ip, openshift.port);
+  }else{
+    start("localhost", 80);
+  }
+}
+```
+
+Similarly you can get information about your database. Read the [API docs for more information](https://modules.ceylon-lang.org/repo/1/ceylon/openshift/1.1.0/module-doc/api/openshift.object.html).
+
+Now you just have to add the required OpenShift setup to your application, for which
+you can install the `ceylon openshift` command (only need to do this once):
+
+```shell
+$ ceylon plugin install ceylon.openshift/1.1.0
+```
+
+And now you just turn your Ceylon application into a Ceylon OpenShift application:
+
+```shell
+$ ceylon openshift init your.main.module/1.0
+```
+
+This will create the necessary setup files in the `.openshift` directory as described above.
+
+Now you're ready to start, so just push your code somewhere over git and create your
+OpenShift application with the Ceylon cartridge:
+
+```shell
+$ rhc create-app --from-code <your-git-url> ceylonapp https://raw.github.com/ceylon/openshift-cartridge/master/metadata/manifest.yml
+```
 
 # Configuration of your application
 
