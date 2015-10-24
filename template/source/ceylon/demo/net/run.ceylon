@@ -7,7 +7,8 @@ import ceylon.net.http.server {
     isRoot
 }
 import ceylon.net.http.server.endpoints {
-    serveStaticFile
+    serveStaticFile,
+    redirect
 }
 import ceylon.io {
     SocketAddress
@@ -60,12 +61,4 @@ shared void run() {
     newServer { resourceEndpoint, todo, redirectToIndex }
         .start(SocketAddress(host, port));
 
-}
-
-void redirect(String url)
-        (Request request, Response response, 
-         void complete()) {
-    response.responseStatus = 301;
-    response.addHeader(Header("Location", url));
-    complete();
 }
