@@ -3,8 +3,7 @@ import ceylon.net.http {
 }
 import ceylon.net.http.server {
     Response,
-    Request,
-    Session
+    Request
 }
 import ceylon.io.charset {
     utf8

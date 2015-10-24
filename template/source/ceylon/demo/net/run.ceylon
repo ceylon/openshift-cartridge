@@ -1,5 +1,4 @@
 import ceylon.net.http.server {
-    Server,
     newServer,
     AsynchronousEndpoint,
     startsWith,

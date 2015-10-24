@@ -36,7 +36,7 @@ shared class TaskManager(Session session) {
 
     shared Collection<Task> tasks(String q = "") 
             => if (q.empty) then taskMap.items 
-               else queryTasks(q).collect(Element.item);
+               else queryTasks(q).collect(Entry.item);
 
     shared void taskDone(String id, Boolean done) 
             => taskById(id).done = done;
