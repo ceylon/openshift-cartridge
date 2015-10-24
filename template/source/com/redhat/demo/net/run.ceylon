@@ -12,7 +12,8 @@ import ceylon.net.http.server.endpoints {
 import ceylon.io {
     SocketAddress
 }
-import ceylon.demo.net.todo {
+
+import com.redhat.demo.net.todo {
     demo
 }
 
