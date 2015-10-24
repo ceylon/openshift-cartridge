@@ -1,12 +1,22 @@
-import ceylon.net.http.server.endpoints { serveStaticFile }
-import ceylon.net.http.server { Server, newServer, AsynchronousEndpoint, startsWith, Endpoint, isRoot }
-import ceylon.io { SocketAddress }
-import ceylon.demo.net.todo { demo }
-import ceylon.demo.net.todo.endpoints { redirect }
-import ceylon.net.uri { Uri, Path, PathSegment }
+import ceylon.net.http.server {
+    Server,
+    newServer,
+    AsynchronousEndpoint,
+    startsWith,
+    Endpoint,
+    isRoot
+}
+import ceylon.net.http.server.endpoints {
+    serveStaticFile
+}
+import ceylon.io {
+    SocketAddress
+}
+import ceylon.demo.net.todo {
+    demo
+}
 
-
-"Run the module `ceylon.demo.net`."
+"Run the server."
 by ("Matej Lazar")
 shared void run() {
 
@@ -26,7 +36,8 @@ shared void run() {
                     "OPENSHIFT_REPO_DIR");
     assert (exists repoDir);
     
-    value resourceEndpoint = AsynchronousEndpoint {
+    value resourceEndpoint 
+            = AsynchronousEndpoint {
         path = startsWith("/css")
            .or(startsWith("/img"))
            .or(startsWith("/js"))
@@ -34,12 +45,14 @@ shared void run() {
         service => serveStaticFile(repoDir + "web-content/");
     };
     
-    value redirectToIndex = AsynchronousEndpoint {
+    value redirectToIndex 
+            = AsynchronousEndpoint {
         path = isRoot();
         service => redirect("/index.html");
     };
-        
-    value todo = Endpoint {
+    
+    value todo 
+            = Endpoint {
         path = startsWith("/todo");
         service => demo;
     };
@@ -47,4 +60,12 @@ shared void run() {
     newServer { resourceEndpoint, todo, redirectToIndex }
         .start(SocketAddress(host, port));
 
+}
+
+void redirect(String url)
+        (Request request, Response response, 
+         void complete()) {
+    response.responseStatus = 301;
+    response.addHeader(Header("Location", url));
+    complete();
 }

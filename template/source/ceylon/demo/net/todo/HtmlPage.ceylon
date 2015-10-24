@@ -1,5 +1,4 @@
-import ceylon.html { Body, Html, Head, html5, Div, CharsetMeta, Link, stylesheet, css, Script, javascript, DataContainer, Snippet, BlockOrInline, Form, Label, Input, InputType, text, Button, submit, H1, Tr, Table, Td, checkbox, Span, Node, Tag, StyledElement, CssClass, ParentNode, TextNode, BaseElement, InlineElement }
-import ceylon.demo.net.todo.domain { Task }
+import ceylon.html { ... }
 
 by("Matej Lazar")
 
@@ -14,8 +13,8 @@ by("Matej Lazar")
 //    shared actual String text = nothing;
 //}
 
-Html wireFrame(String path, {BlockOrInline+} innerElements) {
-    return Html { 
+Html wireFrame(String path, {BlockOrInline+} innerElements) 
+    => Html { 
         html5;
         Head {
             title = "Ceylon Demo"; 
@@ -50,10 +49,9 @@ Html wireFrame(String path, {BlockOrInline+} innerElements) {
             }
         };
     };
-}
 
-Form inputForm(String q) {
-    return Form { 
+Form inputForm(String q) 
+    => Form { 
         action = "";
         method = "GET";
         children = {
@@ -96,9 +94,8 @@ Form inputForm(String q) {
             }
         };
     };
-}
 
-Table taksList(Collection<Task> tasks, String q) {
+Table taskList(Collection<Task> tasks, String q) {
     
     Td column1(Task task) {
         String onClickDone="document.location='?q=" + q + "&" + (task.done then "markNotDone" else "markDone") + "=" + task.id + "'";

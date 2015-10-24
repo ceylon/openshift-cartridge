@@ -1,46 +1,58 @@
-import ceylon.net.http.server { Response, Request, Session}
-import ceylon.net.http { contentType }
-import ceylon.io.charset { utf8 }
-import ceylon.demo.net.todo.dao { TaskDAO }
-import ceylon.demo.net.todo.domain { createTask }
-import ceylon.html.serializer { NodeSerializer }
-import ceylon.html { BlockOrInline, Html }
+import ceylon.net.http {
+    contentType
+}
+import ceylon.net.http.server {
+    Response,
+    Request,
+    Session
+}
+import ceylon.io.charset {
+    utf8
+}
+import ceylon.html {
+    Html
+}
+import ceylon.html.serializer {
+    NodeSerializer
+}
 
 by ("Matej Lazar")
 shared void demo(Request request, Response response) {
-    Session session = request.session;
     
-    response.addHeader(contentType { contentType = "text/html"; charset = utf8; });
+    response.addHeader(contentType {
+        contentType = "text/html";
+        charset = utf8;
+    });
 
-    TaskDAO tasksDAO = TaskDAO(session);
-
-    String q = request.parameter("q") else "";
-
-    String? message = request.parameter("message");
-    String? markDone = request.parameter("markDone");
-    String? markNotDone = request.parameter("markNotDone");
-    String? remove = request.parameter("remove");
-
-    if (exists message, !message.empty) {
-        tasksDAO.addTask(createTask(message));
+    value manager = TaskManager(request.session);
+    
+    if (exists message = request.parameter("message"), 
+            !message.empty) {
+        manager.addTask(Task(message));
     }
 
-    if (exists markDone, !markDone.empty) {
-        tasksDAO.taskDone(markDone, true);
+    if (exists markDone = request.parameter("markDone"), 
+            !markDone.empty) {
+        manager.taskDone(markDone, true);
     }
 
-    if (exists markNotDone, !markNotDone.empty) {
-        tasksDAO.taskDone(markNotDone, false);
+    if (exists markNotDone = request.parameter("markNotDone"), 
+            !markNotDone.empty) {
+        manager.taskDone(markNotDone, false);
     }
 
-    if (exists remove, !remove.empty) {
-        tasksDAO.delete(remove);
+    if (exists remove = request.parameter("remove"), 
+            !remove.empty) {
+        manager.delete(remove);
     }
 
-    {BlockOrInline+} pageElements = {
-        inputForm(q),
-        taksList(tasksDAO.tasks(q), q)
-    };
-    Html html = wireFrame("", pageElements);
+    Html html =
+            let (q = request.parameter("q") else "") 
+            wireFrame {
+                path="";
+                inputForm(q),
+                taskList(manager.tasks(q), q)
+            };
+    
     NodeSerializer(response.writeString).serialize(html);
 }
