@@ -108,7 +108,7 @@ The following environment variables will be available to your application and co
 - `CEYLON_PID_FILE`: Path to the Ceylon cartridge run PID file (the PID of your Ceylon application)
 
 - `OPENSHIFT_CEYLON_IP`: The (local) IP your application should bind on
-- `OPENSHIFT_CEYLON_PORT`: The (local) port your application should bind on
+- `OPENSHIFT_CEYLON_HTTP_PORT`: The (local) port your application should bind on
 
 On top of the [standard OpenShift ones](https://developers.openshift.com/en/managing-environment-variables.html):
 
