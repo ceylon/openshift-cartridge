@@ -1,2 +1,2 @@
 by ("Matej Lazar")
-package ceylon.demo.net;
+package com.redhat.demo.net;
