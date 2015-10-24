@@ -39,8 +39,8 @@ function setupCeylonArgs(){
 	fi
 
 	# FIXME: those are only for the template
-	ceylon_run_args="--define server.bind.host=${OPENSHIFT_CEYLON_IP}"
-	ceylon_run_args="${ceylon_run_args} --define server.files.location=${OPENSHIFT_REPO_DIR}web-content/"
+	ceylon_run_args="-Dserver.bind.host=${OPENSHIFT_CEYLON_IP}"
+	ceylon_run_args="${ceylon_run_args} -Dserver.files.location=${OPENSHIFT_REPO_DIR}web-content/"
 	
 	source ${OPENSHIFT_REPO_DIR}.openshift/config/ceylon.properties
 }
