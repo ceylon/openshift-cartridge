@@ -26,21 +26,20 @@ function setupCeylonArgs(){
 	export JAVA_OPTS
 
 	# extra repo from the application
-	ceylon_repos=" --rep ${OPENSHIFT_REPO_DIR}.openshift/config/modules"
+	ceylon_repos=" --rep=${OPENSHIFT_REPO_DIR}.openshift/config/modules"
 	# our cache location
-	ceylon_repos="${ceylon_repos} --cacherep ${OPENSHIFT_CEYLON_MODULES_REPO_DIR}/cache"
+	ceylon_repos="${ceylon_repos} --cacherep=${OPENSHIFT_CEYLON_MODULES_REPO_DIR}/cache"
 	# FIXME: pretty sure that is not required
-	ceylon_repos="${ceylon_repos} --rep http://modules.ceylon-lang.org/repo/1/"
+	ceylon_repos="${ceylon_repos} --rep=http://modules.ceylon-lang.org/repo/1/"
 	# where we compile our modules
-	ceylon_repos="${ceylon_repos} --rep ${OPENSHIFT_CEYLON_MODULES_REPO_DIR}/repo"
+	ceylon_repos="${ceylon_repos} --rep=${OPENSHIFT_CEYLON_MODULES_REPO_DIR}/repo"
 	# See if we need aether
 	if [ -f "${OPENSHIFT_REPO_DIR}/.openshift/markers/enable_aether" ]; then
-		ceylon_repos="${ceylon_repos} --rep aether:$OPENSHIFT_DATA_DIR/.m2/conf/settings.xml"
+		ceylon_repos="${ceylon_repos} --rep=aether:$OPENSHIFT_DATA_DIR/.m2/conf/settings.xml"
 	fi
 
 	# FIXME: those are only for the template
-	ceylon_run_args="-Dserver.bind.host=${OPENSHIFT_CEYLON_IP}"
-	ceylon_run_args="${ceylon_run_args} -Dserver.files.location=${OPENSHIFT_REPO_DIR}web-content/"
+	ceylon_run_args="--define=server.bind.host=${OPENSHIFT_CEYLON_IP} --define=server.bind.port=${OPENSHIFT_CEYLON_PORT} --define=server.files.location=${OPENSHIFT_REPO_DIR}web-content/"
 	
 	source ${OPENSHIFT_REPO_DIR}.openshift/config/ceylon.properties
 }
@@ -57,7 +56,7 @@ function start() {
 		echo "Application is already running" 1>&2
 	else
 		setupCeylonArgs "run"
-        	run_params="run ${ceylon_args} ${ceylon_run_args} ${ceylon_repos} ${ceylon_module} ${ceylon_module_args}"
+        	run_params="run ${ceylon_args} ${ceylon_repos} ${ceylon_module} ${ceylon_module_args}"
 
 		echo "Executing ${CEYLON_BIN_DIR}/ceylon" | tee -a ${CEYLON_LOG_PATH}
 		echo "With params: ${run_params}" | tee -a ${CEYLON_LOG_PATH}
