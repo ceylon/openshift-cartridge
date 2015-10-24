@@ -45,12 +45,12 @@ function ishttpup() {
     let count=0
     while [ ${count} -lt 30 ]
     do
-        if echo 2> /dev/null > "/dev/tcp/${OPENSHIFT_CEYLON_IP}/8080"; then
-            echo "Found ${OPENSHIFT_CEYLON_IP}:8080 listening port"
+        if echo 2> /dev/null > "/dev/tcp/${OPENSHIFT_CEYLON_IP}/${OPENSHIFT_CEYLON_PORT}"; then
+            echo "Found ${OPENSHIFT_CEYLON_IP}:${OPENSHIFT_CEYLON_PORT} listening port"
             return 0
         fi
         let count=${count}+1
-        echo "Waiting for http server to boot on ${OPENSHIFT_CEYLON_IP}:8080 ... ($count/30)"
+        echo "Waiting for http server to boot on ${OPENSHIFT_CEYLON_IP}:${OPENSHIFT_CEYLON_PORT} ... ($count/30)"
         sleep 2
     done
     return 1
