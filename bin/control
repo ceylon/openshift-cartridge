@@ -56,7 +56,7 @@ function start() {
 		echo "Application is already running" 1>&2
 	else
 		setupCeylonArgs "run"
-        	run_params="run ${ceylon_args} ${ceylon_repos} ${ceylon_module} ${ceylon_module_args}"
+        	run_params="run ${ceylon_args} ${ceylon_run_args} ${ceylon_repos} ${ceylon_module} ${ceylon_module_args}"
 
 		echo "Executing ${CEYLON_BIN_DIR}/ceylon" | tee -a ${CEYLON_LOG_PATH}
 		echo "With params: ${run_params}" | tee -a ${CEYLON_LOG_PATH}
