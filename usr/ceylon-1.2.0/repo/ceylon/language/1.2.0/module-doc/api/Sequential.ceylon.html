@@ -1,0 +1,165 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>Sequential.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;A possibly-empty, immutable sequence of values. The type 
+ `Sequential&lt;Element&gt;` may be abbreviated `[Element*]` or 
+ `Element[]`. 
+ 
+ `Sequential` has two enumerated subtypes:
+ 
+ - [[Empty]], abbreviated `[]`, represents an empty 
+   sequence, and
+ - [[Sequence]]`&lt;Element&gt;`, abbreviated `[Element+]` 
+   represents a non-empty sequence, and has the very 
+   important subclass [[Tuple]].&quot;
+see (`class Tuple`)
+tagged(&quot;Sequences&quot;)
+shared interface Sequential&lt;out Element=Anything&gt;
+        of []|[Element+]
+        satisfies List&lt;Element&gt; &amp; 
+                  Ranged&lt;Integer,Element,Element[]&gt; {
+    
+    &quot;The strictly-positive length of this sequence, that is, 
+     the number of elements in this sequence.&quot;
+    shared actual formal Integer size;
+    
+    &quot;A sequence containing all indexes of this sequence,
+     that is, every index in the range `0:sequence.size`.&quot;
+    shared actual default Integer[] keys =&gt; 0:size;
+    
+    &quot;This sequence.&quot;
+    shared actual default Element[] sequence() =&gt; this;
+    
+    &quot;The rest of the sequence, without the first element.&quot;
+    shared actual formal Element[] rest;
+    
+    &quot;A sequence containing the elements of this sequence in
+     reverse order to the order in which they occur in this
+     sequence, or the [[empty sequence|empty]] if this
+     sequence is the empty sequence.&quot;
+    shared actual formal Element[] reversed;
+    
+    &quot;Produces a sequence formed by repeating the elements of
+     this sequence the given [[number of times|times]], or
+     the [[empty sequence|empty]] if `times&lt;=0` or if this
+     sequence is the empty sequence.&quot;
+    shared actual formal Element[] repeat(Integer times);
+    
+    &quot;Select the first elements of this sequence, returning 
+     a sequence no longer than the given length. If this 
+     sequence is shorter than the given length, return this 
+     sequence. Otherwise return a sequence of the given 
+     length.&quot;
+    shared actual default Element[] initial(Integer length)
+            =&gt; this[...length-1];
+    
+    &quot;Select the last elements of the sequence, returning a 
+     sequence no longer than the given length. If this 
+     sequence is shorter than the given length, return this 
+     sequence. Otherwise return a sequence of the given 
+     length.&quot;
+    shared actual default Element[] terminal(Integer length)
+            =&gt; this[size-length...]; 
+    
+    &quot;This sequence.&quot;
+    shared actual default Element[] clone() =&gt; this;
+    
+    &quot;Trim the elements satisfying the given predicate
+     function from the start and end of this sequence, 
+     returning a sequence no longer than this sequence.&quot;
+    shared actual default 
+    Element[] trim(
+        &quot;The predicate function that determines if an 
+         element at the start or end of this sequence should
+         be trimmed&quot;
+        Boolean trimming(Element&amp;Object element))
+            =&gt; super.trim(trimming).sequence(); //TODO: inefficient?
+    
+    &quot;Trim the elements satisfying the given predicate
+     function from the start of this sequence, returning 
+     a sequence no longer than this sequence.&quot;
+    shared actual default 
+    Element[] trimLeading(
+        &quot;The predicate function that determines if an 
+         element at the start of this sequence should be 
+         trimmed&quot;
+        Boolean trimming(Element&amp;Object element))
+            =&gt; super.trimLeading(trimming).sequence(); //TODO: inefficient?
+    
+    &quot;Trim the elements satisfying the given predicate
+     function from the end of this sequence, returning a 
+     sequence no longer than this sequence.&quot;
+    shared actual default 
+    Element[] trimTrailing(
+        &quot;The predicate function that determines if an 
+         element at the end of this sequence should be 
+         trimmed&quot;
+        Boolean trimming(Element&amp;Object element))
+            =&gt; super.trimTrailing(trimming).sequence(); //TODO: inefficient?
+    
+    &quot;Return two sequences, the first containing the elements
+     that occur before the given [[index]], the second with
+     the elements that occur after the given `index`. If the
+     given `index` is outside the range of indices of this
+     list, one of the returned sequences will be empty.&quot;
+    shared actual default 
+    [Element[],Element[]] slice(Integer index)
+            =&gt; [this[...index-1], this[index...]];
+    
+    &quot;Returns a new sequence that starts with the specified
+     [[element]], followed by the elements of this sequence,
+     in the order they occur in this sequence.&quot;
+    see (`function prepend`,
+         `function withTrailing`,
+         `function follow`)
+    shared formal 
+    [Other,Element*] withLeading&lt;Other&gt;(
+        &quot;The first element of the resulting sequence.&quot;
+        Other element);
+    
+    &quot;Returns a new sequence that starts with the elements of 
+     this sequence, in the order they occur in this sequence, 
+     and ends with the specified [[element]].&quot;
+    see (`function append`,
+         `function withLeading`)
+    shared formal 
+    [Element|Other+] withTrailing&lt;Other&gt;(
+        &quot;The last element of the resulting sequence.&quot;
+        Other element);
+    
+    &quot;Return a sequence containing the elements of this 
+     sequence, in the order in which they occur in this 
+     sequence, followed by the given [[elements]], in the 
+     order in which they occur in the given sequence.&quot;
+    see (`function prepend`,
+         `function withTrailing`,
+         `function concatenate`,
+         `function chain`)
+    shared formal 
+    [Element|Other*] append&lt;Other&gt;(Other[] elements);
+    
+    &quot;Return a sequence containing the given [[elements]], in 
+     the order in which they occur in the given sequence,
+     followed by the elements of this sequence, in the order 
+     in which they occur in this sequence.&quot;
+    see (`function append`,
+         `function withLeading`,
+         `function concatenate`)
+    shared formal 
+    [Element|Other*] prepend&lt;Other&gt;(Other[] elements);
+    
+    &quot;A string of form `\&quot;[ x, y, z ]\&quot;` where `x`, `y`, and 
+     `z` are the `string` representations of the elements of 
+     this collection, as produced by the iterator of the 
+     collection, or the string `\&quot;{}\&quot;` if this collection 
+     is empty. If the collection iterator produces the value 
+     `null`, the string representation contains the string 
+     `\&quot;null\&quot;`.&quot;
+    shared actual default 
+    String string 
+            =&gt; empty then &quot;[]&quot; else &quot;[``commaList(this)``]&quot;;
+    
+}
+</pre></body></html>

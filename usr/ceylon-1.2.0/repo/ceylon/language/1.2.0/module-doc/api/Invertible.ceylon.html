@@ -1,0 +1,40 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>Invertible.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;Abstraction of [[additive|Summable]] numeric types which 
+ support a unary operation `-x` producing the additive
+ inverse of `x`. Every `Invertible` type supports a binary 
+ subtraction operation `x-y`.
+ 
+     Integer negativeOne = -1;
+     Float delta = x-y;
+ 
+ A concrete class that implements this interface should be a 
+ mathematical _group_. That is, it should have an additive 
+ identity, denoted `0`, and satisfy:
+ 
+ - `0+x == x+0 == x`
+ - `x + -x == 0`
+ 
+ Subtraction must be defined so that it is consistent with
+ the additive inverse:
+ 
+ - `x - y == x + -y`&quot;
+see (`class Integer`, `class Float`)
+by (&quot;Gavin&quot;)
+tagged(&quot;Numbers&quot;)
+shared interface Invertible&lt;Other&gt; of Other
+        satisfies Summable&lt;Other&gt;
+    given Other satisfies Invertible&lt;Other&gt; {
+    
+    &quot;The additive inverse of this value.&quot;
+    shared formal Other negated;
+    
+    &quot;The difference between this number and the given 
+     number. Must produce the value `x + -y`.&quot;
+    shared default Other minus(Other other) =&gt; this + -other;
+    
+}
+</pre></body></html>

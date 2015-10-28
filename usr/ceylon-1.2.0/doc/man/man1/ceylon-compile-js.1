@@ -1,0 +1,104 @@
+'\" -*- coding: us-ascii -*-
+.if \n(.g .ds T< \\FC
+.if \n(.g .ds T> \\F[\n[.fam]]
+.de URL
+\\$2 \(la\\$1\(ra\\$3
+..
+.if \n(.g .mso www.tmac
+.TH "ceylon compile-js" 1 "28 October 2015" "" ""
+.SH NAME
+ceylon compile-js \- Compiles Ceylon source code to JavaScript and directly produces module and source archives in a module repository
+.SH SYNOPSIS
+'nh
+.fi
+.ad l
+\fBceylon compile-js\fR \kx
+.if (\nx>(\n(.l/2)) .nr x (\n(.l/5)
+'in \n(.iu+\nxu
+[--cacherep=\fIurl\fR] [--compact] [--cwd=\fIdir\fR] [--encoding=\fIencoding\fR] [--lexical-scope-style] [--maven-overrides=\fIurl\fR] [--no-comments] [--no-default-repositories] [--no-indent] [--no-module] [--offline] [--out=\fIurl\fR] [--overrides=\fIurl\fR] [--pass=\fIsecret\fR] [--profile] [--rep=\fIurl\fR...] [--resource=\fIdirs\fR...] [--resource-root=\fIfolder-name\fR] [--skip-src-archive] [--source=\fIdirs\fR...] [--src=\fIdirs\fR...] [--suppress-warning[=\fIwarnings\fR...]] [--sysrep=\fIurl\fR] [--timeout=\fIseconds\fR] [--user=\fIname\fR] [--verbose[=\fIflags\fR]] [--] [moduleOrFile]\&...
+'in \n(.iu-\nxu
+.ad b
+'hy
+.SH OPTIONS
+.TP 
+--cacherep=\fIurl\fR
+Specifies the folder to use for caching downloaded modules. (default: \*(T<~/.ceylon/cache\*(T>)
+.TP 
+--compact
+Equivalent to \*(T<\-\-no\-indent\*(T> \*(T<\-\-no\-comments\*(T>
+.TP 
+--cwd=\fIdir\fR
+Specifies the current working directory for this tool. (default: the directory where the tool is run from)
+.TP 
+--encoding=\fIencoding\fR, -E \fIencoding\fR
+Sets the encoding used for reading source files (default: platform-specific)
+.TP 
+--lexical-scope-style
+Create lexical scope-style JS code
+.TP 
+--maven-overrides=\fIurl\fR
+Specifies the xml file to use to load Maven artifact overrides. See http://ceylon-lang.org/documentation/current/reference/repository/maven/ for information. Deprecated: use --overrides.
+.TP 
+--no-comments
+Do \fBnot\fR generate any comments
+.TP 
+--no-default-repositories
+Indicates that the default repositories should not be used.
+.TP 
+--no-indent
+Do \fBnot\fR indent code
+.TP 
+--no-module
+Do \fBnot\fR wrap generated code as CommonJS module
+.TP 
+--offline, -L
+Enables offline mode that will prevent connections to remote repositories.
+.TP 
+--out=\fIurl\fR, -o \fIurl\fR
+Specifies the output module repository (which must be publishable). (default: \*(T<./modules\*(T>)
+.TP 
+--overrides=\fIurl\fR
+Specifies the xml file to use to load module overrides. See http://ceylon-lang.org/documentation/current/reference/repository/maven/ for information. Experimental.
+.TP 
+--pass=\fIsecret\fR
+Sets the password for use with an authenticated output repository(no default).
+.TP 
+--profile
+Time the compilation phases (results are printed to standard error)
+.TP 
+--rep=\fIurl\fR
+Specifies a module repository containing dependencies. Can be specified multiple times. (default: \*(T<modules\*(T>, \*(T<~/.ceylon/repo\*(T>, \*(T<http://modules.ceylon\-lang.org/repo/1\*(T>)
+.TP 
+--resource=\fIdirs\fR, -r \fIdirs\fR
+Path to directory containing resource files. Can be specified multiple times; you can also specify several paths separated by your operating system's \*(T<PATH\*(T> separator. (default: \*(T<./resource\*(T>)
+.TP 
+--resource-root=\fIfolder-name\fR, -R \fIfolder-name\fR
+Sets the special resource folder name whose files will end up in the root of the resulting module CAR file (default: ROOT).
+.TP 
+--skip-src-archive
+Do \fBnot\fR generate .src archive - useful when doing joint compilation
+.TP 
+--source=\fIdirs\fR
+An alias for \*(T<\-\-src\*(T> (default: \*(T<./source\*(T>)
+.TP 
+--src=\fIdirs\fR, -s \fIdirs\fR
+Path to source files. Can be specified multiple times; you can also specify several paths separated by your operating system's \*(T<PATH\*(T> separator. (default: \*(T<./source\*(T>)
+.TP 
+--suppress-warning[=\fIwarnings\fR], -W
+Suppress the reporting of the given warnings. If no \*(T<warnings\*(T> are given then suppresss the reporting of all warnings, otherwise just suppresss those which are present. Allowed flags include: \*(T<filenameNonAscii\*(T>, \*(T<filenameClaselessCollision\*(T>, \*(T<deprecation\*(T>, \*(T<compilerAnnotation\*(T>, \*(T<doclink\*(T>, \*(T<expressionTypeNothing\*(T>, \*(T<unusedDeclaration\*(T>, \*(T<unusedImport\*(T>, \*(T<ceylonNamespace\*(T>, \*(T<javaNamespace\*(T>, \*(T<suppressedAlready\*(T>, \*(T<suppressesNothing\*(T>.
+.TP 
+--sysrep=\fIurl\fR
+Specifies the system repository containing essential modules. (default: \*(T<$CEYLON_HOME/repo\*(T>)
+.TP 
+--timeout=\fIseconds\fR, -T \fIseconds\fR
+Sets the timeout for connections to remote repositories, use 0 for no timeout (default: 20).
+.TP 
+--user=\fIname\fR
+Sets the user name for use with an authenticated output repository(no default).
+.TP 
+--verbose[=\fIflags\fR], -d
+Produce verbose output. If no \*(T<flags\*(T> are given then be verbose about everything, otherwise just be verbose about the flags which are present. Allowed flags include: \*(T<all\*(T>, \*(T<loader\*(T>, \*(T<ast\*(T>, \*(T<code\*(T>, \*(T<stitcher\*(T>.
+.SH "CONFIGURATION FILE"
+The compile tool accepts the following options from the Ceylon configuration file: \*(T<defaults.offline\*(T>, \*(T<defaults.encoding\*(T>, \*(T<compiler.source\*(T>, \*(T<compiler.resource\*(T> and \*(T<repositories\*(T> (the equivalent options on the command line always have precedence).
+.SH REPOSITORIES
+Repositories like those specified with the \*(T<\-\-rep\*(T> or \*(T<\-\-out\*(T> options can be file paths, HTTP urls to remote servers or can be names of repositories when prepended with a \*(T<+\*(T> symbol. These names refer to repositories defined in the configuration file or can be any of the following predefined names \*(T<+SYSTEM\*(T>, \*(T<+CACHE\*(T>, \*(T<+LOCAL\*(T>, \*(T<+USER\*(T> or \*(T<+REMOTE\*(T>. For more information see http://ceylon-lang.org/documentation/1.0/reference/tool/config

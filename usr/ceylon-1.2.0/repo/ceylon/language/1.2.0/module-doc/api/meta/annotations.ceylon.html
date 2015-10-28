@@ -1,0 +1,32 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>annotations.ceylon</title><link href='../.resources/favicon.ico' rel='shortcut icon'/>
+<link href='../.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='../.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '../.resources/'</script><script src='../.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='../.resources/rainbow.min.js' type='text/javascript'></script><script src='../.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='../.resources/ceylon.js' type='text/javascript'></script><script src='../.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>import ceylon.language.meta.model { Class }
+
+/*
+ * Do we really need to enforce that you can&apos;t 
+ * ask for the annotations of a certain type for a
+ * certain program element unless the annotation 
+ * type can appear at that program element? Why not
+ * just return no annotations?
+ * 
+ */
+
+&quot;The annotations of the [[given type|annotationType]] 
+ applied to the [[given program element|programElement]]. 
+ For example:
+ 
+     // Does the process declaration have any annotations
+     // of type SharedAnnotation?
+     value isShared = annotations(`SharedAnnotation`, `value process`) exists;
+ 
+ The annotations may be returned in any order.&quot;
+shared native Values annotations&lt;Value, Values, in ProgramElement&gt;(
+    Class&lt;ConstrainedAnnotation&lt;Value,Values,ProgramElement&gt;&gt; annotationType,
+    ProgramElement programElement)
+        given Value satisfies ConstrainedAnnotation&lt;Value,Values,ProgramElement&gt;
+        //given Values of &lt;Value?&gt; | &lt;Value[]&gt;
+        given ProgramElement satisfies Annotated;
+</pre></body></html>

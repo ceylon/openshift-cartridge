@@ -1,0 +1,42 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>Iterator.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;Produces the elements of an [[Iterable]] object. For 
+ example, this class has an `Iterator` that produces the 
+ integers from `min` to `max`:
+ 
+     class IntegerIterable(Integer min, Integer max) 
+            satisfies {Integer+} {
+        iterator() =&gt; object satisfies Iterator&lt;Integer&gt; {
+            variable value i = min;
+            next() =&gt; i&lt;=max then i++ else finished;
+        };
+     }
+ 
+ An iterator is _exhausted_ when [[next]] produces the 
+ value [[finished]].&quot;
+see (`interface Iterable`)
+by (&quot;Gavin&quot;)
+tagged(&quot;Streams&quot;)
+shared interface Iterator&lt;out Element&gt; {
+    &quot;The next element, or [[finished]] if there are no more 
+     elements to be iterated.
+     
+     Repeated invocations of `next()` for a given iterator
+     must eventually produce any given element of the stream
+     to which the iterator belongs. A given iterator must
+     not produce the same element of the stream more often
+     than the element occurs in the stream.
+     
+     If an invocation of `next()` for a given iterator 
+     produces the value `finished`, then every future 
+     invocation of `next()` for that iterator must also
+     produce the value `finished`.
+     
+     An iterator for a nonfinite stream may never produce
+     the value `finished`.&quot;
+    shared formal Element|Finished next();
+}
+</pre></body></html>

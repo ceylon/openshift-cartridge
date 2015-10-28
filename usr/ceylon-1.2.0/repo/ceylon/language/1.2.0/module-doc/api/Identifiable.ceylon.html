@@ -1,0 +1,37 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>Identifiable.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;The abstract supertype of all types with a well-defined
+ notion of identity. Values of type `Identifiable` may be 
+ compared using the `===` operator to determine if they are 
+ references to the same object instance.
+ 
+ For the sake of convenience, this interface defines a 
+ default implementation of value equality equivalent to 
+ identity. Of course, subtypes are encouraged to refine this 
+ implementation.&quot;
+by (&quot;Gavin&quot;)
+tagged(&quot;Basic types&quot;)
+shared interface Identifiable {
+    
+    &quot;Identity equality comparing the identity of the two 
+     values. May be refined by subtypes for which value 
+     equality is more appropriate. Implementations must
+     respect the constraint that if `x===y` then `x==y` 
+     (equality is consistent with identity).&quot;
+    shared default actual Boolean equals(Object that)
+            =&gt; if (is Identifiable that)
+                    then this===that
+                    else false;
+    
+    &quot;The system-defined identity hash value of the instance. 
+     Subtypes which refine `equals()` must also refine 
+     `hash`, according to the general contract defined by 
+     [[Object]].&quot;
+    see (`function identityHash`)
+    shared default actual Integer hash =&gt; identityHash(this);
+    
+}
+</pre></body></html>

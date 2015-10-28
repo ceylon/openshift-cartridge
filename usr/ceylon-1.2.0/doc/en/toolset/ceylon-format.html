@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html><head><meta charset='UTF-8'/>
+<title>ceylon format</title>
+<link rel='stylesheet' type='text/css' href='bootstrap.min.css'/>
+<link rel='stylesheet' type='text/css' href='doc-tool.css'/>
+</head>
+<body>
+<div class='navbar navbar-inverse navbar-static-top'>
+<div class='navbar-inner'>
+<a class='tool-header' href='index.html'>
+<i class='tool-logo'></i>
+<span class='tool-label'>The Ceylon Toolset</span>
+<span><code class='tool-name'>ceylon format</code></span>
+<span class='tool-version'>1.2.0 (A Series Of Unlikely Explanations)</span>
+</a>
+<ul class='nav pull-right'><li class='divider-vertical'/><li id='infoDropdown' class='dropdown'><a href='#' title='Show keyboard shortcuts [Shortcut: ?]' role='button' class='dropdown-toggle' data-toggle='dropdown'><i class='icon-info'></i></a><ul id='info-dropdown-panel' class='dropdown-menu'><h4>Keyboard Shortcuts</h4><li class='divider'></li><div id='info-common-shortcuts'><div id='?'><span class='key badge'>?</span><span class='info muted'>Open this information panel</span></div><div id='i'><span class='key badge'>i</span><span class='info muted'>Jump to tool index</span></div><div id='s'><span class='key badge'>s</span><span class='info muted'>Jump to synopsis</span></div><div id='d'><span class='key badge'>d</span><span class='info muted'>Jump to description</span></div><div id='o'><span class='key badge'>o</span><span class='info muted'>Jump to options</span></div></div></ul></li></ul></div>
+</div>
+<div class='sub-navbar'>
+<div class='sub-navbar-inner'><div><code class='sub-navbar-tool'>ceylon format</code></div>
+<div class='sub-navbar-summary'><p>Formats Ceylon source code</p>
+</div>
+</div><div class='sub-navbar-menu'>
+<a href='index.html'><span title='Jump to tool index [Shortcut: I]'><span class='accesskey'>I</span>ndex</span></a><a href='#section-synopsis'><span title='Jump to tool synopsis [Shortcut: S]'><span class='accesskey'>S</span>ynopsis</span></a><a href='#section-description'><span title='Jump to tool description [Shortcut: D]'><span class='accesskey'>D</span>escription</span></a><a href='#section-options'><span title='Jump to tool options [Shortcut: O]'><span class='accesskey'>O</span>ptions</span></a></div></div>
+<div class='container-fluid'>
+<div class='section section-synopsis'>
+<table class='table table-condensed table-bordered'>
+<thead>
+<tr class='table-header' title='Click for expand/collapse'><td colspan='1' id='section-synopsis'><i class='icon-expand'></i><h2>Synopsis</h2>
+</td></tr>
+</thead>
+<tbody>
+<tr><td><div class='synopsis'><code>ceylon format  [<a href='#option--help'>--help</a>[=&lt;value&gt;]] [<a href='#option--version'>--version</a>]</code></div>
+</td></tr></tbody></table></div>
+
+<div class='section section-description'>
+<table class='table table-condensed table-bordered'>
+<thead>
+<tr class='table-header' title='Click for expand/collapse'><td colspan='1' id='section-description'><i class='icon-expand'></i><h2> Description</h2>
+</td></tr>
+</thead>
+<tbody>
+<tr><td><pre><code>ceylon format source
+</code></pre>
+
+<p>or, if you're worried about it breaking your source code (which shouldn't happen - if anything bad happens, error recovery kicks in and the original file is restored) or you just want to test it out:</p>
+
+<pre><code>ceylon format source --to source-formatted
+</code></pre>
+
+<p>You can also format multiple folders at the same time:</p>
+
+<pre><code>ceylon format source --and test-source --to formatted
+</code></pre>
+
+<p>which will recreate the <code>source</code> and <code>test-source</code> folders inside the new <code>formatted</code> folder.</p>
+</td></tr></tbody></table></div>
+<div class='section section-options'>
+<table class='table table-condensed table-bordered'>
+<thead>
+<tr class='table-header' title='Click for expand/collapse'><td colspan='2' id='section-options'><i class='icon-expand'></i><h2>Options</h2>
+</td></tr>
+</thead>
+<tbody>
+<tr><td class='span3' id='option--help'><code>--help[=value]</code></td>
+<td class='option-description'><p>Print this help message.
+(--help=options prints help for the various options.)</p>
+</td>
+</tr><tr><td class='span3' id='option--version'><code>--version</code></td>
+<td class='option-description'><p>Print version information.
+The first line is always just the module name and version in the format that <code>ceylon run</code> understands (<code>ceylon.formatter/x.y.z</code>), which might be useful for scripts.</p>
+</td>
+</tr></tbody></table></div><div class='section'>
+<table class='table table-condensed table-bordered'>
+<thead>
+<tr class='table-header' title='Click for expand/collapse'><td colspan='1'><i class='icon-expand'></i><h2> Other options</h2>
+</td></tr>
+</thead>
+<tbody>
+<tr><td><p>--${option name}=${option value}</p>
+
+<pre><code>Set a formatting option. The most useful ones are:
+
+--maxLineLength
+    The maximum line length, or `unlimited`.
+
+--indentMode
+    The indentation mode. Syntax: `x spaces` or `y-wide tabs` or `mix x-wide tabs, y spaces`.
+
+--lineBreak
+    `lf`, `crlf`, or `os` for the operating system's native line breaks.
+
+For a full list of options, see the output from `--help=options` or the documentation of the FormattingOptions class.</code></pre>
+</td></tr></tbody></table></div>
+</div><script type='text/javascript' src='jquery-1.8.2.min.js'></script><script type='text/javascript' src='bootstrap.min.js'></script><script type='text/javascript' src='doc-tool.js'></script><script type='text/javascript'>init();</script></body></html>

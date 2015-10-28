@@ -1,0 +1,42 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>GettableDeclaration.ceylon</title><link href='../../.resources/favicon.ico' rel='shortcut icon'/>
+<link href='../../.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='../../.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '../../.resources/'</script><script src='../../.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='../../.resources/rainbow.min.js' type='text/javascript'></script><script src='../../.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='../../.resources/ceylon.js' type='text/javascript'></script><script src='../../.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>import ceylon.language.meta.model {
+    Gettable,
+    Qualified,
+    ValueModel,  
+    AppliedType = Type, 
+    IncompatibleTypeException, 
+    StorageException 
+}
+
+&quot;&quot;&quot;Abstraction over declarations from which a value can be obtained, namely
+ 
+   * [[ValueDeclaration]] which abstracts over values and attributes 
+   * [[ValueConstructorDeclaration]] which represents value constructors
+&quot;&quot;&quot;
+shared sealed interface GettableDeclaration {
+    
+    /*&quot;Applies this value declaration in order to obtain a value model. 
+     See [this code sample](#toplevel-sample) for an example on how to use this.&quot;
+    throws(`class IncompatibleTypeException`, &quot;If the specified `Get` or `Set` type arguments are not compatible with the actual result.&quot;)
+    shared formal ValueModel&lt;Get&gt;&amp;Gettable&lt;Get&gt; gettableApply&lt;Get=Anything&gt;();
+    
+    &quot;Applies the given closed container type to this attribute declaration in order to obtain an attribute model. 
+     See [this code sample](#member-sample) for an example on how to use this.&quot;
+    throws(`class IncompatibleTypeException`, &quot;If the specified `Container`, `Get` or `Set` type arguments are not compatible with the actual result.&quot;)
+    shared formal ValueModel&lt;Get&gt;&amp;Qualified&lt;ValueModel&lt;Get&gt;, Container&gt; memberGettableApply&lt;Container=Nothing, Get=Anything&gt;(AppliedType&lt;Object&gt; containerType);*/
+    
+    &quot;Reads the current value of this toplevel value.&quot;
+    shared formal Anything get();
+    
+    &quot;Reads the current value of this attribute on the given container instance.&quot;
+    throws(`class IncompatibleTypeException`, &quot;If the specified container is not compatible with this attribute.&quot;)
+    throws(`class StorageException`,
+        &quot;If this attribute is not stored at runtime, for example if it is neither shared nor captured.&quot;)
+    shared formal Anything memberGet(Object container);
+
+}
+</pre></body></html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>zip.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;Given two streams, form a new stream consisting of all 
+ [[entries|Entry]] where, for any given index in the 
+ resulting stream, the [[key|Entry.key]] of the entry is the 
+ element occurring at the same index in the 
+ [[first stream|keys]], and the [[item|Entry.item]] is the 
+ element occurring at the same index in the 
+ [[second stream|items]]. The length of the resulting stream 
+ is the length of the shorter of the two given streams.
+ 
+ Thus:
+ 
+     zipEntries(keys, items)[i] == keys[i] -&gt; items[i]
+ 
+ for every `0&lt;=i&lt;smallest(keys.size,items.size)`.&quot;
+tagged(&quot;Streams&quot;)
+shared Iterable&lt;&lt;Key-&gt;Item&gt;,KeyAbsent|ItemAbsent&gt; 
+zipEntries&lt;Key,Item,KeyAbsent,ItemAbsent&gt;
+        (Iterable&lt;Key,KeyAbsent&gt; keys, 
+         Iterable&lt;Item,ItemAbsent&gt; items)
+        given Key satisfies Object
+        given KeyAbsent satisfies Null
+        given ItemAbsent satisfies Null
+        =&gt; mapPairs(Entry&lt;Key,Item&gt;, keys, items);
+
+&quot;Given two streams, form a new stream consisting of all 
+ pairs where, for any given index in the resulting stream, 
+ the first element of the pair is the element occurring at 
+ the same index in the [[first stream|firstElements]], and 
+ the second element of the pair is the element occurring at 
+ the same index in the [[second stream|secondElements]]. The 
+ length of the resulting stream is the length of the shorter 
+ of the two given streams.
+ 
+ Thus:
+ 
+     zipPairs(xs, ys)[i] == [xs[i], ys[i]]
+ 
+ for every `0&lt;=i&lt;smallest(xs.size,ys.size)`.&quot;
+tagged(&quot;Streams&quot;)
+shared Iterable&lt;[First,Second],FirstAbsent|SecondAbsent&gt; 
+zipPairs&lt;First,Second,FirstAbsent,SecondAbsent&gt;
+        (Iterable&lt;First,FirstAbsent&gt; firstElements, 
+         Iterable&lt;Second,SecondAbsent&gt; secondElements)
+        given FirstAbsent satisfies Null
+        given SecondAbsent satisfies Null
+        =&gt; mapPairs((First first,Second second) =&gt; [first,second],
+                firstElements, secondElements);
+
+&quot;Given a stream of values, and a stream of [[tuples|Tuple]], 
+ produce a new stream of tuples formed by prepending the 
+ values in the [[first stream|heads]] to the tuples in the 
+ [[second stream|tails]]. The length of the resulting stream 
+ is the length of the shorter of the two given streams.
+ 
+ Thus:
+ 
+     zip(heads, tails)[i] == [heads[i], *tails[i]]
+ 
+ for every `0&lt;=i&lt;smallest(heads.size,tails.size)`.&quot;
+tagged(&quot;Streams&quot;)
+shared Iterable&lt;Tuple&lt;Element|Head,Head,Tail&gt;,HeadAbsent|TailAbsent&gt; 
+zip&lt;Element,Head,Tail,HeadAbsent,TailAbsent&gt;
+        (Iterable&lt;Head,HeadAbsent&gt; heads, 
+         Iterable&lt;Tail,TailAbsent&gt; tails)
+        given Tail satisfies Element[]
+        given HeadAbsent satisfies Null
+        given TailAbsent satisfies Null
+        =&gt; mapPairs(Tuple&lt;Element|Head,Head,Tail&gt;, heads, tails);
+</pre></body></html>

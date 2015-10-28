@@ -1,0 +1,50 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>Member.ceylon</title><link href='../.resources/favicon.ico' rel='shortcut icon'/>
+<link href='../.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='../.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '../.resources/'</script><script src='../.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='../.resources/rainbow.min.js' type='text/javascript'></script><script src='../.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='../.resources/ceylon.js' type='text/javascript'></script><script src='../.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>import ceylon.language.meta.declaration {
+    ValueDeclaration
+}
+
+&quot;An instance referring to another instance via a reference attribute.&quot;
+shared sealed interface Member // or Reference
+        satisfies ReachableReference {
+    &quot;The attribute making the reference.&quot;
+    shared formal ValueDeclaration attribute;
+    
+    &quot;The [[referred]] instance reachable from the given [[instance]].
+     
+     Note: If this member refers to a `late` declaration and the 
+     attribute of the given instance has not been initialized this 
+     method will return [[uninitializedLateValue]].&quot;
+    shared actual formal Anything referred(Object/*&lt;Instance&gt;*/ instance);
+    
+}
+
+&quot;The type of [[uninitializedLateValue]].&quot;
+shared abstract class UninitializedLateValue() of uninitializedLateValue {}
+
+&quot;A singleton used to indicate that a `late` [[Member]] of a particular 
+ instance has not been initialized.
+ 
+ For example, given
+ 
+     class Example() {
+         shared late Example parent;
+     }
+     
+ Then
+     
+     value ex = Example();// uninitialized parent
+     value context = serialization();
+     value refs = context.references(ex);
+     assert(is Member parentRef = refs.find((element) =&gt; element is Member));
+     assert(parentRef.referred(ex) == uninitializedLateValue);
+     
+ Thus, *if a serialization library supports it*, it is 
+ possible to serialize uninitialized `late` values.
+&quot;
+shared object uninitializedLateValue extends UninitializedLateValue() {}
+
+</pre></body></html>

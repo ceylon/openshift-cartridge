@@ -1,0 +1,171 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>parseInteger.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>Integer minRadix = 2;
+Integer maxRadix = 36;
+
+&quot;The [[Integer]] value of the given 
+ [[string representation|string]] of an integer value in the 
+ base given by [[radix]], or `null` if the string does not 
+ represent an integer in that base, or if the mathematical 
+ integer it represents is too large in magnitude to be 
+ represented by an instance of the class `Integer`.
+ 
+ The syntax accepted by this function is the same as the 
+ syntax for an `Integer` literal in the Ceylon language 
+ except that it may optionally begin with a sign character 
+ (`+` or `-`) and may not contain grouping underscore 
+ characters.
+ 
+ The given `radix` specifies the base of the string 
+ representation. The list of available digits starts from 
+ `0` to `9`, followed by `a` to `z`. When parsing in a 
+ specific base, the first `radix` digits from the available 
+ digits list is used. This function is not case sensitive; 
+ `a` and `A` both correspond to the digit `a` whose decimal 
+ value is `10`.&quot;
+throws (`class AssertionError`, 
+        &quot;if [[radix]] is not between [[minRadix]] and 
+         [[maxRadix]]&quot;)
+see (`function formatInteger`,
+     `function parseFloat`)
+tagged(&quot;Numbers&quot;, &quot;Basic types&quot;)
+shared Integer? parseInteger(
+            &quot;The string representation to parse.&quot;
+            String string,
+            &quot;The base, between [[minRadix]] and [[maxRadix]] 
+             inclusive.&quot;
+            Integer radix = 10) {
+    
+    assert (minRadix &lt;= radix &lt;= maxRadix); 
+    
+    Integer start;
+    Integer max = runtime.minIntegerValue / radix;
+    
+    // Parse the sign
+    Boolean negative;
+    if (exists char = string.first) {
+        if (char == &apos;-&apos;) {
+            negative = true;
+            start = 1;
+        }
+        else if (char == &apos;+&apos;) {
+            negative = false;
+            start = 1;
+        }
+        else {
+            negative = false;
+            start = 0;
+        }
+    }
+    else {
+        return null;
+    }
+    
+    Integer limit = negative 
+            then runtime.minIntegerValue 
+            else -runtime.maxIntegerValue;
+    
+    Integer length = string.size;
+    variable Integer result = 0;
+    variable Integer digitIndex = 0;
+    variable Integer index = start;
+    while (index &lt; length) {
+        assert (exists ch = string.getFromFirst(index));
+
+        if (index + 1 == length &amp;&amp; 
+                radix == 10 &amp;&amp; 
+                ch in &quot;kMGTP&quot;) {
+            // The SI-style magnitude
+            if (exists exp = parseIntegerExponent(ch)) {
+                Integer magnitude = 10^exp;
+                if ((limit / magnitude) &lt; result) {
+                    result *= magnitude;
+                    break;
+                }
+                else {
+                    // overflow
+                    return null;
+                }
+            }
+            else {
+                return null;
+            }
+        }
+        else if (exists digit = parseDigit(ch, radix)) {
+            // A regular digit
+            if (result &lt; max) { 
+                // overflow
+                return null;
+            }
+            result *= radix;
+            if (result &lt; limit + digit) { 
+                // overflow
+                return null;
+            }
+            // += would be much more obvious, but it doesn&apos;t work for minIntegerValue
+            result -= digit;
+        }
+        else {
+            // Invalid character
+            return null;
+        }
+        
+        index++;
+        digitIndex++;
+    }
+    
+    if (digitIndex == 0) {
+        return null;
+    }
+    else {
+        return negative then result else -result;
+    }
+}
+
+Integer? parseIntegerExponent(Character char) {
+    switch (char)
+    case (&apos;P&apos;) {
+        return 15;
+    } 
+    case (&apos;T&apos;) {
+        return 12; 
+    } 
+    case (&apos;G&apos;) {
+        return 9; 
+    } 
+    case (&apos;M&apos;) {
+        return 6;
+    } 
+    case (&apos;k&apos;) {
+        return 3;
+    }
+    else {
+        return null;
+    }
+}
+
+Integer aIntLower = &apos;a&apos;.integer;
+Integer aIntUpper = &apos;A&apos;.integer;
+Integer zeroInt = &apos;0&apos;.integer;
+
+Integer? parseDigit(Character digit, Integer radix) {
+    Integer figure;
+    Integer digitInt = digit.integer;
+    if (0&lt;=digitInt-zeroInt&lt;10) {
+        figure=digitInt-zeroInt;
+    }
+    else if (0&lt;=digitInt-aIntLower&lt;26) {
+        figure=digitInt-aIntLower+10;
+    }
+    else if (0&lt;=digitInt-aIntUpper&lt;26) {
+        figure=digitInt-aIntUpper+10;
+    }
+    else {
+        return null;
+    }
+    return figure&lt;radix then figure;
+}
+</pre></body></html>

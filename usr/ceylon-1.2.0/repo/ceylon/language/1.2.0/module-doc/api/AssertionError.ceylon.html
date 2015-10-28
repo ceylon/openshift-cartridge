@@ -1,0 +1,31 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>AssertionError.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;An error that occurs due to an incorrectly written program. 
+ An instance is thrown when an assertion fails, that is, 
+ when a condition in an `assert` statement evaluates to 
+ false at runtime.
+ 
+ The assertion
+ 
+     \&quot;x must be positive\&quot;
+     assert (x&gt;0);
+ 
+ has almost the same effect as this `if` statement
+     
+     if (!x&gt;0) {
+         throw AssertionError(\&quot;x must be positive\&quot;);
+     }&quot;
+shared native class AssertionError(message)
+        extends Throwable(message) {
+    &quot;A message describing the assertion that failed. In the
+     case of an `assert` statement, it is the text specified
+     by the `doc` annotation.
+     
+     Certain tools interpret this message as 
+     markdown-formatted text.&quot;
+    String message;
+}
+</pre></body></html>

@@ -1,0 +1,182 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>parseFloat.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>
+&quot;The [[Float]] value of the given 
+ [[string representation|string]] of a decimal floating 
+ point number, or `null` if the string does not represent a 
+ decimal floating point number.
+ 
+ If the given string representation contains more digits
+ than can be represented by a `Float`, then the least 
+ significant digits are ignored.
+ 
+ The syntax accepted by this method is the same as the 
+ syntax for a `Float` literal in the Ceylon language 
+ except that it may optionally begin with a sign 
+ character (`+` or `-`) and may not contain grouping 
+ underscore characters.&quot;
+see (`function formatFloat`, 
+     `function parseInteger`)
+tagged(&quot;Numbers&quot;, &quot;Basic types&quot;)
+shared Float? parseFloat(String string) {
+    
+    // parse the sign first
+    Integer sign;
+    String unsignedPart;
+    if (string.startsWith(&quot;-&quot;)) {
+        sign = -1;
+        unsignedPart = string[1...];
+    }
+    else if (string.startsWith(&quot;+&quot;)) {
+        sign = +1;
+        unsignedPart = string[1...];
+    }
+    else {
+        sign = +1;
+        unsignedPart = string;
+    }
+    // split into three main parts
+    String wholePart;
+    String fractionalPart;
+    String? rest;
+    if (exists dot = unsignedPart.firstOccurrence(&apos;.&apos;)) {
+        wholePart = unsignedPart[...dot-1];
+        String afterWholePart = unsignedPart[dot+1...];
+        if (exists mag 
+            = afterWholePart.firstIndexWhere(Character.letter)) {
+            fractionalPart = afterWholePart[...mag-1];
+            rest = afterWholePart[mag...];
+        }
+        else {
+            fractionalPart = afterWholePart;
+            rest = null;
+        }
+    }
+    else {
+        if (exists mag
+            = unsignedPart.firstIndexWhere(Character.letter)) {
+            wholePart = unsignedPart[...mag-1];
+            rest = unsignedPart[mag...];
+        }
+        else {
+            wholePart = unsignedPart;
+            rest = null;
+        }
+        fractionalPart = &quot;0&quot;;
+    }
+    
+    if (!wholePart.every(Character.digit) ||
+        !fractionalPart.every(Character.digit)) {
+        return null;
+    }
+    
+    value usableWholePart 
+            = wholePart[0:maximumIntegerExponent];
+    value usableFractionalPart 
+            = fractionalPart[0:
+                maximumIntegerExponent
+                    - usableWholePart.size];
+    
+    value digits = usableWholePart + usableFractionalPart;
+    value shift 
+            = usableFractionalPart.empty
+            then usableWholePart.size - wholePart.size
+            else usableFractionalPart.size;
+    
+    Integer exponent;
+    if (exists rest) {
+        if (exists magnitude
+                = parseFloatExponent(rest)) {
+            exponent = magnitude - shift;
+        }
+        else {
+            return null;
+        }
+    }
+    else {
+        exponent = -shift; 
+    }
+    
+    if (exists unsigned = parseInteger(digits)) {
+        Float signed
+                = unsigned == 0
+                then 0 * sign.float //preserve sign of -0.0
+                else (sign * unsigned).nearestFloat;
+        value exponentMagnitude = exponent.magnitude;
+        if (exponentMagnitude == 0) {
+            return signed;
+        }
+        else if (exponentMagnitude&lt;=maximumIntegerExponent) {
+            value scale = 10^exponentMagnitude;
+            return exponent&lt;0
+            then signed / scale
+            else signed * scale;
+        }
+        else {
+            //scale can&apos;t be represented as 
+            //an integer, resulting in some
+            //rounding error
+            return signed * 10.0^exponent;
+        }
+    }
+    
+    return null;
+}
+
+//TODO: replace with a native implementation
+&quot;The maximum number of decimal digits that can be 
+ represented by an [[Integer]].&quot;
+Integer maximumIntegerExponent
+        = smallest(runtime.maxIntegerValue.string.size,
+                   runtime.minIntegerValue.string.size-1)
+            - 1;
+
+Integer? parseFloatExponent(String string) {
+    switch (string)
+    case (&quot;k&quot;) {
+        return 3;
+    }
+    case (&quot;M&quot;) {
+        return 6;
+    }
+    case (&quot;G&quot;) {
+        return 9;
+    }
+    case (&quot;T&quot;) {
+        return 12;
+    }
+    case (&quot;P&quot;) {
+        return 15;
+    }
+    case (&quot;m&quot;) {
+        return -3;
+    }
+    case (&quot;u&quot;) {
+        return -6;
+    }
+    case (&quot;n&quot;) {
+        return -9;
+    }
+    case (&quot;p&quot;) {
+        return -12;
+    }
+    case (&quot;f&quot;) {
+        return -15;
+    }
+    else {
+        if (string.lowercased.startsWith(&quot;e&quot;) &amp;&amp;
+            string.rest.every(digitOrSign)) {
+            return parseInteger(string.rest);
+        }
+        else {
+            return null;
+        }
+    }
+}
+
+Boolean(Character) digitOrSign 
+        = or(Character.digit, &quot;+-&quot;.contains);
+</pre></body></html>

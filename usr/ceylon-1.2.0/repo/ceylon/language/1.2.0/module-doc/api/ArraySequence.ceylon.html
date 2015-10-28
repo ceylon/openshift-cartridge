@@ -1,0 +1,158 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>ArraySequence.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>import ceylon.language {
+    seq=sequence
+}
+&quot;A [[Sequence]] backed by an [[Array]]. 
+ 
+ Since [[Array]]s are mutable, this class is private to the
+ language module, where we can be sure the `Array` is not
+ modified after the `ArraySequence` has been initialized.&quot;
+by (&quot;Tom&quot;)
+see (`function seq`)
+shared sealed final
+serializable
+tagged(&quot;Collections&quot;, &quot;Sequences&quot;)
+class ArraySequence&lt;out Element&gt;(array)
+        extends Object()
+        satisfies [Element+] {
+    
+    Array&lt;Element&gt; array;
+    
+    assert (!array.empty);
+    
+    getFromFirst(Integer index) 
+            =&gt; array.getFromFirst(index);
+    
+    contains(Object element) 
+            =&gt; array.contains(element);
+    
+    size =&gt; array.size;
+    
+    iterator() =&gt; array.iterator();
+    
+    shared actual Element first {
+        if (exists first = array.first) {
+            return first;
+        }
+        else {
+            assert (is Element null);
+            return null;
+        }
+    }
+    
+    shared actual Element last {
+        if (exists last = array.last) {
+            return last;
+        }
+        else {
+            assert (is Element null);
+            return null;
+        }
+    }
+    
+    rest =&gt; size == 1 
+        then [] 
+        else ArraySequence(array[1...]);
+    
+    clone() =&gt; ArraySequence(array.clone());
+    
+    each(void step(Element element)) =&gt; array.each(step);
+    
+    count(Boolean selecting(Element element))
+            =&gt; array.count(selecting);
+    
+    every(Boolean selecting(Element element))
+            =&gt; array.every(selecting);
+    
+    any(Boolean selecting(Element element))
+            =&gt; array.any(selecting);
+    
+    find(Boolean selecting(Element&amp;Object element))
+            =&gt; array.find(selecting);
+    
+    findLast(Boolean selecting(Element&amp;Object element))
+            =&gt; array.findLast(selecting);
+    
+    shared actual 
+    Result|Element reduce&lt;Result&gt;(
+        Result accumulating(Result|Element partial, 
+                            Element element)) {
+        assert (exists result 
+            = array.reduce(accumulating));
+        return result;
+    }
+
+    shared actual 
+    [Result+] collect&lt;Result&gt;
+            (Result collecting(Element element)) {
+        assert (nonempty sequence 
+            = array.collect(collecting));
+        return sequence;
+    }
+    
+    shared actual 
+    [Element+] sort
+            (Comparison comparing(Element x, Element y)) {
+        assert (nonempty sequence 
+            = array.sort(comparing));
+        return sequence;
+    }
+    
+    shared actual 
+    Element[] measure(Integer from, Integer length) {
+        if (from &gt; lastIndex || 
+            length &lt;= 0 || 
+            from + length &lt;= 0) {
+            return [];
+        }
+        else {
+            return ArraySequence(array[from : length]);
+        }
+    }
+    
+    shared actual 
+    Element[] span(Integer from, Integer to) {
+        if (from &lt;= to) {
+            return 
+                if (to &lt; 0 || from &gt; lastIndex)
+                then [] 
+                else ArraySequence(array[from..to]);
+        }
+        else {
+            return 
+                if (from &lt; 0 || to &gt; lastIndex)
+                then [] 
+                else ArraySequence(array[from..to]);
+        }
+    }
+    
+    shared actual ArraySequence&lt;Element&gt;|[] spanFrom(Integer from) {
+        if (from &lt;= 0) {
+            return this;
+        }
+        else if (from &lt; size) {
+            return ArraySequence(array[from...]);
+        }
+        else {
+            return [];
+        }
+    }
+    
+    shared actual ArraySequence&lt;Element&gt;|[] spanTo(Integer to) {
+        if (to &gt;= lastIndex) {
+            return this;
+        }
+        else if (to &gt;= 0) {
+            return ArraySequence(array[...to]);
+        }
+        else {
+            return [];
+        }
+    }
+    
+}
+</pre></body></html>

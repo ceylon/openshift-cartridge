@@ -1,0 +1,1080 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Chapter&nbsp;4.&nbsp;Declarations</title><link rel="stylesheet" href="../shared/css/html.css" type="text/css">
+<link type='text/css' href='../shared/css/ceylon.css' rel='stylesheet'/>
+<link type='text/css' href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet'/>
+<script src='../shared/css/rainbow.min.js' type='text/javascript'></script>
+<script src='../shared/css/ceylon.js' type='text/javascript'></script>
+<script src='../shared/css/bnf.js' type='text/javascript'></script><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="The Ceylon Language"><link rel="up" href="index.html" title="The Ceylon Language"><link rel="previous" href="typesystem.html" title="Chapter&nbsp;3.&nbsp;Type system"><link rel="next" href="statementblocks.html" title="Chapter&nbsp;5.&nbsp;Statements, blocks, and control structures"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">The Ceylon Language &mdash; 4.&nbsp;Declarations</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="typesystem.html">Prev</a>&nbsp;</td><th width="60%" align="center">&nbsp;</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="statementblocks.html">Next</a></td></tr></table><hr></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="declarations"></a>Chapter&nbsp;4.&nbsp;Declarations</h2></div></div><div></div></div><p>Ceylon is a statically typed language. Classes, interfaces, functions, values 
+    and aliases must be declared before use. The declaration of a function or value must 
+    include an explicit type, or allow the type to be inferred. Static typing allows the 
+    compiler to detect many errors, including:</p><div class="itemizedlist"><ul type="disc"><li><p>typing errors in identifier names,</p></li><li><p>references to types which do not exist or are not 
+        visible,</p></li><li><p>references to type members which do not exist or are not 
+        visible,</p></li><li><p>argument lists which do not match parameter lists,</p></li><li><p>type argument lists which do not match type parameter 
+        lists,</p></li><li><p>operands to which an operator cannot apply,</p></li><li><p>incompatible assignment of an expression of one type to a
+        program element of a different type,</p></li><li><p>evaluation of a value before it has been explicitly specified 
+        or assigned,</p></li><li><p>assignment to a non-<tt class="literal">variable</tt> value,</p></li><li><p>failure to refine a <tt class="literal">formal</tt> member of a 
+        supertype,</p></li><li><p>refinement of a non-<tt class="literal">formal</tt>, 
+        non-<tt class="literal">default</tt> member of a supertype,</p></li><li><p><tt class="literal">switch</tt> statements which do not exhaust all
+        cases of an enumerated type.</p></li></ul></div><p>All declarations follow a general pattern:</p><pre data-language="ceylon">Annotations
+(keyword | Type) (TypeName | MemberName) TypeParameters? Parameters*
+CaseTypes? ExtendedType? SatisfiedTypes?
+TypeConstraints?
+(Definition | ";")</pre><p>A type parameter does not need an explicit declaration of this form unless it has 
+    constraints. In the case that it does have constraints, the constraint declaration does 
+    follow the general pattern.</p><p>This consistent pattern for declarations, together with the strict block structure
+    of the language, makes Ceylon a highly regular language.</p><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="compilationunitstructure"></a>4.1.&nbsp;Compilation unit structure</h2></div></div><div></div></div><p>A <span class="emphasis"><em>compilation unit</em></span> is a text file, with the filename 
+        extension <tt class="literal">.ceylon</tt>.</p><i><span class="comment"><p>Note: it is recommended that source file names contain only 
+        characters from the ASCII character set. This minimizes problems when 
+        transferring Ceylon source between operating systems.</p></span></i><p>There are three kinds of compilation unit:</p><div class="itemizedlist"><ul type="disc"><li><p>A regular compilation unit contains a list of toplevel type, 
+                value, or function definitions.</p></li><li><p>A <span class="emphasis"><em>module descriptor</em></span>, defined in
+                <a href="modulesystem.html#moduledescriptors" title="9.3.10.&nbsp;Module descriptors">&sect;9.3.10 Module descriptors</a>, contains a 
+                <tt class="literal">module</tt> declaration. The file must be named
+                <tt class="literal">module.ceylon</tt>.</p></li><li><p>A <span class="emphasis"><em>package descriptor</em></span>, defined in
+                <a href="modulesystem.html#packagedescriptors" title="9.3.9.&nbsp;Package descriptors">&sect;9.3.9 Package descriptors</a>, contains a 
+                <tt class="literal">package</tt> declaration. The file must be named
+                <tt class="literal">package.ceylon</tt>.</p></li></ul></div><p>Any compilation unit may begin with a list of imported types, values, 
+        and functions.</p><pre data-language="bnf">Import* (ModuleDescriptor | PackageDescriptor | Declaration*)</pre><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="topleveldeclarations"></a>4.1.1.&nbsp;Toplevel and nested declarations</h3></div></div><div></div></div><p>A <span class="emphasis"><em>toplevel declaration</em></span> defines a type&#8212;a class 
+            or interface&#8212;or a type alias, or a function or value.</p><pre data-language="bnf">Declaration: FunctionValueDeclaration | TypeDeclaration | ParameterDeclaration</pre><pre data-language="bnf">FunctionValueDeclaration: FunctionDeclaration | ValueDeclaration | SetterDeclaration</pre><pre data-language="bnf">TypeDeclaration: ClassDeclaration | ObjectDeclaration | InterfaceDeclaration | TypeAliasDeclaration</pre><p>A toplevel declaration is not polymorphic and so may not be annotated 
+            <tt class="literal">formal</tt>, <tt class="literal">default</tt>, or 
+            <tt class="literal">actual</tt>.</p><i><span class="comment"><p>Note: in a future release of the language, we might relax this 
+            restriction and support package extension with toplevel member refinement. This
+            can be viewed as a regularization of the language. The practical application is
+            that it would make toplevel invocations and instantiations polymorphic, obviating
+            the need for things like dependency injection.</p></span></i><p>Most toplevel declarations contain nested declarations.</p><p>Nested declarations are often mixed together with executable statements.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="packages"></a>4.1.2.&nbsp;Packages</h3></div></div><div></div></div><p>Each compilation unit belongs to exactly one <span class="emphasis"><em>package</em></span>.
+            Every toplevel declaration of the compilation unit also belongs directly to this 
+            package. The package is identified by the location of the text file on the file 
+            system, relative to a root <span class="emphasis"><em>source directory</em></span>, as defined in 
+            <a href="modulesystem.html#sourcelayout" title="9.2.&nbsp;Source layout">&sect;9.2 Source layout</a>.</p><p>A package is a namespace. A full package name is a period-separated list of 
+            all-lowercase identifiers.</p><pre data-language="bnf">FullPackageName: PackageName ("." PackageName)*</pre><i><span class="comment"><p>Note: it is recommended that package names contain only characters
+            from the ASCII character set.</p></span></i><p>There is also a <span class="emphasis"><em>default package</em></span> whose name is empty.
+            It is impossible to import declarations from this package.</p><p>Every package belongs to exactly one module, as specified in 
+            <a href="modulesystem.html#modules" title="9.3.&nbsp;Module architecture">&sect;9.3 Module architecture</a>. The default package belongs to the default
+            module.</p></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="imports"></a>4.2.&nbsp;Imports</h2></div></div><div></div></div><p>Code in one compilation unit may refer to a toplevel declaration in another 
+        compilation unit in the same package without explicitly importing the declaration. 
+        It may refer to a declaration defined in a compilation unit in another package 
+        only if it explicitly <span class="emphasis"><em>imports</em></span> the declaration using the 
+        <tt class="literal">import</tt> statement.</p><p>An <tt class="literal">import</tt> statement specifies the name of a package to
+        import from, and a list of declarations to import from that package.</p><pre data-language="bnf">Import: "import" FullPackageName ImportElements</pre><p>For a given package, there may be at most one <tt class="literal">import</tt>
+        statement per compilation unit.</p><p>An <tt class="literal">import</tt> statement may import from a package if and 
+        only if:</p><div class="itemizedlist"><ul type="disc"><li><p>the package belongs to the same module as the compilation unit 
+                containing the <tt class="literal">import</tt> statement, as specified by 
+                <a href="modulesystem.html#sourcelayout" title="9.2.&nbsp;Source layout">&sect;9.2 Source layout</a>, or</p></li><li><p>the package is declared <tt class="literal">shared</tt> in its
+                package descriptor, and the module descriptor of the module to which
+                the compilation unit containing the <tt class="literal">import</tt> statement 
+                belongs, as specified by <a href="modulesystem.html#sourcelayout" title="9.2.&nbsp;Source layout">&sect;9.2 Source layout</a>, explicitly or 
+                implicitly imports the module containing the package, as defined by 
+                <a href="modulesystem.html#moduledescriptors" title="9.3.10.&nbsp;Module descriptors">&sect;9.3.10 Module descriptors</a>.</p></li></ul></div><p>Each <tt class="literal">import</tt> statement imports one or more toplevel 
+        declarations from the given package, specifying a list of <span class="emphasis"><em>import
+        elements</em></span>.</p><pre data-language="bnf">ImportElements: "{" (ImportElement ",")* (ImportElement | ImportWildcard) "}"</pre><pre data-language="bnf">ImportElement: ImportTypeElement | ImportObjectElement | ImportFunctionValueElement</pre><p>An import element is a reference to either:</p><div class="itemizedlist"><ul type="disc"><li><p>a single toplevel type (a class, interface, or alias) of the 
+                package,</p></li><li><p>a single toplevel function or value of the package, or</p></li><li><p>all toplevel declarations of the package.</p></li></ul></div><p>An import element may either:</p><div class="itemizedlist"><ul type="disc"><li><p>import a name into the <span class="emphasis"><em>toplevel namespace</em></span> 
+                of the compilation unit in which it occurs, or</p></li><li><p>result in an alias for a member of a type within the 
+                compilation unit in which it occurs.</p></li></ul></div><p>Every import element belonging directly to an <tt class="literal">import</tt> 
+        statement imports into the <span class="emphasis"><em>toplevel namespace</em></span> of the 
+        compilation unit.</p><p>An import element may not refer to a declaration that is not visible to
+        the compilation unit, as defined by <a href="statementblocks.html#visibility" title="5.1.3.&nbsp;Visibility">&sect;5.1.3 Visibility</a>.</p><p>An <tt class="literal">import</tt> statement may not contain two import elements
+        which refer to the same declaration.</p><p>Note that toplevel declarations in the package <tt class="literal">ceylon.language</tt> 
+        never need to be explicitly imported. They are implicitly imported by every 
+        compilation unit.</p><p>An imported function or value may not hide, as defined in 
+        <a href="statementblocks.html#hiddendeclarations" title="5.1.4.&nbsp;Hidden declarations">&sect;5.1.4 Hidden declarations</a>, any of the modifiers declared in 
+        <tt class="literal">ceylon.language</tt> listed in <a href="annotations.html#declarationmodifiers" title="7.4.1.&nbsp;Declaration modifiers">&sect;7.4.1 Declaration modifiers</a>,
+        unless the modifier itself has an alias import in the compilation unit.</p><i><span class="comment"><p>Note: an unused import results in a compiler warning.</p></span></i><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="typeimports"></a>4.2.1.&nbsp;Type imports</h3></div></div><div></div></div><p>An import element that specifies a type name imports the toplevel type 
+            with that name from the imported package or type.</p><pre data-language="bnf">ImportTypeElement: TypeAlias? TypeName ImportElements?</pre><p>The specified name must be the name of a type declaration belonging to 
+            the imported package or type.</p><pre data-language="ceylon">import ceylon.collection { MutableSet, MutableList, MutableMap }</pre><p>The import element may be followed by a list of nested import elements:</p><div class="itemizedlist"><ul type="disc"><li><p>if the import element imports into the toplevel namespace of 
+                    the compilation unit, and if a nested import element is a reference 
+                    to a constructor, the nested import element imports into the toplevel 
+                    namespace of the compilation unit, and need not specify an alias, or,
+                    otherwise</p></li><li><p>the nested import element only defines an alias for the 
+                    referenced member of the imported type, and this alias must be 
+                    specified explicitly.</p></li></ul></div><i><span class="comment"><p>Note: an import element referring to a <tt class="literal">static</tt>
+            member of a Java class imports the static member into the toplevel namespace of
+            the compilation unit. However, this behavior is outside the scope of this 
+            specification.</p></span></i></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="anonymousclassimports"></a>4.2.2.&nbsp;Anonymous class imports</h3></div></div><div></div></div><p>An import element that specifies the name of an anonymous class, as 
+            defined in <a href="declarations.html#anonymousclasses" title="4.5.7.&nbsp;Anonymous classes">&sect;4.5.7 Anonymous classes</a>, imports the anonymous class 
+            with that name from the imported package or type.</p><pre data-language="bnf">ImportObjectElement: FunctionValueAlias? MemberName ImportElements?</pre><p>The specified name must be the name of an anonymous class declaration 
+            belonging to the imported package or type.</p><pre data-language="ceylon">import ceylon.file { home, current }</pre><p>The import element may be followed by a list of nested import elements:</p><div class="itemizedlist"><ul type="disc"><li><p>if the import element imports into the toplevel namespace of 
+                    the compilation unit, a nested import element imports into the 
+                    toplevel namespace of the compilation unit, and need not specify 
+                    an alias, or, otherwise</p></li><li><p>the nested import element only defines an alias for the 
+                    referenced member of the imported type, and this alias must be 
+                    specified explicitly.</p></li></ul></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="methodattributeimports"></a>4.2.3.&nbsp;Function and value imports</h3></div></div><div></div></div><p>An import element that specifies a function or value name imports the 
+            toplevel function or value with that name from the imported package or type.</p><pre data-language="bnf">ImportFunctionValueElement: FunctionValueAlias? MemberName</pre><p>The specified name must be the name of a function or value declaration
+            belonging to the imported package or type.</p><pre data-language="ceylon">import ceylon.math.float { sqrt, e, pi }</pre></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="aliasimports"></a>4.2.4.&nbsp;Alias imports</h3></div></div><div></div></div><p>The optional alias clause in a fully-explicit import allows resolution 
+            of cross-namespace declaration name collisions.</p><pre data-language="bnf">TypeAlias: TypeName "="</pre><pre data-language="bnf">FunctionValueAlias: MemberName "="</pre><p>An alias assigns a different name to the imported declaration, or to a
+            member of the imported declaration. This name is visible within the compilation
+            unit in which the <tt class="literal">import</tt> statement occurs.</p><pre data-language="ceylon">import java.util { JavaMap = Map }</pre><pre data-language="ceylon">import my.math { fib = fibonnacciNumber }</pre><pre data-language="ceylon">import java.lang { 
+    Math { sin, cos, ln=log }, 
+    System { sysprops=properties },
+    Char=Character { upper=toUpperCase, lower=toLowerCase, char=charValue } 
+}</pre></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="wildcardimports"></a>4.2.5.&nbsp;Wildcard imports</h3></div></div><div></div></div><p>The elipsis <tt class="literal">...</tt> acts as a wildcard in 
+            <tt class="literal">import</tt> statements. An <tt class="literal">import</tt> statement 
+            that specifies a wildcard imports every toplevel declaration of the imported 
+            package, except for any declaration whose name collides with the name of a 
+            toplevel declaration in the compilation unit in which the <tt class="literal">import</tt> 
+            statement appears.</p><pre data-language="bnf">ImportWildcard: "..."</pre><p>An <tt class="literal">import</tt> statement may specify a list of alias imports 
+            followed by a wildcard. In this case, the alias imports are imported with the 
+            specified names, and all other toplevel declarations are imported with their 
+            declared names.</p><pre data-language="ceylon">import ceylon.collection { ... }</pre><pre data-language="ceylon">import my.math { fib = fibonnacciNumber, ... }</pre><i><span class="comment"><p>Note: overuse of wildcard imports is discouraged.</p></span></i></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="importedname"></a>4.2.6.&nbsp;Imported name</h3></div></div><div></div></div><p>Inside a compilation unit which imports a declaration, the declaration
+            may be referred to, as specified in <a href="statementblocks.html#unqualifiedreferenceresolution" title="5.1.7.&nbsp;Unqualified reference resolution">&sect;5.1.7 Unqualified reference resolution</a> 
+            and <a href="statementblocks.html#qualifiedreferenceresolution" title="5.1.8.&nbsp;Qualified reference resolution">&sect;5.1.8 Qualified reference resolution</a>, by its <span class="emphasis"><em>imported 
+            name</em></span>:</p><div class="itemizedlist"><ul type="disc"><li><p>For an import element with an alias, the imported name is the 
+                    alias.</p></li><li><p>For an import element with no alias, or for a wildcard import, 
+                    the imported name is the original name of the declaration.</p></li></ul></div><p>An import element may not result in an imported name that is the same
+            as the name of a toplevel declaration contained in the compilation unit in
+            which the import element occurs.</p><p>Two import elements occurring in the same compilation unit, which import 
+            into the toplevel namespace of the compilation unit, may not result in the same 
+            imported name.</p><p>Two nested import elements belonging to the same import element may not 
+            result in the same imported name.</p><span class="emphasis"><em><p>Note: if an imported declaration is already referenceable within 
+            a compilation unit without the <tt class="literal">import</tt> statement, for example, 
+            if it is defined in the same package, or in <tt class="literal">ceylon.language</tt>, 
+            then, even with the <tt class="literal">import</tt> statement, it is still referenceable 
+            via its declared name, as well as via the imported name.</p></em></span></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="parameters"></a>4.3.&nbsp;Parameters</h2></div></div><div></div></div><p>A function, class, or callable constructor declaration may declare 
+        <span class="emphasis"><em>parameters</em></span>. A parameter is a value or function belonging to the 
+        declaration it parameterizes. Parameters are distinguished from other values or 
+        functions because they occur in a <span class="emphasis"><em>parameter list</em></span>. A value or 
+        function is a parameter of a function, class, or constructor if it is:</p><div class="itemizedlist"><ul type="disc"><li><p>declared inline in a parameter list of the function, class, or 
+                callable constructor, or</p></li><li><p>declared normally, within the body of the class, function, or 
+                callable constructor, but named in a parameter list of the class, function, 
+                or callable constructor.</p></li></ul></div><p>A parameter list of a function, class, or constructor may have one or more 
+        elements without explicit type declarations. Each such element is interpreted as the 
+        name of a parameter declaration occurring in the body of the class, function, or 
+        constructor, and there must be a value or function declaration with that name.
+        For a function, such an element is only allowed in the last parameter list of the
+        function.</p><p>As a special exception, if a parameter of an anonymous function has no explicit 
+        type declaration, and there is no declaration with the given name occurring in the body 
+        of the anonymous function, then the type of the parameter must be inferable, according 
+        to <a href="expressions.html#parametertypeinference" title="6.4.1.&nbsp;Anonymous function parameter type inference">&sect;6.4.1 Anonymous function parameter type inference</a>.</p><p>Conversely, every parameter declaration that occurs outside a parameter list must 
+        have the same name as a parameter with no explicit type that occurs in the parameter 
+        list of the function, class, or constructor in whose body the parameter declaration 
+        directly occurs, and its default argument, if any, must be specified in the parameter 
+        list.</p><p>A parameter declaration may only occur in a parameter list, or directly, as
+        defined by <a href="statementblocks.html#blockstructure" title="5.1.&nbsp;Block structure and references">&sect;5.1 Block structure and references</a>, in the body of a class, function, or
+        callable constructor. A parameter declaration may not occur directly in the body of a 
+        getter, setter, or value constructor, nor in the body of a control structure. Nor may a 
+        parameter declaration appear as a toplevel declaration in a compilation unit.</p><pre data-language="bnf">ParameterDeclaration: (ValueParameter | CallableParameter | VariadicParameter) ";"</pre><p>The following class definitions are semantically identical:</p><pre data-language="ceylon">class Person(shared String name, shared variable Integer age=0, Address* addresses) {}</pre><pre data-language="ceylon">class Person(name, age=0, addresses) {
+    shared String name;
+    shared variable Integer age;
+    Address* addresses;
+}</pre><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="parameterlists"></a>4.3.1.&nbsp;Parameter lists</h3></div></div><div></div></div><p>A parameter list is a list of parameter declarations and of names of parameters
+            declared in the body of the class or function to which the parameter list belongs. A 
+            parameter list may include, optionally:</p><div class="itemizedlist"><ul type="disc"><li><p>one or more <span class="emphasis"><em>required parameters</em></span>,</p></li><li><p>one or more <span class="emphasis"><em>defaulted parameters</em></span> (parameters with 
+                    default values), and/or</p></li><li><p>a <span class="emphasis"><em>variadic parameter</em></span>.</p></li></ul></div><p>In a parameter list, defaulted parameters, if any, must occur after required 
+            parameters, if any. The variadic parameter, if any, must occur last.</p><pre data-language="bnf">Parameters: "(" ( (Required ",")* ( Required | (Defaulted ",")* (Defaulted | Variadic) ) )? ")"</pre><p>Every parameter list has a type, which captures the types of the individual 
+            parameters in the list, whether they are defaulted, and whether the last parameter 
+            is variadic. This type is always an subtype of <tt class="literal">Anything[]</tt>. The 
+            type of an empty parameter list with no parameters is <tt class="literal">[]</tt>.</p><p>A parameter may not be annotated <tt class="literal">formal</tt>, but it may be
+            annotated <tt class="literal">default</tt>.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="requiredparameters"></a>4.3.2.&nbsp;Required parameters</h3></div></div><div></div></div><p>A required parameter is a value or callable parameter without a default 
+            argument.</p><p>A required parameter in a parameter list may be a parameter declaration, 
+            or the name of a non-variadic parameter declared in the body of the function or 
+            class.</p><pre data-language="bnf">Required: ValueParameter | CallableParameter | MemberName</pre><p>Required parameters must occur before any other parameters in the parameter 
+            list.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="defaultedparameters"></a>4.3.3.&nbsp;Defaulted parameters</h3></div></div><div></div></div><p>A defaulted parameter is a value or callable parameter that specifies an 
+            expression that produces a <span class="emphasis"><em>default argument</em></span>. A defaulted 
+            parameter may be either:</p><div class="itemizedlist"><ul type="disc"><li><p>a non-variadic parameter declaration, together with a default 
+                    argument expression, or</p></li><li><p>the name of a non-variadic parameter declared in the body of the 
+                    function or class, together with its default argument expression.</p></li></ul></div><pre data-language="bnf">Defaulted: ValueParameter Specifier | CallableParameter LazySpecifier | MemberName Specifier</pre><p>The <tt class="literal">=</tt> and <tt class="literal">=&gt;</tt> specifiers are used 
+            throughout the language. In a parameter list they are used to specify a default
+            argument.</p><pre data-language="bnf">Specifier: "=" Expression</pre><pre data-language="bnf">LazySpecifier: "=&gt;" Expression</pre><p>The default argument expression may involve other parameters declared 
+            earlier in the parameter list or lists. It may not involve parameters declared 
+            later in the parameter list or lists.</p><p>The default argument expression may not involve an assignment, compound
+            assignment, increment, or decrement operator.</p><p>Defaulted parameters must occur after required parameters in the parameter 
+            list.</p><pre data-language="ceylon">(Product product, Integer quantity=1, Price pricing(Product p) =&gt; p.price)</pre><p>A parameter of a method or class annotated <tt class="literal">actual</tt> may 
+            not specify a default argument. Instead, it inherits the default argument, if 
+            any, of the corresponding parameter of the method it refines.</p><p>If two parameter lists are almost identical, differing only in that the 
+            first parameter of one list is defaulted, and the first parameter of the second 
+            list is required, and <tt class="literal">P</tt> is the the type of the second 
+            parameter list, then the type of the first parameter list is 
+            <tt class="literal">[]|P</tt>.</p><i><span class="comment"><p>Note: in Ceylon 1.0, for a function with multiple parameter lists, 
+            defaulted parameters may only occur in the first parameter list. This restriction
+            will be removed.</p></span></i><i><span class="comment"><p>TODO: Should we, purely for consistency, let you write 
+            <tt class="literal">f(Float x) =&gt; x</tt> in a parameter list, when the callable 
+            parameter is declared in the body of the function or class?</p></span></i></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="valueparameters"></a>4.3.4.&nbsp;Value parameters</h3></div></div><div></div></div><p>A <span class="emphasis"><em>value parameter</em></span> is a reference, as specified in
+            <a href="declarations.html#references" title="4.8.1.&nbsp;References">&sect;4.8.1 References</a>, that is named or defined in a parameter list. 
+            Like any other value declaration, it has a name, type, and, optionally, 
+            annotations.</p><pre data-language="bnf">ValueParameter: Annotations ValueParameterPrefix MemberName</pre><pre data-language="bnf">ValueParameterPrefix: Type | "dynamic"</pre><p>A value parameter may be declared using the keyword <tt class="literal">dynamic</tt> 
+            in place of the parameter type, indicating that it is a partially typed declaration.
+            Such a parameter has no type.</p><p>If a value parameter <tt class="literal">x</tt> has type <tt class="literal">X</tt>, 
+            and a parameter list has type <tt class="literal">P</tt> with the principal instantiation 
+            <tt class="literal">Sequential&lt;Y&gt;</tt>, then the type of a new parameter list 
+            formed by prepending <tt class="literal">x</tt> to the first parameter list is:</p><div class="itemizedlist"><ul type="disc"><li><p><tt class="literal">Tuple&lt;X|Y,X,P&gt;</tt>, or </p></li><li><p><tt class="literal">[]|Tuple&lt;X|Y,X,P&gt;</tt> if <tt class="literal">x</tt> is 
+                defaulted.</p></li></ul></div><p>The default argument expression, if any, for a callable parameter is 
+            specified using an ordinary <tt class="literal">=</tt> specifier. The type of the 
+            default argument expression must be assignable to the declared type of the 
+            value parameter.</p><pre data-language="ceylon">(String label, Anything() onClick)</pre><pre data-language="ceylon">({Value*} values, Comparison(Value,Value) by)</pre></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="callableparameters"></a>4.3.5.&nbsp;Callable parameters</h3></div></div><div></div></div><p>A <span class="emphasis"><em>callable parameter</em></span> is a function, as specified 
+            in <a href="declarations.html#functions" title="4.7.&nbsp;Functions">&sect;4.7 Functions</a>, named or defined in a parameter list. Like 
+            any other function declaration, it has a name, type, one or more parameter 
+            lists, and, optionally, annotations.</p><pre data-language="bnf">CallableParameter: Annotations CallableParameterPrefix MemberName Parameters+</pre><pre data-language="bnf">CallableParameterPrefix: Type | "void" | "dynamic"</pre><p>A callable parameter may be declared using the keyword <tt class="literal">dynamic</tt> 
+            in place of the return type, indicating that it is a partially typed declaration.
+            Such a parameter has no return type.</p><p>If a callable parameter <tt class="literal">f</tt> has callable type 
+            <tt class="literal">X(*A)</tt>, as specified below in 
+            <a href="declarations.html#callabletypeoffunction" title="4.7.1.&nbsp;Callable type of a function">&sect;4.7.1 Callable type of a function</a>, and a parameter list has type 
+            <tt class="literal">P</tt> with the principal instantiation 
+            <tt class="literal">Sequential&lt;Y&gt;</tt>, then the type of a new parameter list 
+            formed by prepending <tt class="literal">f</tt> to the first parameter list is:</p><div class="itemizedlist"><ul type="disc"><li><p><tt class="literal">Tuple&lt;Y|X(*A),X(*A),P&gt;</tt>, 
+                or</p></li><li><p><tt class="literal">[]|Tuple&lt;Y|X(*A),X(*A),P&gt;</tt> 
+                if <tt class="literal">f</tt> is defaulted.</p></li></ul></div><p>The default argument expression, if any, for a callable parameter is 
+            specified using a lazy <tt class="literal">=&gt;</tt> specifier. The type of the 
+            default argument expression must be assignable to the return type of the 
+            callable parameter.</p><pre data-language="ceylon">(String label, void onClick())</pre><pre data-language="ceylon">({Value*} values, Comparison by(Value x, Value y))</pre></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="sequencedparameters"></a>4.3.6.&nbsp;Variadic parameters</h3></div></div><div></div></div><p>A <span class="emphasis"><em>variadic parameter</em></span> is a value parameter that accepts 
+            multiple arguments:</p><div class="itemizedlist"><ul type="disc"><li><p>A variadic parameter declared <tt class="literal">T*</tt> accepts zero or
+                    more arguments of type <tt class="literal">T</tt>, and has type <tt class="literal">[T*]</tt>.</p></li><li><p>A variadic parameter declared <tt class="literal">T+</tt> accepts one or
+                    more arguments of type <tt class="literal">T</tt>, and has type <tt class="literal">[T+]</tt>.</p></li></ul></div><pre data-language="bnf">VariadicParameter: Annotations VariadicParameterPrefix MemberName</pre><pre data-language="bnf">VariadicParameterPrefix: UnionType ("*" | "+")</pre><p>A variadic parameter in a parameter list may be a variadic parameter 
+            declaration, or the name of a variadic parameter declared in the body of
+            the function or class.</p><pre data-language="bnf">Variadic: VariadicParameter | MemberName</pre><p>The variadic parameter must be the last parameter in a parameter list. A
+            variadic parameter may not have a default argument. A variadic parameter declared
+            <tt class="literal">T+</tt> may not occur in a parameter list with defaulted parameters.</p><pre data-language="ceylon">(Name name, Organization? org=null, Address* addresses)</pre><pre data-language="ceylon">(Float+ floats)</pre><p>The type of a parameter list containing just a variadic parameter of type
+            <tt class="literal">T*</tt> is <tt class="literal">[T*]</tt> The type of a parameter list 
+            containing just a variadic parameter of type <tt class="literal">T+</tt> is 
+            <tt class="literal">[T+]</tt>.</p><i><span class="comment"><p>Note: in Ceylon 1.0, for a function with multiple parameter lists, 
+            a variadic parameters may only occur in the first parameter list. This restriction
+            will be removed.</p></span></i></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="interfaces"></a>4.4.&nbsp;Interfaces</h2></div></div><div></div></div><p>An <span class="emphasis"><em>interface</em></span> is a type schema, together with 
+        implementation details for some members of the type. Interfaces may not 
+        be directly instantiated.</p><pre data-language="bnf">InterfaceDeclaration: Annotations InterfaceHeader (InterfaceBody | TypeSpecifier ";")</pre><p>An interface declaration may optionally specify a list of type 
+        parameters. An interface declaration may also have a list of interfaces 
+        is satisfies, a self type or an enumerated list of cases, and/or a list 
+        of type constraints.</p><pre data-language="bnf">InterfaceHeader: ("interface"|"dynamic") TypeName TypeParameters? InterfaceInheritance TypeConstraints?</pre><pre data-language="bnf">InterfaceInheritance: CaseTypes? SatisfiedTypes?</pre><p>To obtain a concrete instance of an interface, it is necessary to 
+        define and instantiate a class that satisfies the interface, or define 
+        an anonymous class that satisfies the interface.</p><p>The body of an interface contains:</p><div class="itemizedlist"><ul type="disc"><li><p>member (method, attribute, and member class) declarations,
+                </p></li><li><p>specification statements interpretable as attribute or method
+                refinement, as defined in <a href="declarations.html#attributerefinement" title="4.8.7.&nbsp;Attribute refinement">&sect;4.8.7 Attribute refinement</a> and
+                <a href="declarations.html#methodrefinement" title="4.7.8.&nbsp;Method refinement">&sect;4.7.8 Method refinement</a>, and</p></li><li><p>nested interface, type alias, and <tt class="literal">abstract</tt> 
+                class declarations.</p></li></ul></div><pre data-language="bnf">InterfaceBody: "{" (Declaration | Specification)* "}"</pre><p>Unlike the body of a class, method, or attribute, the body of an 
+        interface is not executable, and does not directly contain procedural 
+        code.</p><pre data-language="ceylon">shared interface Comparable&lt;Other&gt; {
+    shared formal Comparison compare(Other other);
+    shared Boolean largerThan(Other other) =&gt; compare(other)==larger;
+    shared Boolean smallerThan(Other other) =&gt; compare(other)==smaller;
+}</pre><p>An interface may declare <tt class="literal">formal</tt> methods, attributes,
+        and member classes, and concrete methods, getters, setters, and member classes.
+        A reference declaration, as defined in <a href="declarations.html#references" title="4.8.1.&nbsp;References">&sect;4.8.1 References</a>, or 
+        anonymous class declaration, as defined in <a href="declarations.html#anonymousclasses" title="4.5.7.&nbsp;Anonymous classes">&sect;4.5.7 Anonymous classes</a>,
+        may not directly occur in the body of an interface.</p><p>A non-<tt class="literal">abstract </tt> nested class declaration is called a
+        <span class="emphasis"><em>member class</em></span> of the interface. A nested interface or 
+        <tt class="literal">abstract</tt> class declaration is not part of the schema of the 
+        interface type, and is therefore not considered a member of the interface.</p><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="interfacebodies"></a>4.4.1.&nbsp;Interface bodies</h3></div></div><div></div></div><p>The body of an interface consists purely of declarations. The following 
+            constructs may not occur sequentially in the body of an interface:</p><div class="itemizedlist"><ul type="disc"><li><p>a statement or control structure (except for specification
+                    statements interpretable as attribute or method refinement),</p></li><li><p>a reference declaration,</p></li><li><p>a forward-declared method or attribute declaration, or</p></li><li><p>an <tt class="literal">object</tt> declaration.</p></li></ul></div><p>Within an interface body, a <span class="emphasis"><em>super reference</em></span> 
+            is any occurrence of the expression <tt class="literal">super</tt>, unless it also
+            occurs in the body of a nested class or interface declaration. A statement or 
+            declaration contained in the interface body may not:</p><div class="itemizedlist"><ul type="disc"><li><p>pass a super reference as an argument of an instantiation, 
+                  function invocation, or <tt class="literal">extends</tt> clause expression 
+                  or as the value of a value assignment or specification,</p></li><li><p>use a super reference as an operand of any operator except the
+                  member selection operator, or the <tt class="literal">of</tt> operator as 
+                  specified in <a href="expressions.html#super" title="6.3.3.&nbsp;super">&sect;6.3.3 super</a>,</p></li><li><p>return a super reference, or</p></li><li><p>narrow the type of a super reference using an assignability 
+                  condition, as defined in <a href="statementblocks.html#assignabilityconditions" title="5.4.2.&nbsp;Assignability conditions">&sect;5.4.2 Assignability conditions</a>.</p></li></ul></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="interfaceinheritance"></a>4.4.2.&nbsp;Interface inheritance</h3></div></div><div></div></div><p>An interface may satisfy any number of other interfaces, as defined in <a href="typesystem.html#satisfiedinterfaces" title="3.3.3.&nbsp;Satisfaction">&sect;3.3.3 Satisfaction</a>.</p><pre data-language="ceylon">shared interface List&lt;Element&gt;
+        satisfies Collection&lt;Element&gt; &amp; Correspondence&lt;Integer,Element&gt;
+        given Element satisfies Object {
+    ...
+}</pre><p>Every type listed in the <tt class="literal">satisfies</tt> clause must 
+            be an interface. An interface may not satisfy the same interface twice 
+            (not even with distinct type arguments).</p><i><span class="comment"><p>Note: this second restriction is not strictly necessary.
+            In fact, <tt class="literal">satisfies List&lt;One&gt;&amp;List&lt;Two&gt;</tt>
+            means the same thing as <tt class="literal">satisfies List&lt;One&amp;Two&gt;</tt>,
+            and the compiler already needs to be able to figure that out when it 
+            comes to multiple instantiations of the same interface inherited 
+            indirectly. Still, the restriction seems harmless enough.</p></span></i><p>The interface is a subtype of every type listed in the 
+            <tt class="literal">satisfies</tt> clause. The interface is also a subtype of 
+            the type <tt class="literal">Object</tt> defined in 
+            <tt class="literal">ceylon.language</tt>.</p><p>An interface inherits all members (methods, attributes and member 
+            types) of every supertype. That is, every member of every supertype of the 
+            interface is also a member of the interface.  Furthermore, 
+            the interface inherits all nested types (interfaces and 
+            <tt class="literal">abstract</tt> classes) of every supertype.</p><p>The schema of the inherited members is formed by substituting type 
+            arguments specified in the <tt class="literal">satisfies</tt> clause.</p><p>An interface that satisfies a nested interface must be a member of 
+            the type that declares the nested interface or of a subtype of the type 
+            that declares the nested interface.</p><p>A user-defined interface may not satisfy the interface 
+            <tt class="literal">Callable</tt> defined in <tt class="literal">ceylon.language</tt>
+            nor directly satisfy the interface <tt class="literal">ConstrainedAnnotation</tt>
+            defined in <tt class="literal">ceylon.language</tt>.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="sealedinterfaces"></a>4.4.3.&nbsp;Sealed interfaces</h3></div></div><div></div></div><p>A toplevel or nested interface may be annotated <tt class="literal">sealed</tt>
+            and is called a <tt class="literal">sealed</tt> interface.</p><p>An interface annotated <tt class="literal">sealed</tt> may not be satisfied 
+            by a class or interface outside the module in which it is defined.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="interfaceswithcases"></a>4.4.4.&nbsp;Enumerated interfaces</h3></div></div><div></div></div><p>An interface declaration may enumerate a list of cases of the interface, 
+            as defined in <a href="typesystem.html#cases" title="3.4.2.&nbsp;Cases">&sect;3.4.2 Cases</a>.</p><pre data-language="ceylon">shared interface Node&lt;Element&gt; 
+            of Root&lt;Element&gt; | Branch&lt;Element&gt; | Leaf&lt;Element&gt; { ... }</pre><p>The cases may be interfaces, classes, or toplevel anonymous classes. A 
+            case may be an <tt class="literal">abstract</tt> class. Each case must be a direct 
+            subtype of the interface type. An interface may not be a case of itself. An 
+            interface declaration may not list the same case twice.</p><p>If an interface has an <tt class="literal">of</tt> clause, then every interface 
+            or class which directly inherits the interface must occur as exactly one of the 
+            enumerated cases of the interface. Furthermore, any interface or class which
+            indirectly inherits the interface must inherit exactly one of the enumerated 
+            cases of the interface.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="interfacealiases"></a>4.4.5.&nbsp;Interface aliases</h3></div></div><div></div></div><p>An <span class="emphasis"><em>interface alias</em></span> is an interface declaration which 
+            specifies another type.</p><pre data-language="bnf">TypeSpecifier: "=&gt;" Type</pre><p>The specified type must be an <span class="emphasis"><em>interface type</em></span>, that 
+            is, a reference to an interface with no type parameters or an instantiation of 
+            a generic interface, and is called the <span class="emphasis"><em>aliased type</em></span>.</p><p>An interface alias simply assigns an alternative name to the aliased type. 
+            A reference to the alias may occur anywhere a reference to an interface may occur.</p><pre data-language="ceylon">shared interface PeopleByName =&gt; Map&lt;String,Person&gt;;</pre><pre data-language="ceylon">interface Compare&lt;Value&gt; =&gt; Comparison(Value,Value);</pre><p>If the aliased interface is a parameterized type, the aliased type must
+            explicitly specify type arguments.</p><p>A class or interface may satisfy an interface alias, in which case, the
+            class or interface inherits the aliased interface type.</p><p>Interface aliases are not reified types. The metamodel reference for an 
+            interface alias type&#8212;for example, <tt class="literal">PeopleByName</tt>&#8212;returns 
+            the metamodel object for the aliased interface&#8212;in this case, 
+            <tt class="literal">Map&lt;String,Person&gt;</tt>, as specified in 
+            <a href="execution.html#reification" title="8.1.2.&nbsp;Type argument reification">&sect;8.1.2 Type argument reification</a>.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="dynamicinterfaces"></a>4.4.6.&nbsp;Dynamic interfaces</h3></div></div><div></div></div><p>A <span class="emphasis"><em>dynamic interface</em></span> is an interface declared with the 
+            keyword <tt class="literal">dynamic</tt>. Dynamic interfaces may be used to model the 
+            type of objects defined in dynamically typed native code.</p><p>Every declaration nested inside a dynamic interface must be declared 
+            <tt class="literal">formal</tt>. A dynamic interface may not satisfy any interface 
+            that is not also a dynamic interface.</p><p>Within a dynamic block, defined in <a href="statementblocks.html#dynamicblocks" title="5.3.5.&nbsp;Dynamic blocks">&sect;5.3.5 Dynamic blocks</a>, 
+            assignment of a value with no Ceylon type to a dynamic interface type does not 
+            result in an <tt class="literal">AssertionError</tt>, as defined in 
+            <a href="execution.html#dynamictypechecking" title="8.3.6.&nbsp;Dynamic type checking">&sect;8.3.6 Dynamic type checking</a>. Instead, the value is coerced to the
+            dynamic interface type.</p></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="classes"></a>4.5.&nbsp;Classes</h2></div></div><div></div></div><p>A <span class="emphasis"><em>class</em></span> is a stateful, instantiable type. It is a 
+        type schema, together with implementation details of the members of the type.</p><pre data-language="bnf">ClassDeclaration: Annotations ClassHeader (ClassBody | ClassSpecifier ";")</pre><p>An ordinary class declaration may specify, optionally, a list of parameters 
+        required to instantiate the type, and, also optionally, a list of type parameters.
+        A class declaration may have a superclass, a list of interfaces it satisfies, a 
+        self type or an enumerated list of cases, and/or a list of type constraints.</p><pre data-language="bnf">ClassHeader: "class" TypeName TypeParameters? Parameters? ClassInheritance TypeConstraints?</pre><pre data-language="bnf">ClassInheritance: CaseTypes? ExtendedType? SatisfiedTypes?</pre><p>To obtain an instance of a class, it is necessary to instantiate the
+        class, or a subclass of the class.</p><p>The body of a class contains:</p><div class="itemizedlist"><ul type="disc"><li><p>member (method, attribute, and member class) declarations,</p></li><li><p>nested interface, type alias, and <tt class="literal">abstract</tt> 
+                class declarations, and</p></li><li><p>instance initialization code and, if the class does not have
+                a parameter list, constructors.</p></li></ul></div><pre data-language="bnf">ClassBody: "{" (Declaration | Statement | ConstructorDeclaration)* "}"</pre><p>The body of a class may contain executable code.</p><pre data-language="ceylon">shared class Counter(Integer initialCount=0) {
+    
+    variable Integer n = initialCount;
+    
+    print("Initial count: ``n``");
+    
+    shared Integer count =&gt; n;
+    
+    shared void increment() {
+        n++;
+        print("Count: ``n``");
+    }
+    
+}</pre><p>A non-<tt class="literal">abstract </tt> nested class declaration is called a
+        <span class="emphasis"><em>member class</em></span> of the class. A nested interface or 
+        <tt class="literal">abstract</tt> class declaration is not part of the schema of the 
+        class type, and is therefore not considered a member of the class.</p><p>A class is not required to have a separate nested constructor declaration.
+        Instead, the body of the class may itself declare its
+        <span class="emphasis"><em>initializer parameters</em></span>. An initializer parameter may be 
+        used anywhere in the class body, including in method and attribute definitions.</p><pre data-language="ceylon">shared class Key(Lock lock) {
+    shared void lock() {
+        lock.engage(this);
+        print("Locked.");
+    }
+    shared void unlock() {
+        lock.disengage(this);
+        print("Unlocked.");
+    }
+    shared Boolean locked =&gt; lock.engaged;
+}</pre><p>An initializer parameter may be <tt class="literal">shared</tt>.</p><pre data-language="ceylon">shared class Point(shared Float x, shared Float y) { ... }</pre><pre data-language="ceylon">shared class Counter(count=0) {
+    shared variable Integer count;
+    shared void increment() =&gt; count++;
+}</pre><p>If a class does not specify an initializer parameter list, it must have
+        at least one shared constructor, as defined below in <a href="declarations.html#constructors" title="4.9.&nbsp;Constructors">&sect;4.9 Constructors</a>.</p><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="callabletypeofclass"></a>4.5.1.&nbsp;Callable type of a class</h3></div></div><div></div></div><p>The <span class="emphasis"><em>callable type</em></span> of a class with an initializer
+            parameter list captures the type and initializer parameter types of the class. 
+            The callable type is <tt class="literal">T(*P)</tt>, where <tt class="literal">T</tt> is 
+            the applied type formed by the class with its own type parameters as type 
+            arguments, and <tt class="literal">P</tt> is the type of the initializer parameter 
+            list of the class.</p><p>The callable type of a class with a default constructor is the callable
+            type of the default constructor.</p><p>A class with no initializer parameter list and no default constructor
+            does not have a callable type.</p><p>An <tt class="literal">abstract</tt> class is not callable, except from the 
+            <tt class="literal">extends</tt> clause of a subclass, or the class specifier of a
+            class alias.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="initializersection"></a>4.5.2.&nbsp;Initializer section</h3></div></div><div></div></div><p>The initial part of the body of a class is called the 
+            <span class="emphasis"><em>initializer</em></span> of the class and contains a mix of declarations, 
+            statements, and control structures. The initializer is executed every time the 
+            class is instantiated. If the class does not have an initializer parameter list, 
+            the initializer section may include one or more constructor declarations, as 
+            defined in <a href="declarations.html#constructors" title="4.9.&nbsp;Constructors">&sect;4.9 Constructors</a>.</p><p>A class initializer is responsible for initializing the state of the new 
+            instance of the class, before a reference to the new instance is available to 
+            clients.</p><pre data-language="ceylon">shared abstract class Point() {
+    shared formal Float x;
+    shared formal Float y;
+}</pre><pre data-language="ceylon">shared class DiagonalPoint(Float distance) 
+        extends Point() {
+    
+    value d = distance / 2^0.5;
+    x =&gt; d;
+    y =&gt; d;
+    
+    "must have correct distance from origin" 
+    assert (x^2 + y^2 == distance^2);
+    
+}</pre><pre data-language="ceylon">shared object origin 
+        extends Point() {
+    x =&gt; 0.0;
+    y =&gt; 0.0;
+}</pre><p>Within a class initializer, a <span class="emphasis"><em>self reference to the instance 
+            being initialized</em></span> is:</p><div class="itemizedlist"><ul type="disc"><li><p>any occurrence of the expression <tt class="literal">this</tt>, as 
+                    defined in <a href="expressions.html#this" title="6.3.1.&nbsp;this">&sect;6.3.1 this</a>, or <tt class="literal">super</tt>, as 
+                    defined in <a href="expressions.html#super" title="6.3.3.&nbsp;super">&sect;6.3.3 super</a>, unless it also occurs in the 
+                    body of a nested class or interface declaration,</p></li><li><p>any occurrence of the expression <tt class="literal">outer</tt>, as 
+                    defined in <a href="expressions.html#outer" title="6.3.2.&nbsp;outer">&sect;6.3.2 outer</a>, in the body of a class or 
+                    interface declaration immediately contained by the class,</p></li><li><p>any reference to an anononymous class that inherits the class,
+                    or, if the class is an anonymous class, to the anonymous class itself,
+                    or</p></li><li><p>any reference to a value constructor of the class or of a class 
+                    which inherits the class.</p></li></ul></div><p>A statement or declaration contained in the initializer of a class may 
+            not evaluate an attribute, invoke a method, or instantiate a member class upon 
+            the instance being initialized, including upon a self reference to the instance 
+            being initialized, if the attribute, method, or member class:</p><div class="itemizedlist"><ul type="disc"><li><p>occurs later in the body of the class,</p></li><li><p>is annotated <tt class="literal">formal</tt> or <tt class="literal">default</tt>,
+                  or</p></li><li><p>is inherited from an interface or superclass, and is not refined 
+                  by a declaration occurring earlier in the body of the class.</p></li></ul></div><p>A member class contained in the initializer of a class may not 
+            <tt class="literal">extend</tt> a member or nested class of an interface or 
+            superclass of the class.</p><p>Furthermore, a statement or declaration contained in the initializer 
+            of a class may not:</p><div class="itemizedlist"><ul type="disc"><li><p>pass a self reference to the instance being initialized as an 
+                  argument of an instantiation, function invocation, or <tt class="literal">extends</tt> 
+                  clause expression or as the value of a value assignment or specification,</p></li><li><p>use a self reference to the instance being initialized as an 
+                  operand of any operator except the member selection operator, or
+                  the <tt class="literal">of</tt> operator,</p></li><li><p>return a self reference to the instance being initialized, or</p></li><li><p>narrow the type of a self reference to the instance being 
+                  initialized using an assignability condition, as defined in 
+                  <a href="statementblocks.html#assignabilityconditions" title="5.4.2.&nbsp;Assignability conditions">&sect;5.4.2 Assignability conditions</a>.</p></li></ul></div><p>Nor may the class pass a self reference to the instance being 
+            initialized as an argument of its own <tt class="literal">extends</tt> clause 
+            expression, if any.</p><p>As a special exception to these rules, a statement contained in an 
+            initializer may assign a self-reference to the instance being initialized
+            to a reference annotated <tt class="literal">late</tt>.</p><p>For example, the following code fragments are not legal:</p><pre data-language="ceylon">class Graph() {
+    OpenList&lt;Node&gt; nodes = ArrayList&lt;Node&gt;();
+    class Node() {
+        nodes.add(this);    //error: self reference in initializer
+    }
+}</pre><pre data-language="ceylon">class Graph() {
+    class Node() {}
+    Node createNode() {
+        Node node = Node();
+        nodes.add(node);    //error: forward reference in initializer
+        return node;
+    }
+    OpenList&lt;Node&gt; nodes = ArrayList&lt;Node&gt;();
+}</pre><p>But this code fragment is legal:</p><pre data-language="ceylon">class Graph() {
+    OpenList&lt;Node&gt; nodes = ArrayList&lt;Node&gt;();
+    Node createNode() {
+        Node node = Node();
+        nodes.add(node);
+        return node;
+    }
+    class Node() {}
+}</pre></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="declarationsection"></a>4.5.3.&nbsp;Declaration section</h3></div></div><div></div></div><p>The remainder of the body of the class consists purely of declarations, 
+            similar to the body of an interface. The following constructs may not occur 
+            sequentially in the declaration section:</p><div class="itemizedlist"><ul type="disc"><li><p>a statement or control structure, defined in 
+                    <a href="statementblocks.html#controlstructures" title="5.5.&nbsp;Control structures and assertions">&sect;5.5 Control structures and assertions</a>,</p></li><li><p>a reference declaration, as defined below in
+                    <a href="declarations.html#references" title="4.8.1.&nbsp;References">&sect;4.8.1 References</a>,</p></li><li><p>a constructor declaration, as defined below in 
+                    <a href="declarations.html#constructors" title="4.9.&nbsp;Constructors">&sect;4.9 Constructors</a>,</p></li><li><p>a forward-declared function or value declaration not
+                    annotated <tt class="literal">late</tt>, as defined below in 
+                    <a href="declarations.html#functionforwarddeclaration" title="4.7.5.&nbsp;Forward declaration of functions">&sect;4.7.5 Forward declaration of functions</a> and 
+                    <a href="declarations.html#valueforwarddeclaration" title="4.8.5.&nbsp;Forward declaration of values">&sect;4.8.5 Forward declaration of values</a>,</p></li><li><p>an <tt class="literal">object</tt> declaration with a non-empty 
+                    initializer section, or</p></li><li><p>an <tt class="literal">object</tt> declaration that directly extends 
+                    a class other than <tt class="literal">Object</tt> or <tt class="literal">Basic</tt> 
+                    in <tt class="literal">ceylon.language</tt>.</p></li></ul></div><p>However, the declarations in this second section may freely use 
+            <tt class="literal">this</tt> and <tt class="literal">super</tt>, and may invoke any method,
+            evaluate any attribute, or instantiate any member class of the class or its 
+            superclasses.</p><p>Within the declaration section of a class body, a <span class="emphasis"><em>super 
+            reference</em></span> is any occurrence of the expression <tt class="literal">super</tt>, 
+            unless it also occurs in the body of a nested class or interface declaration. A 
+            statement or declaration contained in the declaration section of a class body may 
+            not:</p><div class="itemizedlist"><ul type="disc"><li><p>pass a super reference as an argument of an instantiation, 
+                  function invocation, or <tt class="literal">extends</tt> clause expression 
+                  or as the value of a value assignment or specification,</p></li><li><p>use a super reference as an operand of any operator except the
+                  member selection operator, or the <tt class="literal">of</tt> operator as 
+                  specified in <a href="expressions.html#super" title="6.3.3.&nbsp;super">&sect;6.3.3 super</a>,</p></li><li><p>return a super reference, or</p></li><li><p>narrow the type of a super reference using an assignability 
+                  condition, as defined in <a href="statementblocks.html#assignabilityconditions" title="5.4.2.&nbsp;Assignability conditions">&sect;5.4.2 Assignability conditions</a>.</p></li></ul></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="classinheritance"></a>4.5.4.&nbsp;Class inheritance</h3></div></div><div></div></div><p>A class may extend another class, as defined in 
+            <a href="typesystem.html#extendedclass" title="3.3.2.&nbsp;Extension">&sect;3.3.2 Extension</a>.</p><pre data-language="ceylon">shared class Customer(Name name, Organization? org = null) 
+        extends Person(name, org) { 
+    ... 
+}</pre><p>The class is a subtype of the type specified by the <tt class="literal">extends</tt> 
+            clause. If a class does not explicitly specify a superclass using <tt class="literal">extends</tt>,
+            its superclass is the class <tt class="literal">Basic</tt> defined in 
+            <tt class="literal">ceylon.language</tt>.
+            </p><p>A class may satisfy any number of interfaces, as defined in 
+            <a href="typesystem.html#satisfiedinterfaces" title="3.3.3.&nbsp;Satisfaction">&sect;3.3.3 Satisfaction</a>.</p><pre data-language="ceylon">class Token() 
+        extends Datetime()
+        satisfies Comparable&lt;Token&gt; &amp; Identifier {
+    ... 
+}</pre><p>The class is a subtype of every type listed in the <tt class="literal">satisfies</tt> 
+            clause. A class may not satisfy the same interface twice (not even with distinct 
+            type arguments).</p><p>A class inherits all members (methods, attributes, and member types) of every 
+            supertype. That is, every member of every supertype of the class is also a member 
+            of the class.  Furthermore, the class inherits all nested types (interfaces and 
+            <tt class="literal">abstract</tt> classes) of every supertype.</p><p>Unless the class is declared <tt class="literal">abstract</tt> or 
+            <tt class="literal">formal</tt>, the class:</p><div class="itemizedlist"><ul type="disc"><li><p>must declare or inherit a member that refines each 
+                    <tt class="literal">formal</tt> member of every interface it satisfies directly 
+                    or indirectly, and</p></li><li><p>must declare or inherit a member that refines each 
+                    <tt class="literal">formal</tt> member of its superclass.</p></li></ul></div><p>The schema of the inherited members is formed by substituting type arguments
+            specified in the <tt class="literal">extends</tt> or <tt class="literal">satisfies</tt> clause.</p><p>A subclass with an initializer parameter list must pass arguments to 
+            each superclass initialization parameter or callable constructor parameter 
+            in the <tt class="literal">extends</tt> clause. A subclass with no initializer 
+            parameter list may not pass arguments in the <tt class="literal">extends</tt> 
+            clause.</p><pre data-language="ceylon">shared class SpecialKey1()
+        extends Key( SpecialLock() ) {
+    ...
+}</pre><pre data-language="ceylon">shared class SpecialKey2(Lock lock) 
+        extends Key(lock) {
+    ...
+}</pre><p>A subclass of a nested class must be a member of the type that declares 
+             the nested class or of a subtype of the type that declares the nested class. 
+             A class that satisfies a nested interface must be a member of the type that 
+             declares the nested interface or of a subtype of the type that declares the 
+             nested interface.</p><p>A user-defined class may not satisfy the interface 
+             <tt class="literal">Callable</tt> defined in <tt class="literal">ceylon.language</tt> nor 
+             directly satisfy the interface <tt class="literal">ConstrainedAnnotation</tt> 
+             defined in <tt class="literal">ceylon.language</tt>.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="abstractandformalclasses"></a>4.5.5.&nbsp;Abstract, final, sealed, formal, and default classes</h3></div></div><div></div></div><p>A toplevel or nested class may be annotated <tt class="literal">abstract</tt>
+            and is called an <tt class="literal">abstract</tt> class.</p><p>A toplevel or nested class may be annotated <tt class="literal">final</tt>
+            and is called a <tt class="literal">final</tt> class.</p><p>A toplevel or nested class may be annotated <tt class="literal">sealed</tt>
+            and is called a <tt class="literal">sealed</tt> class.</p><p>If a class annotated <tt class="literal">shared</tt> is a member of a containing 
+            class or interface, then the class may be annotated <tt class="literal">formal</tt>
+            and is called a <tt class="literal">formal</tt> member class, or, sometimes, an 
+            <span class="emphasis"><em>abstract member class</em></span>.</p><p>An <tt class="literal">abstract</tt> class or <tt class="literal">formal</tt> member
+            class may have <tt class="literal">formal</tt> members.</p><p>An <tt class="literal">abstract</tt> class may not be instantiated.</p><p>A <tt class="literal">formal</tt> member class may be instantiated.</p><p>A class which is not annotated <tt class="literal">formal</tt> or 
+            <tt class="literal">abstract</tt> is called a <span class="emphasis"><em>concrete</em></span> class.</p><p>A concrete class may not have <tt class="literal">formal</tt> members.</p><p>A class annotated <tt class="literal">final</tt> must be a concrete class.</p><p>A class annotated <tt class="literal">final</tt> may not have 
+            <tt class="literal">default</tt> members.</p><p>If a concrete class annotated <tt class="literal">shared</tt> is a member 
+            of a containing class or interface, then the class may be annotated 
+            <tt class="literal">default</tt> and is called a <tt class="literal">default</tt> 
+            member class.</p><p>A toplevel class may not be annotated <tt class="literal">formal</tt> or 
+            <tt class="literal">default</tt>.</p><p>An un-<tt class="literal">shared</tt> class may not be annotated 
+            <tt class="literal">formal</tt> or <tt class="literal">default</tt>.</p><p>A class annotated <tt class="literal">sealed</tt> may not be instantiated 
+            or extended outside the module in which it is defined.</p><p>A class with no parameter list may not be annotated 
+            <tt class="literal">sealed</tt>.</p><p>A member class annotated <tt class="literal">sealed formal</tt> must 
+            belong to a <tt class="literal">sealed</tt> class or interface.</p><i><span class="comment"><p>Note: a <tt class="literal">formal</tt> member class would be a
+            reasonable syntax for declaring virtual types. We think we don't need 
+            virtual types because they don't offer much that type parameters don't
+            already provide. For example:</p>
+            <pre data-language="ceylon">shared formal class Buffer(Character...) 
+        satisfies Sequence&lt;Character&gt;;</pre></span></i></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="classrefinement"></a>4.5.6.&nbsp;Member class refinement</h3></div></div><div></div></div><p>Member class refinement is a unique feature of Ceylon, akin to 
+            the "factory method" pattern of many other languages.</p><div class="itemizedlist"><ul type="disc"><li><p>A member class annotated <tt class="literal">formal</tt> or
+                    <tt class="literal">default</tt> may be refined by any class or 
+                    interface which is a subtype of the class or interface which 
+                    declares the member class.</p></li><li><p>A member class annotated <tt class="literal">formal</tt> 
+                    <span class="emphasis"><em>must</em></span> be refined by every concrete class 
+                    which is a subtype of the class or interface that declares the 
+                    member class, unless the class inherits a concrete member class 
+                    from a superclass that refines the <tt class="literal">formal</tt> 
+                    member class.</p></li></ul></div><p>A member class of a subtype <span class="emphasis"><em>refines</em></span> a member 
+            class of a supertype if the member class of the supertype is
+            <tt class="literal">shared</tt> and the two classes have the same name. The 
+            first class is called the <span class="emphasis"><em>refining</em></span> class, and the 
+            second class is called the <span class="emphasis"><em>refined</em></span> class.</p><p>Then, given the refined realization of the class it refines, as 
+            defined in <a href="typesystem.html#realizations" title="3.7.7.&nbsp;Realizations">&sect;3.7.7 Realizations</a>, and, after substituting the 
+            type parameters of the refined class for the type parameters of the 
+            refining class in the schema of the refining class, the refining class 
+            must:</p><div class="itemizedlist"><ul type="disc"><li><p>have the same number of type parameters as the refined 
+                    schema, and for each type parameter the intersection of its
+                    upper bounds must be a supertype of the intersection of the 
+                    upper bounds of the corresponding type parameter of the 
+                    realization,</p></li><li><p>have a parameter list with the same signature as the 
+                    realization, and</p></li><li><p>directly or indirectly extend the class it refines.</p></li></ul></div><p>Furthermore:</p><div class="itemizedlist"><ul type="disc"><li><p>the refining class must be annotated <tt class="literal">actual</tt>, 
+                    and</p></li><li><p>the refined class must be annotated <tt class="literal">formal</tt>
+                    or <tt class="literal">default</tt>.</p></li></ul></div><p>If a member class is annotated <tt class="literal">actual</tt>, it must 
+            refine some member class of a supertype.</p><p>A member class may not, directly or indirectly, refine two different
+            member classes not themselves annotated <tt class="literal">actual</tt>.</p><p>Then instantiation of the member class is polymorphic, and the actual
+            subtype instantiated depends upon the concrete type of the containing class
+            instance.</p><pre data-language="ceylon">shared abstract class Reader() {
+    shared formal class Buffer(Character* chars) 
+            satisfies Character[] {}
+    ...
+}</pre><pre data-language="ceylon">shared class FileReader(File file) 
+        extends Reader() {
+    shared actual class Buffer(Character* chars) 
+            extends super.Buffer(chars) {
+        ...
+    }
+    ...
+}</pre><p>All of the above rules apply equally to member classes which are 
+            aliases.</p><pre data-language="ceylon">shared abstract class Reader() {
+    shared formal class Buffer(Character* chars) =&gt; AbstractBuffer(*chars);
+    ...
+}</pre><pre data-language="ceylon">shared class FileReader(File file) 
+        extends Reader() {
+    shared actual class Buffer(Character* chars) =&gt; FileBuffer(*chars);
+    ...
+}</pre></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="anonymousclasses"></a>4.5.7.&nbsp;Anonymous classes</h3></div></div><div></div></div><p>An <tt class="literal">object</tt> or <span class="emphasis"><em>anonymous class</em></span>
+            declaration is a compact way to define a class with a single value 
+            constructor, together with a getter aliasing this value constructor.</p><pre data-language="bnf">ObjectDeclaration: Annotations ObjectHeader ClassBody</pre><p>An <tt class="literal">object</tt> has an initial lowercase identifier.
+            An <tt class="literal">object</tt> declaration does not specify parameters or
+            type parameters.</p><pre data-language="bnf">ObjectHeader: "object" MemberName ObjectInheritance</pre><pre data-language="bnf">ObjectInheritance: ExtendedType? SatisfiedTypes?</pre><p>An <tt class="literal">object</tt> declaration specifies the name of the
+            value and the schema, supertypes, and implementation of the class. It does 
+            not explicitly specify a type name. Instead, the type name is formed by 
+            prefixing the value name with <tt class="literal">\I</tt>, turning it into an 
+            initial uppercase identifier, as specified by 
+            <a href="lexical.html#identifiersandkeywords" title="2.3.&nbsp;Identifiers and keywords">&sect;2.3 Identifiers and keywords</a>.</p><p>An <tt class="literal">object</tt> class:</p><div class="itemizedlist"><ul type="disc"><li><p>satisfies and/or extends the types specified by the 
+                    <tt class="literal">object</tt> declaration,</p></li><li><p>has no initializer parameter list,</p></li><li><p>has a single <tt class="literal">shared</tt> value constructor 
+                    with the same name as the <tt class="literal">object</tt>, with an 
+                    empty body and the same <tt class="literal">extends</tt> clause as 
+                    the <tt class="literal">object</tt> declaration, which is the single 
+                    enumerated case of the class,</p></li><li><p>is <tt class="literal">shared</tt>, if and only if the
+                    <tt class="literal">object</tt> is annotated 
+                    <tt class="literal">shared</tt>,</p></li><li><p>is neither <tt class="literal">abstract</tt> nor 
+                    <tt class="literal">formal</tt>,</p></li><li><p>is implicitly <tt class="literal">final</tt>.</p></li></ul></div><p>Therefore, members of an <tt class="literal">object</tt> may not be
+            declared <tt class="literal">formal</tt> nor <tt class="literal">default</tt>.</p><p>The body of the <tt class="literal">object</tt> declaration is the body 
+            of the class.</p><p>This class never appears in types inferred by local declaration type 
+            inference or generic type argument inference. Instead, occurrences of the 
+            class are replaced with the intersection of the extended type with all 
+            satisfied types.</p><p>An <tt class="literal">object</tt> value is a getter, as defined in
+            <a href="declarations.html#getters" title="4.8.2.&nbsp;Getters">&sect;4.8.2 Getters</a>, that simply returns a reference to the value
+            constructor of the class. The value:</p><div class="itemizedlist"><ul type="disc"><li><p>is <tt class="literal">shared</tt>, if and only if the
+                    <tt class="literal">object</tt> is annotated 
+                    <tt class="literal">shared</tt>,</p></li><li><p>may refine a member of a supertype, if and only if the 
+                    <tt class="literal">object</tt> is annotated 
+                    <tt class="literal">actual</tt>, and</p></li><li><p>is neither <tt class="literal">default</tt> nor 
+                    <tt class="literal">formal</tt>.</p></li></ul></div><p>Therefore, the <tt class="literal">object</tt> may not be annotated 
+            <tt class="literal">default</tt> nor <tt class="literal">formal</tt>.</p><p>Annotations applying to an <tt class="literal">object</tt> declaration 
+            are considered annotations of the <tt class="literal">object</tt> value, and 
+            are accessible via its <tt class="literal">ValueDeclaration</tt>, as defined 
+            in <a href="expressions.html#referenceexpressions" title="6.10.&nbsp;Reference expressions">&sect;6.10 Reference expressions</a>.</p><p>The following declaration:</p><pre data-language="ceylon">shared my object red extends Color('FF0000') {
+     string =&gt; "Red";
+}</pre><p>Is exactly equivalent to:</p><pre data-language="ceylon">shared final class \Ired of red extends Color {
+     shared new red extends Color('FF0000') {}
+     string =&gt; "Red";
+}
+
+shared my \Ired red =&gt; \Ired.red;</pre><p>Where <tt class="literal">\Ired</tt> is the type name assigned by the 
+            compiler.</p><pre data-language="ceylon">shared object sql {
+    shared String escape(String string) { ... }
+}
+
+...
+
+String escapedSearchString = sql.escape(searchString);</pre></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="classeswithcases"></a>4.5.8.&nbsp;Enumerated classes</h3></div></div><div></div></div><p>A class declaration may enumerate a list of cases of the class, as
+            defined in <a href="typesystem.html#cases" title="3.4.2.&nbsp;Cases">&sect;3.4.2 Cases</a>.</p><div class="itemizedlist"><ul type="disc"><li><p>For an <tt class="literal">abstract</tt> class, the cases may be 
+		            classes or toplevel anonymous classes. Each case must be a direct 
+		            subclass of the enumerated class. A case may itself be an 
+		            <tt class="literal">abstract</tt> class.</p></li><li><p>For a non-<tt class="literal">abstract</tt> toplevel class, the 
+                    cases must be value constructors of the class.</p></li></ul></div><p>The cases listed in the <tt class="literal">of</tt> clause must exhaust
+            every means by which an instance of the class may be instantiated:</p><div class="itemizedlist"><ul type="disc"><li><p>if an <tt class="literal">abstract</tt> class has an 
+		            <tt class="literal">of</tt> clause, then every class that directly 
+		            extends the class must occur as exactly one of the enumerated 
+		            cases of the class listed in the <tt class="literal">of</tt> clause
+		            and, furthermore, every class that indirectly inherits the 
+		            <tt class="literal">abstract</tt> class must inherit one of the
+		            enumerated cases of the class, or</p></li><li><p>if a non-<tt class="literal">abstract</tt> class has an 
+		            <tt class="literal">of</tt> clause, then every non-partial constructor 
+		            of the class must occur as exactly one of the enumerated cases of 
+		            the class listed in the <tt class="literal">of</tt> clause.</p></li></ul></div><pre data-language="ceylon">shared abstract class Boolean() 
+        of true | false {}
+        
+shared object true extends Boolean() { string =&gt; "true"; }
+shared object false extends Boolean() { string =&gt; "false"; }</pre><pre data-language="ceylon">shared abstract class Node&lt;Element&gt;(String name) 
+        of Branch&lt;Element&gt; | Leaf&lt;Element&gt; { ... }
+        
+shared class Leaf&lt;Element&gt;(String name, Element element) 
+        extends Node&lt;Element&gt;(name) { ... }
+        
+shared class Branch&lt;Element&gt;(String name, Node&lt;Element&gt; left, Node&lt;Element&gt; right) 
+        extends Node&lt;Element&gt;(name) { ... }</pre><pre data-language="ceylon">shared class Status of enabled | disabled {
+    shared actual String string;
+    shared new enabled { string =&gt; "enabled"; }
+    shared new disabled { string =&gt; "disabled"; }
+}</pre><p>A non-<tt class="literal">abstract</tt> class with an initializer parameter 
+            list or a callable constructor may not specify an <tt class="literal">of</tt> 
+            clause.</p><p>A non-<tt class="literal">abstract</tt>, non-toplevel class may not specify 
+            an <tt class="literal">of</tt> clause.</p><p>A class declaration may not list the same case twice.</p><i><span class="comment"><p>Note: in a future release of the language, we may introduce 
+            an abbreviated syntax like:</p>
+            <pre data-language="ceylon">shared abstract class Boolean(shared actual String string) 
+        of object true ("true") | 
+           object false ("false") {}</pre>
+            </span></i></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="classaliases"></a>4.5.9.&nbsp;Class aliases</h3></div></div><div></div></div><p>A <span class="emphasis"><em>class alias</em></span> is a class declaration which specifies 
+            a reference to a class or callable constructor of a class, followed by a 
+            positional argument list, as defined in <a href="expressions.html#positionalarguments" title="6.6.7.&nbsp;Positional argument lists">&sect;6.6.7 Positional argument lists</a>.</p><pre data-language="bnf">ClassSpecifier: "=&gt;" (Extension | Construction)</pre><p>The specification of the class or callable constructor is treated as a 
+            value expression, as in <a href="typesystem.html#extendedclass" title="3.3.2.&nbsp;Extension">&sect;3.3.2 Extension</a>. The type of this value 
+            expression must be a <span class="emphasis"><em>class type</em></span>, that is, a reference to a 
+            class with no type parameters or an instantiation of a generic class, and is 
+            called the <span class="emphasis"><em>aliased type</em></span>.</p><p>A class alias simply assigns an alternative name to the aliased type. A 
+            reference to the alias may occur anywhere a reference to a class may occur.</p><pre data-language="ceylon">shared class People(Person* people) =&gt; ArrayList&lt;Person&gt;(*people);</pre><pre data-language="ceylon">class Named&lt;Value&gt;(String name, Value val) 
+        given Value satisfies Object
+        =&gt; Entry&lt;String,Value&gt;(name, val);</pre><p>Arguments to the initializer parameters of the aliased class must be
+            specified.</p><p>If the aliased class is a parameterized type, the aliased type must
+            explicitly specify type arguments.</p><p>The type arguments may not be inferred from the initializer arguments.</p><i><span class="comment"><p>Note: currently the compiler imposes a restriction that the 
+            callable type of the aliased class must be assignable to the callable type 
+            of the class alias. This restriction will be removed in future.</p></span></i><p>If a toplevel class alias or un-<tt class="literal">shared</tt> class alias
+            aliases an <tt class="literal">abstract</tt> class, the alias must be annotated 
+            <tt class="literal">abstract</tt>, and it may not be directly instantiated.</p><p>If a <tt class="literal">shared</tt> class alias nested inside the body of a 
+            class or interface aliases an <tt class="literal">abstract</tt> class, the alias 
+            must be annotated <tt class="literal">abstract</tt> or <tt class="literal">formal</tt>.
+            If it is annotated <tt class="literal">formal</tt>, it is considered a member 
+            class of the containing class or interface. If it is annotated 
+            <tt class="literal">abstract</tt>, it is considered an abstract nested class of the 
+            containing class or interface.</p><p>A class alias may not alias a partial constructor. A 
+            <tt class="literal">shared</tt> class alias may not alias an 
+            un-<tt class="literal">shared</tt> constructor.</p><p>A class may extend a class alias, in which case, the class inherits the 
+            aliased class type.</p><p>Class aliases are not reified types. The metamodel reference for a 
+            class alias type&#8212;for example, <tt class="literal">People</tt>&#8212;returns 
+            the metamodel object for the aliased class&#8212;in this case, 
+            <tt class="literal">ArrayList&lt;Person&gt;</tt>, as specified in 
+            <a href="execution.html#reification" title="8.1.2.&nbsp;Type argument reification">&sect;8.1.2 Type argument reification</a>.</p></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="typealiasedeclarations"></a>4.6.&nbsp;Type aliases</h2></div></div><div></div></div><p>A type alias declaration assigns a name to an arbitrary type expression,
+        usually involving a union and/or intersection of types.</p><pre data-language="bnf">TypeAliasDeclaration: Annotations AliasHeader TypeSpecifier ";"</pre><pre data-language="bnf">AliasHeader: "alias" TypeName TypeParameters? TypeConstraints?</pre><p>The specified type may be any kind of type. A reference to the alias 
+        may be used anywhere a union or intersection type may be used. The alias may
+        not appear in an <tt class="literal">extends</tt> or <tt class="literal">satisfies</tt>
+        clause. The alias may not be instantiated.</p><pre data-language="ceylon">shared alias Number =&gt; Integer|Float|Decimal|Whole;</pre><pre data-language="ceylon">alias ListLike&lt;Value&gt; =&gt; List&lt;Value&gt;|Map&lt;Integer,Value&gt;;</pre><pre data-language="ceylon">alias Numbered&lt;Num,Value&gt; given Num satisfies Ordinal&lt;Num&gt; 
+        =&gt; Correspondence&lt;Num,Value&gt;;</pre><i><span class="comment"><p>Note: class, interface, and type aliases use a "fat arrow" lazy 
+        specifier <tt class="literal">=&gt;</tt> instead of <tt class="literal">=</tt> because the
+        type parameters declared on the left of the specifier are in scope on the right
+        of the specifier. An alias is in general a type constructor.</p></span></i><p>A class or interface may not extend or satisfy a type alias.</p><p>Type aliases are not reified types. The metamodel reference for a type 
+        alias type&#8212;for example, <tt class="literal">Number</tt>&#8212;returns the 
+        metamodel object for the aliased type&#8212;in this case, 
+        <tt class="literal">Integer|Float|Decimal|Whole</tt>, as specified in 
+        <a href="execution.html#reification" title="8.1.2.&nbsp;Type argument reification">&sect;8.1.2 Type argument reification</a>.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="functions"></a>4.7.&nbsp;Functions</h2></div></div><div></div></div><p>A <span class="emphasis"><em>function</em></span> is a callable block of code. A function 
+        may have parameters and may return a value. If a function belongs to a type,
+        it is called a <span class="emphasis"><em>method</em></span>.</p><pre data-language="bnf">FunctionDeclaration: Annotations FunctionHeader (Block | LazySpecifier? ";")</pre><p>All function declarations specify the function name, one or more parameter 
+        lists, and, optionally, a list of type parameters. A generic function declaration 
+        may have a list of type constraints.</p><pre data-language="bnf">FunctionHeader: FunctionPrefix MemberName TypeParameters? Parameters+ TypeConstraints?</pre><p>A function declaration may specify a type, called the <span class="emphasis"><em>return 
+        type</em></span>, to which the values the method returns are assignable, or it may
+        specify that the function is a <tt class="literal">void</tt> function&#8212;a function 
+        which does not return a useful value, and only useful for its effect.</p><pre data-language="bnf">FunctionPrefix: Type | "function" | "dynamic" | "void"</pre><p>Instead of an explicit return type, a function may be declared using:</p><div class="itemizedlist"><ul type="disc"><li><p>the keyword <tt class="literal">dynamic</tt>, indicating that it is a
+                partially typed declaration with no return type, or</p></li><li><p>the keyword <tt class="literal">function</tt>, indicating that its return
+		        type is inferred.</p></li></ul></div><p>A function implementation may be specified using either:</p><div class="itemizedlist"><ul type="disc"><li><p>a block of code, or</p></li><li><p>a lazy specifier.</p></li></ul></div><p>If a function is a parameter, it must not specify any implementation.</p><p>The return type of a <tt class="literal">void</tt> function is considered to be 
+        <tt class="literal">Anything</tt> defined in <tt class="literal">ceylon.language</tt>.</p><i><span class="comment"><p>Note: a <tt class="literal">void</tt> function with a concrete 
+        implementation returns the value <tt class="literal">null</tt>. However, since a
+        <tt class="literal">void</tt> function may be a reference to a non-<tt class="literal">void</tt> 
+        function, or a method refined by a non-<tt class="literal">void</tt> function, 
+        this behavior can not be depended upon and is not implied by the semantics 
+        of <tt class="literal">void</tt>.</p></span></i><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="callabletypeoffunction"></a>4.7.1.&nbsp;Callable type of a function</h3></div></div><div></div></div><p>The <span class="emphasis"><em>callable type</em></span> of a function captures the return
+            type and parameter types of the function.</p><div class="itemizedlist"><ul type="disc"><li><p>The callable type of a function with a single parameter list is 
+                <tt class="literal">R(*P)</tt> where <tt class="literal">R</tt> is the return type 
+                of the method, or <tt class="literal">Anything</tt> if the function is 
+                <tt class="literal">void</tt>, and <tt class="literal">P</tt> is the type of the
+                parameter list.</p></li><li><p>The callable type of a function with multiple parameter lists is 
+                <tt class="literal">O(*P)</tt>, where <tt class="literal">O</tt> is the callable 
+                type of a method produced by eliminating the first parameter list, and 
+                <tt class="literal">P</tt> is the type of the first parameter list of the
+                function.</p></li></ul></div><i><span class="comment"><p>Note: the identification of <tt class="literal">void</tt> with
+            <tt class="literal">Anything</tt> instead of <tt class="literal">Null</tt> or some other
+            unit type will probably be contraversial. This approach allows a 
+            non-<tt class="literal">void</tt> method to refine a <tt class="literal">void</tt>
+            method or a non-<tt class="literal">void</tt> function to be assigned to a 
+            <tt class="literal">void</tt> functional parameter. Thus, we avoid rejecting 
+            perfectly well-typed code.</p></span></i></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="functionswithblocks"></a>4.7.2.&nbsp;Functions with blocks</h3></div></div><div></div></div><p>A function implementation may be a block.</p><div class="itemizedlist"><ul type="disc"><li><p>If the function is declared <tt class="literal">void</tt>, the block 
+                    may not contain a <tt class="literal">return</tt> directive that specifies 
+                    an expression.</p></li><li><p>Otherwise, every conditional execution path of the block must 
+                    end in a <tt class="literal">return</tt> directive that specifies an 
+                    expression assignable to the return type of the function, or in a 
+                    <tt class="literal">throw</tt> directive, as specified in 
+                    <a href="statementblocks.html#definitereturn" title="5.3.6.&nbsp;Definite return">&sect;5.3.6 Definite return</a>.</p></li></ul></div><pre data-language="ceylon">shared Integer add(Integer x, Integer y) {
+    return x + y;
+}</pre><pre data-language="ceylon">shared void printAll(Object* objects) {
+    for (obj in objects) {
+        print(obj);
+    }
+}</pre><pre data-language="ceylon">shared void addEntry(Key-&gt;Item entry) {
+    map.put(entry.key,entry.item);
+}</pre><pre data-language="ceylon">shared Set&lt;Element&gt; singleton&lt;Element&gt;(Element element) 
+        given Element satisfies Comparable&lt;Element&gt; {
+    return TreeSet { element };
+}</pre></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="functionswithspecifiers"></a>4.7.3.&nbsp;Functions with specifiers</h3></div></div><div></div></div><p>Alternatively, a function implementation may be a lazy specifier, that
+            is, an expression specified using <tt class="literal">=&gt;</tt>. The type of the 
+            specified expression must be assignable to the return type of the function.
+            In the case of a function declared <tt class="literal">void</tt>, the expression
+            must be a legal statement.</p><pre data-language="ceylon">shared Integer add(Integer x, Integer y) =&gt; x + y;</pre><pre data-language="ceylon">shared void addEntry(Key-&gt;Item entry) =&gt; map.put(entry.key,entry.item);</pre><pre data-language="ceylon">shared Set&lt;Element&gt; singleton&lt;Element&gt;(Element element) 
+            given Element satisfies Comparable&lt;Element&gt;
+        =&gt; TreeSet { element };</pre></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="returntypeinference"></a>4.7.4.&nbsp;Function return type inference</h3></div></div><div></div></div><p>A non-<tt class="literal">void</tt>, un-<tt class="literal">shared</tt>  function with 
+            a block or lazy specifier may be declared using the keyword <tt class="literal">function</tt> 
+            in place of the explicit return type declaration. Then the function return type is 
+            inferred:</p><div class="itemizedlist"><ul type="disc"><li><p>if the function implementation is a lazy specifier, then the 
+                    return type of the function is the type of the specified expression,</p></li><li><p>if the function implementation is a block, and the function contains 
+                    no <tt class="literal">return</tt> directive, then the return type of the method 
+                    is <tt class="literal">Nothing</tt> (this is the case where the method always 
+                    terminates in a <tt class="literal">throw</tt> directive), or,</p></li><li><p>otherwise, the return type of the function is the union of all 
+                    returned expression types of <tt class="literal">return</tt> directives
+                    of the method body.</p></li></ul></div><p>This function has inferred return type <tt class="literal">Integer</tt>.</p><pre data-language="ceylon">function add(Integer x, Integer y) =&gt; x + y;</pre><p>This function has inferred return type <tt class="literal">Float|Integer</tt>.</p><pre data-language="ceylon">function unit(Boolean floating) {
+    if (floating) {
+        return 1.0;
+    }
+    else {
+        return 1;
+    }
+}</pre><p>This function has inferred return type <tt class="literal">Nothing</tt>.</p><pre data-language="ceylon">function die() {
+    throw;
+}</pre></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="functionforwarddeclaration"></a>4.7.5.&nbsp;Forward declaration of functions</h3></div></div><div></div></div><p>The declaration of a function may be separated from the specification of 
+            its implementation. If a function declaration does not have a lazy specifier, 
+            or a block, and is not annotated <tt class="literal">formal</tt>, and is not a 
+            parameter, it is a <span class="emphasis"><em>forward-declared</em></span> function.</p><p>A forward-declared function may later be specified using a specification
+            statement, as defined in <a href="statementblocks.html#specificationstatements" title="5.3.3.&nbsp;Specification statements">&sect;5.3.3 Specification statements</a>. The 
+            specification statement for a forward-declared function may be:</p><div class="itemizedlist"><ul type="disc"><li><p>a lazy specification statement with parameter lists of exactly
+                    the same types as the function, and a specified expression assignable
+                    to the declared type of the function, or</p></li><li><p>an ordinary specification statement with a specified expression
+                    assignable to the callable type of the function.</p></li></ul></div><pre data-language="ceylon">Comparison order(String x, String y);
+if (reverseOrder) {
+    order(String x, String y) =&gt; y&lt;=&gt;x;
+}
+else {
+    order(String x, String y) =&gt; x&lt;=&gt;y;
+}</pre><pre data-language="ceylon">Comparison format(Integer x);
+switch (base)
+case (decimal) {
+    format = (Integer i) =&gt; i.string; 
+}
+case (binary) {
+    format = formatBin;
+}
+case (hexadecimal) {
+    format = formatHex;
+}</pre><p>Every forward-declared function must explicitly specify a type. It may 
+            not be declared using the keyword <tt class="literal">function</tt>.</p><p>A toplevel function may not be forward-declared. A method of an interface
+            may not be forward-declared. A method annotated <tt class="literal">default</tt> may 
+            not be forward-declared.</p><p>If a <tt class="literal">shared</tt> method is forward-declared, its 
+            implementation must be definitely specified by all conditional paths in the
+            class initializer.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="multipleparameterlists"></a>4.7.6.&nbsp;Functions with multiple parameter lists</h3></div></div><div></div></div><p>A function may declare multiple lists of parameters. A function with 
+            more than one parameter list returns instances of <tt class="literal">Callable</tt>
+            in <tt class="literal">ceylon.language</tt> when invoked. Every function with 
+            multiple parameter lists is exactly equivalent to a function with a single
+            parameter list that returns an anonymous function.</p><p>This function declaration:</p><pre data-language="ceylon">Boolean greaterThan&lt;Element&gt;(Element val)(Element element)
+        given Element satisfies Comparable&lt;Element&gt; =&gt; 
+                element&gt;val;</pre><p>is equivalent to the following:</p><pre data-language="ceylon">Boolean(Element) greaterThan&lt;Element&gt;(Element val)
+        given Element satisfies Comparable&lt;Element&gt; =&gt; 
+                (Element element) =&gt; element&gt;val;</pre><p>For a function with <tt class="literal">n</tt> parameter lists, there are 
+            <tt class="literal">n-1</tt> inferred anonymous functions. The <tt class="literal">i</tt>th 
+            inferred function:</p><div class="itemizedlist"><ul type="disc"><li><p>has a callable type formed by eliminating the first <tt class="literal">i</tt>
+                    parameter lists of the original declared function,</p></li><li><p>has the <tt class="literal">i+1</tt>th parameter list of the original
+                    declared function, and</p></li><li><p>if <tt class="literal">i&lt;n</tt>, returns the <tt class="literal">i+1</tt>th 
+                    inferred function, or</p></li><li><p>otherwise, if <tt class="literal">i==n</tt>, has the implementation 
+                    of the original declared function.</p></li></ul></div><p>Then the original function returns the first inferred anonymous function.</p><p>This method declaration:</p><pre data-language="ceylon">function fullName(String firstName)(String middleName)(String lastName)
+        =&gt; firstName + " " + middleName + " " + lastName;</pre><p>Is equivalent to:</p><pre data-language="ceylon">function fullName(String firstName) =&gt;
+        (String middleName) =&gt;
+                (String lastName) =&gt;
+                        firstName + " " + middleName + " " + lastName;</pre></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="formalmethods"></a>4.7.7.&nbsp;Formal and default methods</h3></div></div><div></div></div><p>If a function declaration does not have a lazy specifier, or a block, 
+            and is annotated <tt class="literal">shared</tt>, and is a method of either:</p><div class="itemizedlist"><ul type="disc"><li><p>an interface, or</p></li><li><p>a class annotated <tt class="literal">abstract</tt> or 
+                    <tt class="literal">formal</tt>,</p></li></ul></div><p>then the function declaration may be annotated <tt class="literal">formal</tt>, 
+            and is called a <tt class="literal">formal</tt> method, or, sometimes, an 
+            <span class="emphasis"><em>abstract method</em></span>.</p><pre data-language="ceylon">shared formal Item? get(Key key);</pre><p>A method which is not annotated <tt class="literal">formal</tt> is called 
+            a <span class="emphasis"><em>concrete</em></span> method.</p><p>If a concrete method is annotated <tt class="literal">shared</tt>, and is 
+            a member of a class or interface, then it may be annotated <tt class="literal">default</tt>
+            and is called a <tt class="literal">default</tt> method.</p><pre data-language="ceylon">shared default void writeLine(String line) {
+    write(line);
+    write("\n");
+}</pre><p>A method annotated <tt class="literal">formal</tt> may not specify an
+            implementation (a lazy specifier, or a block).</p><p>A method annotated <tt class="literal">default</tt> must specify an
+            implementation (a lazy specifier, or a block), and may not be 
+            forward-declared.</p><p>Every <tt class="literal">formal</tt> method must explicitly specify a type. 
+            It may not be declared using the keyword <tt class="literal">function</tt>.</p><p>A toplevel method may not be annotated <tt class="literal">formal</tt> or
+            <tt class="literal">default</tt>.</p><p>An un-<tt class="literal">shared</tt>  method may not be annotated 
+            <tt class="literal">formal</tt> or <tt class="literal">default</tt>.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="methodrefinement"></a>4.7.8.&nbsp;Method refinement</h3></div></div><div></div></div><p>Methods may be refined, just like in other object-oriented languages.</p><div class="itemizedlist"><ul type="disc"><li><p>A class or interface may refine any <tt class="literal">formal</tt> 
+                or <tt class="literal">default</tt> method it inherits, unless it inherits 
+                a non-<tt class="literal">formal</tt> non-<tt class="literal">default</tt> method 
+                that refines the method.</p></li><li><p>A concrete class must refine every <tt class="literal">formal</tt> 
+                method it inherits, unless it inherits a non-<tt class="literal">formal</tt>
+                method that refines the method.</p></li></ul></div><p>A method of a subtype <span class="emphasis"><em>refines</em></span> a method of a 
+            supertype if the method of the supertype is <tt class="literal">shared</tt> 
+            and the two methods have the same name. The first method is called the
+            <span class="emphasis"><em>refining</em></span> method, and the second method is called
+            the <span class="emphasis"><em>refined</em></span> method.</p><p>Then, given the refined realization of the method it refines, as 
+            defined in <a href="typesystem.html#realizations" title="3.7.7.&nbsp;Realizations">&sect;3.7.7 Realizations</a>, and, after substituting the
+            type parameters of the refined method for the type parameters of the
+            refining method in the schema of the refining method, the refining method 
+            must:</p><div class="itemizedlist"><ul type="disc"><li><p>have the same number of type parameters as the refined 
+                    schema, and for each type parameter the intersection of its 
+                    upper bounds must be a supertype of the intersection of the 
+                    upper bounds of the corresponding type parameter of the 
+                    realization,</p></li><li><p>have the same number of parameter lists, with the same
+                    signatures, as the realization, and</p></li><li><p>have a return type that is assignable to the return type 
+                    of the realization, or</p></li><li><p>if it has no return type, the refined method must also 
+                    have no return type.</p></li></ul></div><i><span class="comment"><p>Note: in a future release of the language, we would like 
+            to support contravariant refinement of method parameter types.</p></span></i><p>Furthermore:</p><div class="itemizedlist"><ul type="disc"><li><p>the refining method must be annotated <tt class="literal">actual</tt>, 
+                    and</p></li><li><p>the refined method must be annotated <tt class="literal">formal</tt>
+                    or <tt class="literal">default</tt>.</p></li></ul></div><p>If a method is annotated <tt class="literal">actual</tt>, it must refine 
+            some method defined by a supertype.</p><p>A method may not, directly or indirectly, refine two different 
+            methods not themselves annotated <tt class="literal">actual</tt>.</p><p>Then invocation of the method is polymorphic, and the actual method 
+            invoked depends upon the concrete type of the class instance.</p><pre data-language="ceylon">shared abstract class AbstractSquareRooter() {
+    shared formal Float squareRoot(Float x);
+}</pre><pre data-language="ceylon">class ConcreteSquareRooter()
+        extends AbstractSquareRooter() {
+    shared actual Float squareRoot(Float x) =&gt; x^0.5;
+}</pre><p>Alternatively, a subtype may refine a method using a specification
+            statement, as defined in <a href="statementblocks.html#specificationstatements" title="5.3.3.&nbsp;Specification statements">&sect;5.3.3 Specification statements</a>. The 
+            specification statement must satisfy the requirements of
+            <a href="declarations.html#functionforwarddeclaration" title="4.7.5.&nbsp;Forward declaration of functions">&sect;4.7.5 Forward declaration of functions</a> above for specification 
+            of a forward-declared function.</p><pre data-language="ceylon">class ConcreteSquareRooter()
+        extends AbstractSquareRooter() {
+    squareRoot(Float x) =&gt; x^0.5;
+}</pre></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="values"></a>4.8.&nbsp;Values</h2></div></div><div></div></div><p>There are two basic kinds of <span class="emphasis"><em>value</em></span>:</p><div class="itemizedlist"><ul type="disc"><li><p>A <span class="emphasis"><em>reference</em></span> defines state. It has a persistent 
+                value, determined at the moment it is specified or assigned.</p></li><li><p>A <span class="emphasis"><em>getter</em></span> defines how a value is evaluated. It 
+                is defined using a block or lazy specifier, which is executed every time 
+                the value is evaluated. A getter may have a matching 
+                <span class="emphasis"><em>setter</em></span>.</p></li></ul></div><p>If a value belongs to a type, it is called an <span class="emphasis"><em>attribute</em></span>.</p><pre data-language="bnf">ValueDeclaration: Annotations ValueHeader (Block | (Specifier | LazySpecifier)? ";")</pre><p>All value declarations specify the value name.</p><pre data-language="bnf">ValueHeader: ValuePrefix MemberName</pre><p>A value declaration may specify a type.</p><pre data-language="bnf">ValuePrefix: Type | "value" | "dynamic"</pre><p>Instead of an explicit return type, a value may be declared using:</p><div class="itemizedlist"><ul type="disc"><li><p>the keyword <tt class="literal">dynamic</tt>, indicating that it is a
+                partially typed declaration with no type, or</p></li><li><p>the keyword <tt class="literal">value</tt>, indicating that its type 
+                is inferred.</p></li></ul></div><i><span class="comment"><p>Note: syntactically a value declaration looks like a function 
+        declaration with zero parameter lists. It is often helpful, in thinking about the 
+        syntax and semantics of Ceylon, to take the perspective that a value is a function 
+        with zero parameter lists, or, alternatively, that a function is a value of type 
+        <tt class="literal">Callable</tt>.</p></span></i><p>A value may be <span class="emphasis"><em>variable</em></span>, in which case it may be freely 
+        assigned using the assignment and compound assignment operators defined in 
+        <a href="expressions.html#operators" title="6.8.&nbsp;Operators">&sect;6.8 Operators</a>. This is the case for a reference annotated 
+        <tt class="literal">variable</tt>, or for a getter with a matching setter.</p><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="references"></a>4.8.1.&nbsp;References</h3></div></div><div></div></div><p>The lifecycle and scope of the persistent value of a reference depends upon 
+            where the reference declaration occurs:</p><div class="itemizedlist"><ul type="disc"><li><p>A toplevel reference represents global state associated with the 
+                    lifecyle of a module, as defined by 
+                    <a href="execution.html#toplevelinitialization" title="8.2.10.&nbsp;Initialization of toplevel references">&sect;8.2.10 Initialization of toplevel references</a>.</p></li><li><p>A reference declared directly inside the body of a class represents 
+                    a persistent value associated with every instance of the class, as defined 
+                    by <a href="execution.html#currentinstanceofaclassorinterface" title="8.2.3.&nbsp;Current instance of a class or interface">&sect;8.2.3 Current instance of a class or interface</a>. Repeated evaluation 
+                    of the attribute of a particular instance of the class produces the same 
+                    result until the attribute of the instance is assigned a new value.</p></li><li><p>A reference declared inside a block represents state associated with 
+                    a frame, that is, with a particular execution of the containing block of 
+                    code, as defined in <a href="execution.html#currentframeofablock" title="8.2.4.&nbsp;Current frame of a block">&sect;8.2.4 Current frame of a block</a>.</p></li></ul></div><p>The persistent value of a reference may be specified or initialized as part 
+            of the declaration of the reference, or via a later specification statement, as
+            defined in <a href="statementblocks.html#specificationstatements" title="5.3.3.&nbsp;Specification statements">&sect;5.3.3 Specification statements</a>, or assignment expression, as
+            defined in <a href="expressions.html#operators" title="6.8.&nbsp;Operators">&sect;6.8 Operators</a>, or, if it is a parameter, by an argument 
+            to an invocation expression, as defined in <a href="expressions.html#invocationexpressions" title="6.6.&nbsp;Invocation expressions">&sect;6.6 Invocation expressions</a>.</p><p>A reference annotated <tt class="literal">variable</tt> has a persistent value that 
+            can be assigned multiple times. A reference not annotated <tt class="literal">variable</tt> 
+            has a persistent value that can be specified exactly once and not subsequently 
+            modified.</p><pre data-language="ceylon">variable Integer count = 0;</pre><pre data-language="ceylon">shared Decimal pi = calculatePi();</pre><pre data-language="ceylon">shared Integer[] evenDigits = [0,2,4,6,8];</pre><p>A reference declaration may have a specifier which specifies its persistent 
+            value or, in the case of a variable reference, its initial persistent value. The type 
+            of the specified expression must be assignable to the type of the reference.</p><p>If the specified expression has no type, and the declaration occurs within a 
+            <tt class="literal">dynamic</tt> block, then the specification is not type-checked at 
+            compile time.</p><p>If a reference is a parameter, it must not specify a persistent value.</p><p>A reference belonging to a class may be annotated <tt class="literal">late</tt>, in 
+            which case the initializer of the class is not required to initialize its persistent
+            value. Furthermore, a self-reference to an instance being initialized may be
+            assigned to the reference.</p><p>A reference annotated <tt class="literal">late</tt> may not be initialized or 
+            assigned a value by the class initializer. A parameter may not be annotated 
+            <tt class="literal">late</tt>. A reference not belonging to a class may not be annotated 
+            <tt class="literal">late</tt>.</p><p>If a class declares or inherits a <tt class="literal">variable</tt> reference, it 
+            must (directly or indirectly) extend the class <tt class="literal">Basic</tt> defined in 
+            <tt class="literal">ceylon.language</tt>.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="getters"></a>4.8.2.&nbsp;Getters</h3></div></div><div></div></div><p>A getter implementation may be a block.</p><pre data-language="ceylon">shared Float total {
+    variable Float sum = 0.0;
+    for (li in lineItems) {
+        sum += li.amount;
+    }
+    return sum;
+}</pre><p>Every conditional execution path of the block must end in a
+            <tt class="literal">return</tt> directive that specifies an expression assignable 
+            to the type of the value, or in a <tt class="literal">throw</tt> directive, as
+            specified in <a href="statementblocks.html#definitereturn" title="5.3.6.&nbsp;Definite return">&sect;5.3.6 Definite return</a>.</p><p>Alternatively, a getter implementation may be a lazy specifier, that
+            is, an expression specified using <tt class="literal">=&gt;</tt>. The type of the 
+            specified expression must be assignable to the type of the value.</p><pre data-language="ceylon">Name name =&gt; Name(firstName, initial, lastName);</pre></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="setters"></a>4.8.3.&nbsp;Setters</h3></div></div><div></div></div><p>A setter defines how the value of a getter is assigned.</p><pre data-language="bnf">SetterDeclaration: Annotations "assign" MemberName (Block | LazySpecifier)</pre><p>The name specified in a setter declaration must be the name of a
+            matching getter that directly occurs earlier in the body containing the 
+            setter declaration. If a getter has a setter, we say that the value is 
+            <span class="emphasis"><em>variable</em></span>.</p><p>Within the body of the setter, a value reference to the getter 
+            evaluates to the value being assigned.</p><p>A setter implementation may be a block. The block may not contain 
+            a return directive that specifies an expression.</p><pre data-language="ceylon">shared String name { return join(firstName, lastName); }
+assign name { firstName=first(name); lastName=last(name); }</pre><p>Alternatively, a setter implementation may be a lazy specifier. 
+            The specified expression must be a legal statement.</p><pre data-language="ceylon">shared String name =&gt; join(n[0], n[1]);
+assign name =&gt; n = [first(name), last(name)];</pre><p>A setter may not be annotated <tt class="literal">shared</tt>, 
+            <tt class="literal">default</tt> or <tt class="literal">actual</tt>. The visibility 
+            and refinement modifiers of an attribute with a setter are specified by 
+            annotating the matching getter.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="valuetypeinference"></a>4.8.4.&nbsp;Value type inference</h3></div></div><div></div></div><p>An un-<tt class="literal">shared</tt>  value with a block, specifier, or lazy 
+            specifier may be declared using the keyword <tt class="literal">value</tt> in place of 
+            the explicit type declaration. Then the value's type is inferred:</p><div class="itemizedlist"><ul type="disc"><li><p>if the value is a reference with a specifier, then the type of the 
+                    value is the type of the specified expression,</p></li><li><p>if the value is a getter, and the getter implementation is a lazy 
+                    specifier, then the type of the value is the type of the specified 
+                    expression,</p></li><li><p>if the value is a getter, and the getter implementation is a block, 
+                    and the getter contains no <tt class="literal">return</tt> directive, then the 
+                    type of the value is <tt class="literal">Nothing</tt> (this is the case where 
+                    the getter always terminates in a <tt class="literal">throw</tt> directive), or</p></li><li><p>otherwise, the type of the value is the union of all returned 
+                    expression types of <tt class="literal">return</tt> directives of the getter 
+                    body.</p></li></ul></div><pre data-language="ceylon">value names = List&lt;String&gt;();</pre><pre data-language="ceylon">variable value count = 0;</pre><pre data-language="ceylon">value name =&gt; Name(firstName, initial, lastName);</pre></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="valueforwarddeclaration"></a>4.8.5.&nbsp;Forward declaration of values</h3></div></div><div></div></div><p>The declaration of a reference may be separated from the specification 
+            or initialization of its persistent value. The declaration of a getter may be 
+            separated from the specification of its implementation. If a value declaration 
+            does not have a specifier, lazy specifier, or a block, and is not annotated 
+            <tt class="literal">formal</tt>, it is a <span class="emphasis"><em>forward-declared</em></span> 
+            value.</p><p>A forward-declared value may later be specified using a specification
+            statement, as defined in <a href="statementblocks.html#specificationstatements" title="5.3.3.&nbsp;Specification statements">&sect;5.3.3 Specification statements</a>.</p><div class="itemizedlist"><ul type="disc"><li><p>The specification statement for a forward-declared getter is
+                    a lazy specification statement with no parameter list, and a specified
+                    expression assignable to the type of the value.</p></li><li><p>The specification statement for a forward-declared reference is
+                    an ordinary specification statement with a specified expression
+                    assignable to the type of the value.</p></li></ul></div><pre data-language="ceylon">String greeting;
+switch (language)
+case (en) {
+    greeting = "Hello";
+}
+case (es) {
+    greeting = "Hola";
+}
+else {
+    throw LanguageNotSupported();
+}
+print(greeting);</pre><p>Every forward-declared value must explicitly specify a type. It may 
+            not be declared using the keyword <tt class="literal">value</tt>.</p><p>A toplevel value may not be forward-declared. An attribute of an 
+            interface may not be forward-declared. An attribute annotated 
+            <tt class="literal">default</tt> may not be forward-declared.</p><p>A forward-declared getter may not have a setter.</p><p>If a <tt class="literal">shared</tt> value is forward-declared, its 
+            implementation must be definitely specified by all conditional paths in the 
+            class initializer.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="formalattributes"></a>4.8.6.&nbsp;Formal and default attributes</h3></div></div><div></div></div><p>If a value declaration does not have a specifier, lazy specifier, or 
+            a block, and is annotated <tt class="literal">shared</tt>, and is a member of 
+            either:</p><div class="itemizedlist"><ul type="disc"><li><p>an interface, or</p></li><li><p>a class annotated <tt class="literal">abstract</tt> or 
+                    <tt class="literal">formal</tt>,</p></li></ul></div><p>then the value declaration may be annotated <tt class="literal">formal</tt>, 
+            and is called a <tt class="literal">formal</tt> attribute, or, sometimes, an 
+            <span class="emphasis"><em>abstract attribute</em></span>.</p><pre data-language="ceylon">shared formal variable String firstName;</pre><p>An attribute which is not annotated <tt class="literal">formal</tt> is called 
+            a <span class="emphasis"><em>concrete</em></span> attribute.</p><p>If a concrete attribute is annotated <tt class="literal">shared</tt>, and is 
+            a member of a class or interface, then it may be annotated <tt class="literal">default</tt>
+            and is called a <tt class="literal">default</tt> attribute.</p><pre data-language="ceylon">shared default String greeting = "Hello";</pre><p>An attribute annotated <tt class="literal">formal</tt> may not specify an
+            implementation (a specifier, lazy specifier, or a block). Nor may there be 
+            a setter for a formal attribute.</p><p>An attribute annotated <tt class="literal">default</tt> must specify an
+            implementation (a specifier, lazy specifier, or a block), and may not be 
+            forward-declared.</p><p>Every <tt class="literal">formal</tt> attribute must explicitly specify a type. 
+            It may not be declared using the keyword <tt class="literal">function</tt>.</p><p>A toplevel attribute may not be annotated <tt class="literal">formal</tt> or
+            <tt class="literal">default</tt>.</p><p>An un-<tt class="literal">shared</tt> attribute may not be annotated 
+            <tt class="literal">formal</tt> or <tt class="literal">default</tt>.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="attributerefinement"></a>4.8.7.&nbsp;Attribute refinement</h3></div></div><div></div></div><p>Ceylon allows attributes to be refined, just like methods. This helps
+            eliminate the need for Java-style getter and setter methods.</p><div class="itemizedlist"><ul type="disc"><li><p>A class or interface may refine any <tt class="literal">formal</tt> 
+                or <tt class="literal">default</tt> attribute it inherits, unless it inherits 
+                a non-<tt class="literal">formal</tt> non-<tt class="literal">default</tt> 
+                attribute that refines the attribute.</p></li><li><p>A concrete class must refine every <tt class="literal">formal</tt> 
+                attribute it inherits, unless it inherits a non-<tt class="literal">formal</tt>
+                attribute that refines the attribute.</p></li></ul></div><p>Any non-variable attribute may be refined by a reference or getter. A 
+            variable attribute may be refined by a <tt class="literal">variable</tt> refernce 
+            or by a getter and setter pair.</p><i><span class="comment"><p>TODO: are you allowed to refine a getter or setter without also 
+            refining its matching setter or getter?</p></span></i><p>An attribute of a subtype <span class="emphasis"><em>refines</em></span> an attribute
+            of a supertype if the attribute of the supertype is <tt class="literal">shared</tt> 
+            and the two attributes have the same name. The first attribute is called the 
+            <span class="emphasis"><em>refining</em></span> attribute, and the second attribute is called 
+            the <span class="emphasis"><em>refined</em></span> attribute.</p><p>Then, given the refined realization of the attribute it refines, as 
+            defined in <a href="typesystem.html#realizations" title="3.7.7.&nbsp;Realizations">&sect;3.7.7 Realizations</a>, the refining attribute must:</p><div class="itemizedlist"><ul type="disc"><li><p>be variable, if the attribute it refines is variable, and</p></li><li><p>have <span class="emphasis"><em>exactly the same type</em></span> as the 
+                    realization, if the attribute it refines is variable,</p></li><li><p>have a type that is assignable to the type of the refined 
+                    schema, if the attribute it refines is not variable, or</p></li><li><p>if it has no type, the refined attribute must also have no 
+                    type.</p></li></ul></div><p>Furthermore:</p><div class="itemizedlist"><ul type="disc"><li><p>the refining attribute must be annotated <tt class="literal">actual</tt>, 
+                    and</p></li><li><p>the refined attribute must be annotated <tt class="literal">formal</tt>
+                    or <tt class="literal">default</tt>.</p></li></ul></div><p>If an attribute is annotated <tt class="literal">actual</tt>, it must 
+            refine some attribute defined by a supertype.</p><p>An attribute may not, directly or indirectly, refine two different
+            attributes not themselves annotated <tt class="literal">actual</tt>.</p><p>A non-variable attribute may be refined by a variable attribute.</p><i><span class="comment"><p>TODO: Is that really allowed? It could break the superclass.
+            Should we say that you are allowed to do it when you refine an interface
+            attribute, but not when you refine a superclass attribute?</p></span></i><p>Then evaluation and assignment of the attribute is polymorphic, and 
+            the actual attribute evaluated or assigned depends upon the concrete type 
+            of the class instance.</p><pre data-language="ceylon">shared abstract class AbstractPi() {
+    shared formal Float pi;
+}</pre><pre data-language="ceylon">class ConcretePi() 
+        extends AbstractPi() {
+    shared actual Float pi = calculatePi();
+}</pre><p>Alternatively, a subtype may refine an attribute using a specification 
+            statement, as defined in <a href="statementblocks.html#specificationstatements" title="5.3.3.&nbsp;Specification statements">&sect;5.3.3 Specification statements</a>. The 
+            specification statement must satisfy the requirements of 
+            <a href="declarations.html#valueforwarddeclaration" title="4.8.5.&nbsp;Forward declaration of values">&sect;4.8.5 Forward declaration of values</a> above for specification of a 
+            forward-declared attribute.</p><pre data-language="ceylon">class ConcretePi() 
+        extends AbstractPi() {
+    pi = calculatePi();
+}</pre></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="constructors"></a>4.9.&nbsp;Constructors</h2></div></div><div></div></div><p>A <span class="emphasis"><em>constructor</em></span> is a callable block of code that
+        produces a new instance of the class to which the constructor belongs.
+        Every constructor must occur directly in the initializer section of a class. 
+        A constructor may have parameters. Every constructor implementation is a 
+        block of code.</p><pre data-language="bnf">ConstructorDeclaration: Annotations ConstructorHeader Block</pre><p>The are two basic kinds of constructor:</p><div class="itemizedlist"><ul type="disc"><li><p>A <span class="emphasis"><em>callable constructor</em></span> declaration 
+                specifies the constructor name, if any, and exactly one parameter 
+                list.</p></li><li><p>A <span class="emphasis"><em>value constructor</em></span> declaration 
+                specifies just the constructor name.</p></li></ul></div><p>Any constructor declaration may, optionally, have an <tt class="literal">extends</tt> 
+        clause.</p><p>A constructor name must be an initial lowercase identifier.</p><pre data-language="bnf">ConstructorHeader: ValueConstructorHeader | CallableConstructorHeader</pre><pre data-language="bnf">CallableConstructorHeader: "new" MemberName? Parameters ExtendedType?</pre><pre data-language="bnf">ValueConstructorHeader: "new" MemberName ExtendedType?</pre><p>If two constructors belong to the same class, then the constructors 
+        must have distinct names. A class may have at most one constructor with no
+        name.</p><p>If a constructor has no name, then the constructor is called the 
+        <span class="emphasis"><em>default constructor</em></span> of the class to which it belongs.
+        The default constructor is always a callable constructor.</p><p>Every default constructor must be annotated <tt class="literal">shared</tt>.</p><i><span class="comment"><p>Note: from the point of view of a client, a class with a default
+        constructor and no named constructors is indistinguishable from a class with an
+        initializer parameter list.</p></span></i><pre data-language="ceylon">shared class Point {
+    shared Float x;
+    shared Float y;
+    
+    shared new origin {
+        x = 0.0;
+        y = 0.0;
+    }
+    shared new cartesian(Float x, Float y) {
+        this.x = x; 
+        this.y = y;
+    }
+    shared new polar(Float r, Float theta) {
+        this.x = r * cos(theta);
+        this.y = r * sin(theta);
+    }
+    shared new (Float x, Float y) 
+            extends cartesian(x, y) {}
+    
+    string =&gt; "(``x``, ``y``)";
+}</pre><p>A class with an initializer parameter list may not declare constructors.</p><p>A generic class may not declare value constructors.</p><p>A class nested directly inside an interface may not declare value constructors.</p><p>A member class annotated <tt class="literal">formal</tt>, <tt class="literal">default</tt>,
+        or <tt class="literal">actual</tt> may not declare constructors.</p><i><span class="comment"><p>Note: in a future release of the language, we might relax this 
+        restriction, and simply require that every <tt class="literal">actual</tt> class 
+        provide a constructor with the same signature as the constructor of its 
+        superclass.</p></span></i><p>A constructor annotated <tt class="literal">sealed</tt> may not be invoked 
+        outside the module in which it is defined.</p><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="callabletypeofaconstructor"></a>4.9.1.&nbsp;Callable type of a constructor</h3></div></div><div></div></div><p>For a callable constructor, the <span class="emphasis"><em>callable type</em></span> 
+            of the constructor captures the type of the class, and parameter types of 
+            the constructor. The callable type is <tt class="literal">T(*P)</tt>, where 
+            <tt class="literal">T</tt> is the applied type formed by the class with its own 
+            type parameters as type arguments, and <tt class="literal">P</tt> is the type of 
+            the parameter list of the constructor.</p><p>A constructor of an <tt class="literal">abstract</tt> class is not 
+            callable, except from the <tt class="literal">extends</tt> clause of a subclass, 
+            or the class specifier of a class alias.</p><p>A partial constructor is not callable, except from the 
+            <tt class="literal">extends</tt> clause of another constructor of the same
+            class.</p><p>The type of a value constructor is simply <tt class="literal">T</tt>,
+            where <tt class="literal">T</tt> is the class to which it belongs.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="partialconstructors"></a>4.9.2.&nbsp;Partial constructors</h3></div></div><div></div></div><p>A callable constructor annotated <tt class="literal">abstract</tt> is 
+            called a <span class="emphasis"><em>partial constructor</em></span>.</p><p>A partial constructor may not be annotated <tt class="literal">shared</tt>.</p><p>A default constructor may not be annotated <tt class="literal">abstract</tt>.</p><p>A value constructor may not be annotated <tt class="literal">abstract</tt>.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="constructordelegation"></a>4.9.3.&nbsp;Constructor delegation</h3></div></div><div></div></div><p>Every constructor of any class which does not directly extend
+            <tt class="literal">Basic</tt> defined in <tt class="literal">ceylon.language</tt>
+            must explicitly delegate, as defined in <a href="typesystem.html#extendedclass" title="3.3.2.&nbsp;Extension">&sect;3.3.2 Extension</a>, 
+            to either:</p><div class="itemizedlist"><ul type="disc"><li><p>a different callable constructor of the same class, 
+                    specifying arguments for the parameters of the constructor, 
+                    or,</p></li><li><p>a callable constructor of its immediate superclass, 
+                    specifying arguments for the parameters of the superclass 
+                    constructor, if the superclass declares constructors, or, 
+                    otherwise</p></li><li><p>the initializer of its immediate superclass, specifying
+                    arguments for the initializer parameters, if the superclass 
+                    has an initializer parameter list.</p></li></ul></div><p>If the constructor of a class which directly extends 
+            <tt class="literal">Basic</tt> does not have an <tt class="literal">extends</tt>
+            clause, the constructor implicitly delegates to the initializer of
+            <tt class="literal">Basic</tt>.</p></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="typesystem.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="index.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="statementblocks.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter&nbsp;3.&nbsp;Type system&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;Chapter&nbsp;5.&nbsp;Statements, blocks, and control structures</td></tr></table></div></body></html>

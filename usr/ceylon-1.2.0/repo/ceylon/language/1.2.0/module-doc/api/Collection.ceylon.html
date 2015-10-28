@@ -1,0 +1,155 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>Collection.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;An iterable collection of elements of finite [[size]], with 
+ a well-defined notion of [[value equality|equals]]. 
+ `Collection` is the abstract supertype of [[List]], [[Map]], 
+ and [[Set]].
+ 
+ A `Collection` forms a [[Category]] of its elements, and is 
+ [[Iterable]]. The elements of a collection are not
+ necessarily distinct when compared using [[Object.equals]].
+ 
+ A `Collection` may be [[cloned|clone]]. If a collection is
+ immutable, it is acceptable that `clone()` produce a
+ reference to the collection itself. If a collection is
+ mutable, `clone()` should produce a collection containing 
+ references to the same elements, with the same structure as 
+ the original collection&amp;mdash;that is, it should produce a 
+ shallow copy of the collection.
+ 
+ All `Collection`s are required to support a well-defined
+ notion of [[value equality|Object.equals]], but the
+ definition of equality depends upon the kind of collection.
+ Equality for `Map`s and `Set`s has a quite different
+ definition to equality for `List`s. Instances of two 
+ different kinds of collection are never equal&amp;mdash;for
+ example, a `Map` is never equal to a `List`.&quot;
+see (`interface List`, `interface Map`, `interface Set`)
+tagged(&quot;Collections&quot;)
+shared interface Collection&lt;out Element=Anything&gt;
+        satisfies {Element*} {
+    
+    &quot;A shallow copy of this collection, that is, a 
+     collection with identical elements which does not
+     change if this collection changes. If this collection
+     is immutable, it is acceptable to return a reference to
+     this collection. If this collection is mutable, a newly
+     instantiated collection must be returned.&quot;
+    shared formal Collection&lt;Element&gt; clone();
+    
+    &quot;Determine if the collection is empty, that is, if it 
+     has no elements.&quot;
+    shared actual default Boolean empty =&gt; size==0;
+    
+    &quot;Return `true` if the given object is an element of this 
+     collection. In this default implementation, and in most 
+     refining implementations, return `false` otherwise. An 
+     acceptable refining implementation may return `true` 
+     for objects which are not elements of the collection, 
+     but this is not recommended. (For example, the 
+     `contains()` method of `String` returns `true` for any 
+     substring of the string.)&quot;
+    shared actual default Boolean contains(Object element) {
+        for (elem in this) {
+            if (exists elem, elem==element) {
+                return true;
+            }
+        }
+        else {
+            return false;
+        }
+    }
+    
+    &quot;A string of form `\&quot;{ x, y, z }\&quot;` where `x`, `y`, and 
+     `z` are the `string` representations of the elements of 
+     this collection, as produced by the iterator of the 
+     collection, or the string `\&quot;{}\&quot;` if this collection 
+     is empty. If the collection iterator produces the value 
+     `null`, the string representation contains the string 
+     `\&quot;&lt;null&gt;\&quot;`.&quot;
+    shared actual default String string
+            =&gt; empty then &quot;{}&quot; else &quot;{ ``commaList(this)`` }&quot;;
+    
+    &quot;The permutations of this collection, as a stream of
+     nonempty [[sequences|Sequence]]. That is, a stream
+     producing every distinct ordering of the elements of
+     this collection.
+     
+     For example,
+     
+         \&quot;ABC\&quot;.permutations.map(String)
+     
+     is the stream of strings
+     `{ \&quot;ABC\&quot;, \&quot;ACB\&quot;, \&quot;BAC\&quot;, \&quot;BCA\&quot;, \&quot;CAB\&quot;, \&quot;CBA\&quot; }`.
+     
+     If this collection is empty, the resulting stream is
+     empty.
+     
+     The permutations are enumerated lexicographically
+     according to the order in which each distinct element 
+     of this collection is first produced by its iterator.
+     No permutation is repeated.
+     
+     Two elements are considered distinct if either:
+     
+     - they are both instances of `Object`, and are 
+       [[unequal|Object.equals]], or
+     - one element is an `Object` and the other is `null`.&quot;
+    shared {[Element+]*} permutations 
+            =&gt; object satisfies {[Element+]*} {
+        value multiset =
+            outer
+            .indexed
+            .group((entry) =&gt; entry.item else nullElement)
+            .items
+            .sort((x,y) =&gt; x.first.key&lt;=&gt;y.first.key)
+            .indexed
+            .flatMap(
+                (entry) 
+                    =&gt; let (index-&gt;entries = entry)
+                    entries.map((entry) =&gt; index-&gt;entry.item));
+        
+        empty =&gt; multiset.empty;
+        
+        iterator() 
+                =&gt; object satisfies Iterator&lt;[Element+]&gt; {
+            value elements = Array(multiset);
+            value size = elements.size;
+            
+            variable value initial = true;
+            
+            shared actual [Element+]|Finished next() {
+                if (initial) {
+                    initial = false;
+                }
+                else if (exists i -&gt; [key-&gt;_, __]
+                        = elements.paired.locateLast((pair)
+                            =&gt; pair[0].key &lt; pair[1].key)) {
+                    assert (exists j
+                            = elements.lastIndexWhere((elem) 
+                                =&gt; elem.key &gt; key));
+                    elements.swap(i,j);
+                    for (k in 0 : (size-i-1)/2) {
+                        elements.swap(i+1+k, size-1-k);
+                    }
+                }
+                else {
+                    return finished;
+                }
+                return
+                    if (nonempty permutation 
+                        = elements*.item) 
+                    then permutation 
+                    else finished;
+            }
+        };
+    };
+    
+}
+
+&quot;Used by [[Collection.permutations]] to group nulls together.&quot;
+object nullElement {}
+</pre></body></html>

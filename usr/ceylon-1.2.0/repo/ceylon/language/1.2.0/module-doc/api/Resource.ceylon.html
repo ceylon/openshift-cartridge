@@ -1,0 +1,76 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>Resource.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>import ceylon.language.meta.declaration {
+    Module
+}
+
+&quot;&quot;&quot;A file packaged within a module. A `Resource` may be 
+   obtained by calling [[Module.resourceByPath]], passing
+   a path that identifies the resource file.
+   
+   The resource file itself must be placed in a _resource 
+   directory_ at compilation time, in a subdirectory 
+   corresponding to the module to which the resource belongs.
+   The compiler is responsible for packaging the resource 
+   file in a location accessible to the program at runtime:
+   
+   - In the case of a module compiled for execution on the 
+     JVM, the resource file will be included in the `.car` 
+     archive.
+   - In the case of compilation to JavaScript, the resource
+     file will be copied to a `module-resources` directory
+     in the module repository.
+   
+   Suppose the following code occurs in a module named
+   `com.redhat.example`:
+       
+       assert (exists resource 
+          = `module`.resourceByPath(&quot;file.txt&quot;));
+       print(resource.textContent());
+   
+   Then the resource named `file.text` should be placed in 
+   the subdirectory `com/redhat/example/` of the resource 
+   directory.
+   
+   Paths with no leading `/` are relative to the module&apos;s
+   subdirectory of the resource directory. Alternatively, a 
+   resource may be identified by a fully-qualified path 
+   beginning with `/`, for example:
+   
+       assert (exists resource 
+          = `module`.resourceByPath(&quot;/com/redhat/example/file.txt&quot;));
+       print(resource.textContent());&quot;&quot;&quot;
+by(&quot;Enrique Zamudio&quot;)
+see (`function Module.resourceByPath`)
+tagged(&quot;Environment&quot;)
+shared interface Resource {
+    
+    &quot;The name of the resource; usually the filename.&quot;
+    shared default String name {
+        value pos = uri.lastOccurrence(&apos;/&apos;);
+        if (exists pos) {
+            return uri[pos+1...];
+        }
+        return uri;
+    }
+    
+    &quot;The size of the resource, in bytes.&quot;
+    shared formal Integer size;
+    
+    &quot;The full path to the resource, expressed as a URI. For
+     a resource packaged within a module archive, this 
+     includes both the path to the module archive file, and
+     the path of the resource within the module archive.&quot;
+    shared formal String uri;
+    
+    &quot;Retrieves the contents of the resource as a [[String]],
+     using the specified encoding.&quot;
+    shared formal String textContent(String encoding=&quot;UTF-8&quot;);
+    
+    string =&gt; &quot;``className(this)``[``uri``]&quot;;
+}
+
+</pre></body></html>

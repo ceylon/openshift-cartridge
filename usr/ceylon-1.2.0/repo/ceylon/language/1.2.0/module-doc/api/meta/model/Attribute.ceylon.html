@@ -1,0 +1,40 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>Attribute.ceylon</title><link href='../../.resources/favicon.ico' rel='shortcut icon'/>
+<link href='../../.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='../../.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '../../.resources/'</script><script src='../../.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='../../.resources/rainbow.min.js' type='text/javascript'></script><script src='../../.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='../../.resources/ceylon.js' type='text/javascript'></script><script src='../../.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>import ceylon.language.meta.declaration{
+    ValueDeclaration
+}
+
+&quot;&quot;&quot;An attribute model represents the model of a Ceylon attribute that you can read and inspect.
+   
+   An attribute is a member value: it is declared on classes or interfaces.
+   
+   This is both a [[ValueModel]] and a [[Member]]: you can invoke it with an instance value
+   to bind it to that instance and obtain a [[Value]]:
+   
+       class Outer(){
+           shared String foo = &quot;Hello&quot;;
+       }
+       
+       void test(){
+           Attribute&lt;Outer,String&gt; attribute = `Outer.foo`;
+           Value&lt;String&gt; boundAttribute = attribute(Outer());
+           // This will print: Hello
+           print(boundAttribute.get());
+       }
+ &quot;&quot;&quot;
+shared sealed interface Attribute&lt;in Container=Nothing, out Get=Anything, in Set=Nothing&gt;
+        satisfies ValueModel&lt;Get,Set&gt; &amp; Member&lt;Container, Value&lt;Get,Set&gt;&gt; {
+    
+    &quot;The declaration model of this attribute, 
+     which is necessarily a [[ValueDeclaration]].&quot;
+    shared actual formal ValueDeclaration declaration;
+    
+    &quot;Binds this attribute to the given container instance. The instance type is checked at runtime.&quot;
+    throws(`class StorageException`,
+        &quot;If this attribute is not stored at runtime, for example if it is neither shared nor captured.&quot;)
+    shared actual formal Value&lt;Get,Set&gt; bind(Object container);
+}
+</pre></body></html>

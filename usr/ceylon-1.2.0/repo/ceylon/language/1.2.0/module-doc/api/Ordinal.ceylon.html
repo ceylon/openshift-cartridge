@@ -1,0 +1,58 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>Ordinal.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;Abstraction of _ordinal types_, that is, of types where 
+ each instance has a [[successor]] and [[predecessor]], such 
+ as:
+  
+ - types which represent or are isomorphic to the 
+   mathematical integers, for example, [[Integer]] and other 
+   [[Integral]] numeric types, and even [[Character]], along 
+   with
+ - enumerated types which are isomorphic to the mathematical
+   integers under modular arithmetic, for example, the days
+   of the week, and
+ - enumerated types which are isomorphic to a bounded range 
+   of integers, for example, a list of priorities.
+ 
+ The _increment_ operator `++` and _decrement_ operator `--`
+ are defined for all types which satisfy `Ordinal`.
+ 
+     function increment() {
+         count++;
+     }
+ 
+ Many ordinal types have a [[total order|Comparable]]. If an
+ ordinal type has a total order, then it should satisfy:
+ 
+ - `x.successor &gt;= x`, and
+ - `x.predecessor &lt;= x`.
+ 
+ An ordinal enumerated type `X` with a total order has 
+ well-defined `maximum` and `minimum` values where
+ `minimum&lt;x&lt;maximum` for any other instance `x` of `X`.
+ Then the `successor` and `predecessor` operations should
+ satisfy:
+ 
+ - `minimum.predecessor==minimum`, and
+ - `maximum.successor==maximum`.&quot;
+see (`class Character`, 
+     `class Integer`, 
+     `interface Integral`, 
+     `interface Comparable`,
+     `interface Enumerable`)
+by (&quot;Gavin&quot;)
+tagged(&quot;Numbers&quot;)
+shared interface Ordinal&lt;out Other&gt; of Other
+        given Other satisfies Ordinal&lt;Other&gt; {
+    
+    &quot;The successor of this value.&quot;
+    shared formal Other successor;
+    
+    &quot;The predecessor of this value.&quot;
+    shared formal Other predecessor;
+    
+}
+</pre></body></html>

@@ -1,0 +1,246 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>Array.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;A fixed-sized array of mutable elements. An _empty_ array 
+ is an array of [[size]] `0`. An array may be created with
+ a list of initial elements, or, via the constructor 
+ [[ofSize]], with a size and single initial value for all 
+ elements.
+ 
+     value array = Array { \&quot;hello\&quot;, \&quot;world\&quot; };
+     value ints = Array.ofSize(1k, 0);
+ 
+ Arrays are mutable. Any element of an array may be set to a 
+ new value.
+ 
+     value array = Array { \&quot;hello\&quot;, \&quot;world\&quot; };
+     array.set(0, \&quot;goodbye\&quot;);
+ 
+ Arrays are lists and support all operations inherited from 
+ [[List]], along with certain additional operations for 
+ efficient mutation of the array: [[set]], [[swap]], [[move]], 
+ [[sortInPlace]], [[reverseInPlace]], and [[copyTo]].
+ 
+ This class is provided primarily to support interoperation 
+ with Java, and for some performance-critical low-level 
+ programming tasks.&quot;
+tagged(&quot;Collections&quot;)
+shared final serializable native class Array&lt;Element&gt;
+        satisfies SearchableList&lt;Element&gt; &amp;
+                  Ranged&lt;Integer,Element,Array&lt;Element&gt;&gt; {
+    
+    &quot;Create an array with the given [[elements]].&quot;
+    shared native new ({Element*} elements) {}
+    
+    &quot;Create an array of the specified [[size]], populating 
+     every index with the given [[element]]. The specified 
+     `size` must be no larger than [[runtime.maxArraySize]].
+     If `size&lt;=0`, the new array will have no elements.&quot;
+    throws (`class AssertionError`, 
+        &quot;if `size&gt;runtime.maxArraySize`&quot;)
+    see (`value runtime.maxArraySize`)
+    shared native new ofSize(
+            &quot;The size of the resulting array. If the size is 
+             non-positive, an empty array will be created.&quot;
+            Integer size, 
+            &quot;The element value with which to populate the 
+             array. All elements of the resulting array will 
+             have the same value.&quot;
+            Element element) {
+        assert (size&lt;runtime.maxArraySize);
+    }
+    
+    //&quot;Get the element at the specified index, or `null` if
+    // the index falls outside the bounds of this array.&quot;
+    //shared actual native Element? get(Integer index);
+    
+    &quot;Get the element at the specified index, where the array
+     is indexed from the _end_ of the array, or `null` if
+     the index falls outside the bounds of this array.&quot;
+    shared actual native Element? getFromLast(Integer index);
+    
+    &quot;Get the element at the specified index, or `null` if
+     the index falls outside the bounds of this array.&quot;
+    shared actual native Element? getFromFirst(Integer index);
+    
+    //shared actual native Boolean-&gt;Element? lookup(Integer index);
+    
+    shared actual native Integer? lastIndex;
+    
+    shared actual native Element? first;
+    shared actual native Element? last;
+    
+    shared actual native Boolean empty;
+    shared actual native Integer size;
+    shared actual native Boolean defines(Integer index);
+    shared actual native Iterator&lt;Element&gt; iterator();
+    shared actual native Boolean contains(Object element);
+    shared actual native Element[] sequence();
+    shared actual native {Element&amp;Object*} coalesced;
+    
+    &quot;A new array with the same elements as this array.&quot;
+    shared actual native Array&lt;Element&gt; clone();
+    
+    &quot;Replace the existing element at the specified [[index]] 
+     with the given [[element]].&quot;
+    throws (`class AssertionError`,
+        &quot;if the given index is out of bounds, that is, if 
+         `index&lt;0` or if `index&gt;lastIndex`&quot;)
+    shared native 
+    void set(
+        &quot;The index of the element to replace.&quot;
+        Integer index,
+        &quot;The new element.&quot;
+        Element element);
+    
+    &quot;Efficiently copy the elements in the segment
+     `sourcePosition:length` of this array to the segment 
+     `destinationPosition:length` of the given 
+     [[array|destination]], which may be this array.&quot;
+    shared native 
+    void copyTo(
+        &quot;The array into which to copy the elements, which 
+         may be this array.&quot;
+        Array&lt;Element&gt; destination,
+        &quot;The index of the first element in this array to 
+         copy.&quot;
+        Integer sourcePosition = 0,
+        &quot;The index in the given array into which to copy the 
+         first element.&quot;
+        Integer destinationPosition = 0,
+        &quot;The number of elements to copy.&quot;
+        Integer length 
+                = smallest(size - sourcePosition,
+                    destination.size - destinationPosition));
+        
+    shared actual native 
+    Array&lt;Element&gt; span(Integer from, Integer to);
+    shared actual native 
+    Array&lt;Element&gt; spanFrom(Integer from);
+    shared actual native 
+    Array&lt;Element&gt; spanTo(Integer to);
+    shared actual native 
+    Array&lt;Element&gt; measure(Integer from, Integer length);
+    
+    shared actual native {Element*} skip(Integer skipping);
+    shared actual native {Element*} take(Integer taking);
+    shared actual native {Element*} by(Integer step);
+    
+    shared actual native 
+    Integer count(Boolean selecting(Element element));
+    shared actual native 
+    void each(void step(Element element));
+    shared actual native
+    Boolean any(Boolean selecting(Element element));
+    shared actual native
+    Boolean every(Boolean selecting(Element element));
+    shared actual native
+    {Element*} filter(Boolean selecting(Element element));
+    shared actual native
+    Element? find(Boolean selecting(Element&amp;Object element));
+    shared actual native
+    Element? findLast(Boolean selecting(Element&amp;Object element));
+    shared actual native
+    Integer? firstIndexWhere(Boolean selecting(Element&amp;Object element));
+    shared actual native
+    Integer? lastIndexWhere(Boolean selecting(Element&amp;Object element));
+    shared actual native 
+    {Integer*} indexesWhere(Boolean selecting(Element&amp;Object element));
+    shared actual native
+    &lt;Integer-&gt;Element&amp;Object&gt;? locate(Boolean selecting(Element&amp;Object element));
+    shared actual native
+    &lt;Integer-&gt;Element&amp;Object&gt;? locateLast(Boolean selecting(Element&amp;Object element));
+    shared actual native
+    {&lt;Integer-&gt;Element&amp;Object&gt;*} locations(Boolean selecting(Element&amp;Object element));
+    shared actual native
+    Result|Element|Null reduce&lt;Result&gt;
+            (Result accumulating(Result|Element partial, Element element));
+    
+    shared actual native 
+    Boolean occursAt(Integer index, Element element);
+    shared actual native
+    Integer? firstOccurrence(Element element, Integer from, Integer length);
+    shared actual native
+    Integer? lastOccurrence(Element element, Integer from, Integer length);
+    shared actual native
+    Boolean occurs(Element element, Integer from, Integer length);
+    
+    shared actual native 
+    {Integer*} occurrences(Element element, Integer from, Integer length);
+    
+    &quot;Given two indices within this array, efficiently swap 
+     the positions of the elements at these indices. If the 
+     two given indices are identical, no change is made to 
+     the array. The array always contains the same elements
+     before and after this operation.&quot;
+    throws (`class AssertionError`,
+        &quot;if either of the given indices is out of bounds&quot;) 
+    shared native
+    void swap(
+            &quot;The index of the first element.&quot;
+            Integer i,
+            &quot;The index of the second element.&quot; 
+            Integer j);
+    
+    &quot;Efficiently move the element of this array at the given 
+     [[source index|from]] to the given 
+     [[destination index|to]], shifting every element 
+     falling between the two given indices by one position 
+     to accommodate the change of position. If the source 
+     index is larger than the destination index, elements 
+     are shifted toward the end of the array. If the source 
+     index is smaller than the destination index, elements 
+     are shifted toward the start of the array. If the given 
+     indices are identical, no change is made to the array. 
+     The array always contains the same elements before and 
+     after this operation.&quot;
+    throws (`class AssertionError`,
+        &quot;if either of the given indices is out of bounds&quot;) 
+    shared native
+    void move(
+            &quot;The source index of the element to move.&quot;
+            Integer from, 
+            &quot;The destination index to which the element is
+             moved.&quot;
+            Integer to);
+    
+    &quot;Reverses the order of the current elements in this 
+     array. This operation works by side-effect, modifying 
+     the array. The array always contains the same elements 
+     before and after this operation.&quot;
+    shared native 
+    void reverseInPlace();
+    
+    &quot;Sorts the elements in this array according to the 
+     order induced by the given 
+     [[comparison function|comparing]]. This operation works 
+     by side-effect, modifying the array.  The array always 
+     contains the same elements before and after this 
+     operation.&quot;
+    shared native 
+    void sortInPlace(
+        &quot;A comparison function that compares pairs of
+         elements of this array.&quot;
+        Comparison comparing(Element x, Element y));
+    
+    &quot;Sorts the elements in this array according to the 
+     order induced by the given 
+     [[comparison function|comparing]], returning a new
+     sequence. This operation has no side-effect, and does
+     not modify the array.&quot;
+    shared actual native 
+    Element[] sort(
+        &quot;A comparison function that compares pairs of
+         elements of this array.&quot;
+        Comparison comparing(Element x, Element y));
+    
+    shared actual Boolean equals(Object that) 
+            =&gt; (super of List&lt;Element&gt;).equals(that);
+    shared actual Integer hash 
+            =&gt; (super of List&lt;Element&gt;).hash;
+    shared actual String string
+            =&gt; (super of Collection&lt;Element&gt;).string;
+}
+</pre></body></html>

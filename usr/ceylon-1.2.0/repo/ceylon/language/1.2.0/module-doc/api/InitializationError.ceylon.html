@@ -1,0 +1,17 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>InitializationError.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;[[Assertion failure|AssertionError]] that occurs when a 
+ value reference could not be initialized, including when:
+ 
+ - a toplevel value could not be initialized due to 
+   recursive dependencies upon other toplevel values, 
+ - an uninitialized [[late]] value is evaluated, 
+ - an initialized `late` but non-`variable` value is
+   reassigned.&quot;
+see (`function late`)
+shared class InitializationError(String description)
+        extends AssertionError(description) {}
+</pre></body></html>

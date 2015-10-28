@@ -1,0 +1,36 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>Destroyable.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;Abstract supertype of resources which are created at the 
+ beginning of a `try` statement and destroyed when the 
+ statement completes. Unlike an [[Obtainable]] resource, a 
+ single instance of `Destroyable` may not be reused between 
+ multiple `try` statements or multiple executions of the 
+ same `try` statement. 
+ 
+     try (tx = Transaction()) {
+         ...
+     }
+ 
+ - The resource is instantiated before the body of the `try` 
+   statement is executed, and
+ - [[destroy]] is called when execution of the body of the 
+   `try` statement ends, even if an exception propagates out 
+   of the body of the `try`.&quot;
+see (`interface Obtainable`)
+tagged(&quot;Basic types&quot;)
+shared interface Destroyable satisfies Usable {
+    
+    &quot;Destroy this resource. Called when execution of the 
+     body of the `try` statement ends, even if an exception 
+     propagates out of the body of the `try`.&quot;
+    shared formal void destroy(
+        &quot;The exception propagating out of the body of the 
+         `try` statement, or `null` if no exception was
+         propagated.&quot;
+        Throwable? error);
+    
+}
+</pre></body></html>

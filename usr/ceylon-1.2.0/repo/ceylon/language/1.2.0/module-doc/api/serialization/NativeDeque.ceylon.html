@@ -1,0 +1,80 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>NativeDeque.ceylon</title><link href='../.resources/favicon.ico' rel='shortcut icon'/>
+<link href='../.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='../.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '../.resources/'</script><script src='../.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='../.resources/rainbow.min.js' type='text/javascript'></script><script src='../.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='../.resources/ceylon.js' type='text/javascript'></script><script src='../.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>import java.util{ArrayDeque, Deque}
+
+&quot;A queue with a native implementation&quot;
+native class NativeDeque() {
+    shared native void pushFront(Anything element);
+    shared native void pushBack(Anything element);
+    shared native Anything popFront();
+    shared native Boolean empty;
+    shared actual native String string;
+}
+
+native(&quot;jvm&quot;) class NativeDeque() {
+    Deque&lt;Anything&gt; deque = ArrayDeque&lt;Anything&gt;();
+    shared native(&quot;jvm&quot;) void pushFront(Anything element) {
+        deque.addFirst(element);
+    }
+    shared native(&quot;jvm&quot;) void pushBack(Anything element) {
+        deque.addLast(element);
+    }
+    shared native(&quot;jvm&quot;) Anything popFront() {
+        return deque.pollFirst();
+    }
+    shared native(&quot;jvm&quot;) Boolean empty {
+        return deque.empty;
+    }
+    shared actual native(&quot;jvm&quot;) String string {
+        return deque.string;
+    }
+}
+
+native(&quot;js&quot;) class NativeDeque() {
+    dynamic deque;
+    dynamic {
+        deque=dynamic[null];
+        deque.shift();
+    }
+    shared native(&quot;js&quot;) void pushFront(Anything element) {
+        dynamic {
+            deque.unshift(element);
+        }
+    }
+    shared native(&quot;js&quot;) void pushBack(Anything element) {
+        dynamic {
+            deque.push(element);
+        }
+    }
+    shared native(&quot;js&quot;) Anything popFront() {
+        dynamic {
+            if (deque.length==0) {
+                return null;
+            }
+            return deque.shift();
+        }
+    }
+    shared native(&quot;js&quot;) Boolean empty {
+        dynamic {
+            return deque.length==0;
+        }
+    }
+    shared actual native(&quot;js&quot;) String string {
+        value sb=StringBuilder();
+        sb.append(&quot;[&quot;);
+        dynamic {
+            for (i in 0:deque.length) {
+                if (sb.size &gt; 1) {
+                    sb.append(&quot;, &quot;);
+                }
+                sb.append(deque[i]);
+            }
+        }
+        sb.append(&quot;]&quot;);
+        return sb.string;
+    }
+}
+</pre></body></html>

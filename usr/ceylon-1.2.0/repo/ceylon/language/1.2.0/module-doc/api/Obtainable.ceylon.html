@@ -1,0 +1,55 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>Obtainable.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;Abstract supertype of resources which may be obtained at
+ the beginning of a `try` statement and then released when 
+ the statement completes. Unlike a [[Destroyable]] resource, 
+ a single instance of `Obtainable` may be reused between 
+ multiple `try` statements or multiple executions of the 
+ same `try` statement.
+ 
+     Lock lock = ... ;
+     try (lock) {
+         ...
+     }
+ 
+ - [[obtain]] is called before the body of the `try` 
+   statement is executed, and
+ - [[release]] is called when execution of the body of the 
+   `try` statement ends, even if an exception propagates out 
+   of the body of the `try`.
+ 
+ A class which satisfies `Obtainable` may impose constraints 
+ on the ordering and nesting of invocations of `obtain()` 
+ and `release()`. For example, it may be not be possible to
+ obtain a resource that has already been obtained. Those 
+ methods should produce an [[AssertionError]] when any such 
+ constraint is violated.&quot;
+see (`interface Destroyable`)
+tagged(&quot;Basic types&quot;)
+shared interface Obtainable satisfies Usable {
+    
+    &quot;Obtain this resource. Called before the body of a `try` 
+     statement is executed.
+     
+     If an exception is thrown by `obtain()`, then `release()` 
+     will not be called.&quot;
+    throws (`class AssertionError`, 
+            &quot;if an illegal state is detected&quot;)
+    shared formal void obtain();
+    
+    &quot;Release this resource. Called when execution of the 
+     body of a `try` statement ends, even if an exception 
+     propagates out of the body of the `try`.&quot;
+    throws (`class AssertionError`, 
+            &quot;if an illegal state is detected&quot;)
+    shared formal void release(
+        &quot;The exception propagating out of the body of the 
+         `try` statement, or `null` if no exception was
+         propagated.&quot;
+        Throwable? error);
+    
+}
+</pre></body></html>

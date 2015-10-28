@@ -1,0 +1,25 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>Generic.ceylon</title><link href='../../.resources/favicon.ico' rel='shortcut icon'/>
+<link href='../../.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='../../.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '../../.resources/'</script><script src='../../.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='../../.resources/rainbow.min.js' type='text/javascript'></script><script src='../../.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='../../.resources/ceylon.js' type='text/javascript'></script><script src='../../.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>import ceylon.language.meta.declaration {
+    TypeParameter
+}
+import ceylon.language.meta.model {
+    ClosedType = Type
+}
+
+&quot;A generic model which has closed type arguments.&quot;
+shared sealed interface Generic {
+    &quot;The map of type parameter declaration to type arguments for this generic model.&quot;
+    shared formal Map&lt;TypeParameter, ClosedType&lt;&gt;&gt; typeArguments;
+    &quot;The list of type arguments for this generic model.&quot;
+    shared formal ClosedType&lt;&gt;[] typeArgumentList;
+
+    &quot;The map of type parameter declaration to type arguments and use-site variance for this generic model.&quot;
+    shared formal Map&lt;TypeParameter, TypeArgument&gt; typeArgumentWithVariances;
+    &quot;The list of type arguments for this generic model.&quot;
+    shared formal TypeArgument[] typeArgumentWithVarianceList;
+}
+</pre></body></html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>DeserializationContext.ceylon</title><link href='../.resources/favicon.ico' rel='shortcut icon'/>
+<link href='../.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='../.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '../.resources/'</script><script src='../.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='../.resources/rainbow.min.js' type='text/javascript'></script><script src='../.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='../.resources/ceylon.js' type='text/javascript'></script><script src='../.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>import ceylon.language.meta.model {
+    ClassModel
+}
+import ceylon.language.meta.declaration {
+    ValueDeclaration
+}
+
+&quot;&quot;&quot;A contract for identifying instances, specifying their classes, attributes, 
+   elements and values, and ultimately reconstructing those instances.
+ 
+   Instances are identified using the [[Id]]&apos;s semantics for equality. The 
+   methods of this interface can be called in any order; the id serves to 
+   associate each method invocation with the instance(s) to pertains to. 
+   The only constraint is that [[reconstruct]] will throw if the context 
+   lacks enough information to fully initialize the requested instance 
+   _or any instance reachable from it_. Reference cycles are supported.
+ 
+   For example, given
+ 
+       serializable class Person(name, employer) {
+           shared String name;
+           shared Company employer;
+       }
+       serializable class Company(name) {
+           shared String name;
+           shared late Person owner;
+       }
+     
+   And an instance graph corresponding to:
+ 
+       value wonkaInc = Company(&quot;Wonka Inc.&quot;);
+       value willy = Person(&quot;Willy Wonka&quot;, wonkaInc);
+       value umpaLumpa = Person(&quot;Umpa lumpa&quot;, wonkaInc);
+       wonkaInc.owner = willy;
+
+   Then we could reconstruct that instance graph like so:
+   
+       value dc = deserialization&lt;String&gt;();
+       
+       dc.attribute(&quot;ww&quot;, `value Person.name`, &quot;wwn&quot;);
+       dc.attribute(&quot;ww&quot;, `value Person.employer`, &quot;wi&quot;);
+       dc.attribute(&quot;ul&quot;, `value Person.name`, &quot;uln&quot;);
+       dc.attribute(&quot;ul&quot;, `value Person.employer`, &quot;wi&quot;);
+       dc.attribute(&quot;wi&quot;, `value Company.name`, &quot;win&quot;);
+       dc.attribute(&quot;wi&quot;, `value Company.owner`, &quot;ww&quot;);
+       
+       dc.instanceValue(&quot;win&quot;, &quot;Wonka Inc.&quot;);
+       dc.instanceValue(&quot;wwn&quot;, &quot;Willy Wonka&quot;);
+       dc.instanceValue(&quot;uln&quot;, &quot;Umpa lumpa&quot;);
+       
+       dc.instance(&quot;wi&quot;, `Company`);
+       dc.instance(&quot;ww&quot;, `Person`);
+       dc.instance(&quot;ul&quot;, `Person`);
+       
+       value wonkaInc2 = dc.reconstruct&lt;Company&gt;(&quot;wi&quot;);
+       value willy2 = dc.reconstruct&lt;Person&gt;(&quot;ww&quot;);
+       value umpaLumpa2 = dc.reconstruct&lt;Person&gt;(&quot;ul&quot;);
+       
+       assert(wonkaInc2.owner === willy2);
+       assert(willy2.employer === wonkaInc2);
+       assert(umpaLumpa2.employer === wonkaInc2);
+       
+   The calls to [[attribute]], [[instanceValue]] and [[instance]] could be 
+   in any order.
+&quot;&quot;&quot;
+shared sealed interface DeserializationContext&lt;Id&gt; {
+    
+    &quot;&quot;&quot;The given [[instanceId]] refers to an instance of the given class.&quot;&quot;&quot;
+    throws(`class DeserializationException`, 
+        &quot;the given instance was specified by [[instanceValue]] or has already been reconstructed.&quot;)
+    shared formal void instance(Id instanceId, ClassModel&lt;&gt; clazz);
+    
+    &quot;&quot;&quot;The given [[instanceId]] is a member of the instance with the given [[containerId]].
+       
+       This is used for member class instances.&quot;&quot;&quot;
+    throws(`class DeserializationException`, 
+        &quot;the given instance was specified by [[instanceValue]] or has already been reconstructed.&quot;)
+    shared formal void memberInstance(Id containerId, Id instanceId);
+    
+    &quot;&quot;&quot;The value of the given [[attribute]] of the instance with 
+       the given [[instanceId]] has given [[attributeValueId]].&quot;&quot;&quot;
+    throws(`class DeserializationException`, 
+        &quot;the given instance was specified by [[instanceValue]] or has already been reconstructed.&quot;)
+    shared formal void attribute(Id instanceId, ValueDeclaration attribute, Id attributeValueId);
+    
+    &quot;&quot;&quot;The value at the given [[index]] of the [[Array]] instance with 
+       the given [[instanceId]] has given [[elementValueId]].&quot;&quot;&quot;
+    throws(`class DeserializationException`, 
+        &quot;the given instance was specified by [[instanceValue]] or has already been reconstructed.&quot;)
+    shared formal void element(Id instanceId, Integer index, Id elementValueId);
+    
+    &quot;&quot;&quot;The instance with the given [[instanceId]] has the given value.
+       
+       This can used to register non-serializable instances with the context, 
+       for example object declarations.&quot;&quot;&quot;
+    shared formal void instanceValue(Id instanceId, Anything instanceValue);
+    
+    &quot;&quot;&quot;Get the instance with the given [[instanceId]] reconstructing it 
+       if necessary.&quot;&quot;&quot;
+    throws(`class DeserializationException`, 
+        &quot;the instance, or an instance reachable from it, 
+         could not be reconstructed&quot;)
+    shared formal Instance reconstruct&lt;Instance&gt;(Id instanceId);
+    
+    /*shared formal void factory(Id instanceId, Type type);
+    shared formal void factory2(Id instanceId, Callable f);
+    shared formal void argument(Id instanceId, Id argumentId);
+    shared formal void argumentValue(Id instanceId, Anything argumentValue);*/
+}
+
+
+</pre></body></html>

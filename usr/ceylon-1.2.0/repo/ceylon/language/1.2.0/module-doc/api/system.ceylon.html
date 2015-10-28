@@ -1,0 +1,108 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>system.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>import java.lang {
+    System { currentTimeMillis, nanoTime }
+}
+import java.util {
+    TimeZone { defaultTimeZone=default },
+    Locale { defaultLocale=default }
+}
+import java.nio.charset {
+    Charset { defaultCharset }
+}
+
+&quot;Represents the system on which the current process is 
+ executing.
+ 
+ Holds information about system time and locale.&quot;
+see (`value process`, `value runtime`, `value language`,
+     `value operatingSystem`)
+tagged(&quot;Environment&quot;)
+shared native object system {
+    
+    &quot;The elapsed time in milliseconds since midnight, 
+     1 January 1970.&quot;
+    shared native Integer milliseconds;
+    
+    &quot;The elapsed time in nanoseconds since an arbitrary 
+     starting point.&quot;
+    shared native Integer nanoseconds;
+    
+    &quot;Returns the offset, in milliseconds, to add to UTC to 
+     get the local time for default timezone for this system.&quot;
+    shared native Integer timezoneOffset;
+    
+    &quot;Returns the IETF language tag representing the default 
+     locale for this system.&quot;
+    shared native String locale;
+    
+    &quot;Returns the IANA character set name representing the default 
+     character encoding for this system.&quot;
+    shared native String characterEncoding;
+    
+    string =&gt; &quot;system&quot;;
+}
+
+shared native(&quot;jvm&quot;) object system {
+    
+    shared native(&quot;jvm&quot;) Integer milliseconds =&gt;
+            currentTimeMillis();
+    
+    shared native(&quot;jvm&quot;) Integer nanoseconds =&gt;
+            nanoTime();
+    
+    shared native(&quot;jvm&quot;) Integer timezoneOffset =&gt;
+            defaultTimeZone.getOffset(milliseconds);
+    
+    shared native(&quot;jvm&quot;) String locale =&gt;
+            defaultLocale.toLanguageTag();
+    
+    shared native(&quot;jvm&quot;) String characterEncoding =&gt;
+            defaultCharset().name();
+    
+}
+
+shared native(&quot;js&quot;) object system {
+    
+    shared native(&quot;js&quot;) Integer milliseconds {
+        dynamic {
+            return \iDate.now();
+        }
+    }
+    
+    shared native(&quot;js&quot;) Integer nanoseconds {
+        dynamic {
+            return \iDate.now() * 1000000;
+        }
+    }
+    
+    shared native(&quot;js&quot;) Integer timezoneOffset {
+        dynamic {
+            return Date().getTimezoneOffset() * -60000;
+        }
+    }
+    
+    shared native(&quot;js&quot;) String locale {
+        return process.propertyValue(&quot;user.locale&quot;)
+            else normalizeLocaleTag(process.environmentVariableValue(&quot;LANG&quot;))
+            else &quot;en&quot;;
+    }
+    
+    String? normalizeLocaleTag(String? tag) {
+        if (exists tag, !tag.empty) {
+            Integer? p = tag.firstOccurrence(&apos;.&apos;);
+            String t = if (exists p) then tag[0:p] else tag;
+            return t.replace(&quot;_&quot;, &quot;-&quot;);
+        } else {
+            return null;
+        }
+    }
+    
+    shared native(&quot;js&quot;) String characterEncoding =&gt;
+            &quot;UTF-16&quot;; //JavaScript always uses UTF-16
+    
+}
+</pre></body></html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>pairs.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;Given two streams, form a new stream by applying a binary
+ [[mapping function|collecting]] to pairs of elements in the 
+ given streams.  If one of the streams is longer than the 
+ other, simply ignore additional elements of the longer 
+ stream with no pair in the other stream. The length of the 
+ resulting stream is the length of the shorter of the two 
+ given streams.
+ 
+ For any given streams `xs` and `ys`, and mapping function 
+ `f`, `mapPairs()` may be defined in terms of 
+ [[Iterable.map]], [[zipPairs]], and [[unflatten]]:
+ 
+     mapPairs(f, xs, ys) == zipPairs(xs, ys).map(unflatten(f))
+ 
+ For example the expression
+ 
+     mapPairs((Float x, Float y) =&gt; (x^2+y^2)^0.5, 
+             {1.0, 2.0, 1.0}, {1.0, 1.0, 2.0})
+     
+ evaluates to the stream `{ 1.0, 3.0, 3.0 }`.&quot;
+tagged(&quot;Streams&quot;)
+shared Iterable&lt;Result,FirstAbsent|SecondAbsent&gt; 
+mapPairs&lt;Result,First,Second,FirstAbsent,SecondAbsent&gt;(
+    &quot;The mapping function to apply to the pair of elements.&quot;
+    Result collecting(First first, Second second),
+    Iterable&lt;First,FirstAbsent&gt; firstIterable,
+    Iterable&lt;Second,SecondAbsent&gt; secondIterable)
+        given FirstAbsent satisfies Null
+        given SecondAbsent satisfies Null {
+    object iterable 
+            satisfies Iterable&lt;Result,FirstAbsent|SecondAbsent&gt; {
+        shared actual Iterator&lt;Result&gt; iterator() {
+            object iterator 
+                    satisfies Iterator&lt;Result&gt; {
+                value firstIter = firstIterable.iterator();
+                value secondIter = secondIterable.iterator();
+                shared actual Result|Finished next() {
+                    if (!is Finished first=firstIter.next(),
+                        !is Finished second=secondIter.next()) {
+                        return collecting(first,second);
+                    }
+                    else {
+                        return finished;
+                    }
+                }
+                string =&gt; &quot;``outer.string``.iterator()&quot;;
+            }
+            return iterator;
+        }
+    }
+    return iterable;
+}
+
+&quot;Given two streams, return the first pair of elements in the 
+ given streams that satisfies the given binary [[predicate
+ function|selecting]], or null if no pair of elements 
+ satisfies the predicate. If one of the streams is longer 
+ than the other, simply ignore additional elements of the 
+ longer stream with no pair in the other stream.
+ 
+ For any given streams `xs` and `ys`, and predicate function 
+ `p`, `findPair()` may be defined in terms of 
+ [[Iterable.find]], [[zipPairs]], and [[unflatten]]:
+ 
+     findPair(p, xs, ys) == zipPairs(xs, ys).find(unflatten(p))&quot;
+tagged(&quot;Streams&quot;)
+shared [First,Second]? findPair&lt;First,Second&gt;(
+    &quot;The binary predicate function to apply to each pair of 
+     elements.&quot;
+    Boolean selecting(First first, Second second),
+    {First*} firstIterable, {Second*} secondIterable) {
+    value firstIter = firstIterable.iterator();
+    value secondIter = secondIterable.iterator();
+    while (!is Finished first=firstIter.next(),
+           !is Finished second=secondIter.next()) {
+        if (selecting(first,second)) {
+            return [first,second];
+        }
+    }
+    return null;
+}
+
+&quot;Given two streams, return `true` if every pair of elements 
+ in the given streams satisfies the given binary [[predicate
+ function|selecting]], or `false` otherwise. If one of the
+ streams is longer than the other, simply ignore additional 
+ elements of the longer stream with no pair in the other 
+ stream. If either stream is empty, return `true`.
+ 
+ For any given streams `xs` and `ys`, and predicate function 
+ `p`, `everyPair()` may be defined in terms of 
+ [[Iterable.every]], [[zipPairs]], and [[unflatten]]:
+ 
+     everyPair(p, xs, ys) == zipPairs(xs, ys).every(unflatten(p))&quot;
+see (`function corresponding`,
+     `function anyPair`)
+tagged(&quot;Streams&quot;)
+shared Boolean everyPair&lt;First,Second&gt;(
+    &quot;The binary predicate function to apply to each pair of 
+     elements.&quot;
+    Boolean selecting(First first, Second second),
+    {First*} firstIterable, {Second*} secondIterable) {
+    value firstIter = firstIterable.iterator();
+    value secondIter = secondIterable.iterator();
+    while (!is Finished first=firstIter.next(),
+        !is Finished second=secondIter.next()) {
+        if (!selecting(first,second)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+&quot;Given two streams, return `true` if some pair of elements 
+ in the given streams satisfies the given binary [[predicate
+ function|selecting]], or `false` otherwise. If one of the
+ streams is longer than the other, simply ignore additional 
+ elements of the longer stream with no pair in the other 
+ stream. If either stream is empty, return `false`.
+ 
+ For any given streams `xs` and `ys`, and predicate function 
+ `p`, `anyPair()` may be defined in terms of 
+ [[Iterable.any]], [[zipPairs]], and [[unflatten]]:
+ 
+     anyPair(p, xs, ys) == zipPairs(xs, ys).any(unflatten(p))&quot;
+see (`function everyPair`)
+tagged(&quot;Streams&quot;)
+shared Boolean anyPair&lt;First,Second&gt;(
+    &quot;The binary predicate function to apply to each pair of 
+     elements.&quot;
+    Boolean selecting(First first, Second second),
+    {First*} firstIterable, {Second*} secondIterable) {
+    value firstIter = firstIterable.iterator();
+    value secondIter = secondIterable.iterator();
+    while (!is Finished first=firstIter.next(),
+           !is Finished second=secondIter.next()) {
+        if (selecting(first,second)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+&quot;Given two streams, return the result of applying the given 
+ [[accumulating function|accumulating]] to each pair of 
+ elements of the given streams in turn. If one of the 
+ streams is longer than the other, simply ignore additional 
+ elements of the longer stream with no pair in the other 
+ stream.
+ 
+ For any given streams `xs` and `ys`, initial value `z`, and
+ combining function `f`, `foldPairs()` may be defined in 
+ terms of [[Iterable.fold]], [[zipPairs]], and [[unflatten]]:
+ 
+     foldPairs(z, f, xs, ys) == zipPairs(xs, ys).fold(z)(unflatten(f))&quot;
+tagged(&quot;Streams&quot;)
+shared Result foldPairs&lt;Result,First,Second&gt;(
+    Result initial,
+    &quot;The accumulating function to apply to each pair of 
+     elements.&quot;
+    Result accumulating(Result partial, 
+                        First first, Second second),
+    {First*} firstIterable, {Second*} secondIterable) {
+    value firstIter = firstIterable.iterator();
+    value secondIter = secondIterable.iterator();
+    variable value partial = initial;
+    while (!is Finished first=firstIter.next(),
+           !is Finished second=secondIter.next()) {
+        partial = accumulating(partial, first, second);
+    }
+    return partial;
+}
+</pre></body></html>
