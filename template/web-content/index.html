@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <!-- saved from url=(0036)http://capedwarf-mlazar.rhcloud.com/ -->
 <html lang="en">
-  <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>Welcome to Ceylon</title>
-  <style>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>Welcome to Ceylon</title>
+    
+    <style>
 html {
 	background: #f3f3f3;
 	background-image: url(http://static.jboss.org/theme/images/bgs/bg.png);
@@ -53,33 +55,66 @@ li {
 }
 .brand-image {
 }
-</style>
-  </head>
-  <body>
-<img class="brand-image" alt="Ceylon lang" src="/img/header.jpg">
-<div class="container">
-<h1> Welcome to Ceylon on RedHat's OpenShift cloud </h1>
-<p> Write your own Ceylon application and replace this sample. </p>
-<p> In order to commit to your new project, go to your projects git repo directory. </p>
-<p> For example, if you named your application myfirstapp,
-    you would find dynamic contents of this app located under myfirstapp/sources and static files under myfirstapp/web-content. You can edit that and push your
-    changes from the myfirstapp directory by running: </p>
+    </style>
+
+</head>
+
+<body>
+    <img class="brand-image" alt="Ceylon lang" src="/img/header.jpg">
+    <div class="container">
+    
+    <h1>Welcome to Ceylon on OpenShift</h1>
+    
+    <p>Starting with this skeleton project, you can write your 
+    own Ceylon web application to replace the 
+    <a href="todo">sample TODO list application</a> and deploy
+    it to OpenShift.</p>
+    
+    <p>To begin, you must clone this project's Git repository, 
+    using <code>git clone</code>. You can find the URL of the 
+    Git repository for this project in the OpenShift web 
+    console, by clicking on the application you just created, 
+    and looking under <b>Source Code</b>.</p>
+    
+    <p>For example, if you application is named <code>sample</code>,
+    and your domain is <code>domain</code>, the Git URL will
+    be something like this:</p>
+    
     <pre>
-    git commit -a -m 'Some commit message'
-    git push
+    git clone ssh://56316b4e2d527174890001c5@sample-domain.rhcloud.com/~/git/test.git/
     </pre>
-<p> Then reload this page. </p>
-
-<p> OpenShift is configured to execute toplevel method "run" in a "ceylon.demo.net" module. You can change module name in "ceylon.properties" file located in "myfirstapp/.openshift/config/".</p>
-
-<p> When you push Ceylon sources, they are compiled by OpenShift, if you want to upload pre compiled modules, you can place them in "myfirstapp/.openshift/modules/" folder.</p>
-
-<h2>Sample Application</h2>
-<p> The page you are currently readying is static, take a look at dynamic example <a href="todo">In Session ToDo List</a>.</p>
-
-<p></p>
-<h2> What's next? </h2>
-    <p> Why not visit us at <a href="http://ceylon-lang.org/" target="_blank">http://ceylon-lang.org/</a> </p>
+    
+    <p>Cloning the repository will create a directly named
+    <code>sample</code>. In it, you'll find Ceylon source code 
+    located under <code>sample/sources</code> and static web
+    content under <code>sample/web-content</code/>.</p
+    
+    <p>You can edit the source code and static files and then 
+    push your changes by going to the <code>sample</code> 
+    directory and running:</p>
+    
+    <pre>
+    git commit -a -m "some commit message"
+    git push origin master
+    </pre>
+    
+    <p>Wait for OpenShift to finish deploying your changes,
+    and then reload this page.</p>
+    
+    <p>This project is configured to start by executing the 
+    toplevel method <code>run()</code> in the module 
+    <code>ceylon.demo.net</code>. You can change module name 
+    by editing the file <code>ceylon.properties</code> located 
+    in <code>sample/.openshift/config/</code>.</p>
+    
+    <p>When you push changes to Ceylon source, the project is 
+    recompiled by OpenShift automatically. The Ceylon compiler
+    will search for dependencies in Ceylon Herd, and in the
+    module repository in 
+    <code>sample/.openshift/config/modules/</code>. So you can 
+    place any precompiled project-specific dependencies in this 
+    repository.</p>
+    
 </div>
 </body>
 </html>
