@@ -135,9 +135,13 @@ function build() {
 
 	setupCeylonArgs "compile"
 
-	printf "Compiling every module in ${OPENSHIFT_REPO_DIR}/source:\n"
     compile_params="${ceylon_args} ${ceylon_compile_args} ${ceylon_repos} --encoding=${ceylon_encoding:-utf8} --src=${OPENSHIFT_REPO_DIR}/source --resource=${OPENSHIFT_REPO_DIR}/resource --out=${OPENSHIFT_CEYLON_MODULES_REPO_DIR}/repo"
+
+	printf "Compiling every module in ${OPENSHIFT_REPO_DIR}/source for the JVM:\n"
 	${CEYLON_BIN_DIR}/ceylon compile ${compile_params}
+	
+	printf "Compiling every module in ${OPENSHIFT_REPO_DIR}/source for JavaScript:\n"
+	${CEYLON_BIN_DIR}/ceylon compile-js ${compile_params}
 	
 	echo "Ceylon build done." | tee -a ${CEYLON_LOG_PATH}
 }
