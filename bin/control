@@ -140,8 +140,10 @@ function build() {
 	printf "Compiling every module in ${OPENSHIFT_REPO_DIR}/source for the JVM:\n"
 	${CEYLON_BIN_DIR}/ceylon compile ${compile_params}
 	
-	printf "Compiling every module in ${OPENSHIFT_REPO_DIR}/source for JavaScript:\n"
-	${CEYLON_BIN_DIR}/ceylon compile-js ${compile_params}
+	if [ -f "${OPENSHIFT_REPO_DIR}/.openshift/markers/enable_jscompiler" ]; then
+	    printf "Compiling every module in ${OPENSHIFT_REPO_DIR}/source for JavaScript:\n"
+    	${CEYLON_BIN_DIR}/ceylon compile-js ${compile_params}
+    fi
 	
 	echo "Ceylon build done." | tee -a ${CEYLON_LOG_PATH}
 }
