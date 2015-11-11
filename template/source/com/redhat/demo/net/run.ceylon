@@ -37,10 +37,15 @@ shared void run() {
                     "OPENSHIFT_CEYLON_IP") 
                 else "127.0.0.1";
     
+    value homeDir =
+            process.environmentVariableValue(
+        "OPENSHIFT_HOMEDIR")
+    else parsePath("").absolutePath.string;
+    
     value repoDir =
             process.environmentVariableValue(
-                    "OPENSHIFT_REPO_DIR");
-    assert (exists repoDir);
+                    "OPENSHIFT_REPO_DIR")
+                else homeDir;
     
     value resourceEndpoint 
             = AsynchronousEndpoint {
@@ -49,33 +54,24 @@ shared void run() {
            .or(startsWith("/js"))
            .or(startsWith("/index.html"))
            .or(startsWith("/graph.html"));
-        service => serveStaticFile(repoDir + "web-content/");
+        service => serveStaticFile(repoDir + "/web-content/");
     };
     
-    value homeDir =
-            process.environmentVariableValue(
-                    "OPENSHIFT_HOMEDIR");
-    assert (exists homeDir);
+    value modulesDir = repoDir + "/modules";
     
-    value ceylonDir =
-            process.environmentVariableValue(
-                    "OPENSHIFT_CEYLON_DIR");
-    assert (exists ceylonDir);
+    value userCacheDir =
+            (process.propertyValue("user.home") else "")
+                + "/.ceylon/cache";
+    value cacheDir = process.propertyValue("ceylon.cache.repo")
+            else parsePath(userCacheDir).absolutePath.string;
     
-    value repoSubDir = repoDir[homeDir.size...];
-    value ceylonSubDir = ceylonDir[homeDir.size...];
-
-    value ceylonVersion =
-            process.environmentVariableValue(
-                    "OPENSHIFT_CEYLON_VERSION");
-    assert (exists ceylonVersion);
-
-    value ceylonRepoDir = "modules/";
-    value ceylonCacheDir = "cache/";
-
+    value systemRepoDir =
+            process.propertyValue("ceylon.system.repo");
+    assert (exists systemRepoDir);
+    
     function fileExists(String path) {
-        String subpath = path.replace("/modules/", ceylonRepoDir);
-        if (is File r=parsePath(repoDir).childPath(subpath).resource) {
+        String abspath = modulesDir + path[8...];
+        if (is File r=parsePath(abspath).resource) {
             return r.readable;
         } else {
             return false;
@@ -86,14 +82,14 @@ shared void run() {
             = AsynchronousEndpoint {
         path = startsWith("/modules/");
         service => serveStaticFile {
-            externalPath = homeDir;
+            externalPath = "/";
             fileMapper(Request request)
-                => request.path.replace("modules/",
-                    if (request.path.contains("/ceylon.language-"))
-                        then ceylonSubDir + "usr/ceylon-" + ceylonVersion + "/repo/"
+                => (if (request.path.contains("/ceylon.language-"))
+                        then systemRepoDir
                         else if (fileExists(request.path))
-                            then repoSubDir + ceylonRepoDir
-                            else repoSubDir + ceylonCacheDir);
+                            then modulesDir
+                            else cacheDir)
+                    + request.path[8...];
         };
     };
     
