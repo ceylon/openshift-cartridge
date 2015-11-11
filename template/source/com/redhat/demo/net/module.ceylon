@@ -1,4 +1,4 @@
-"Ceyon web example."
+"Ceyon web example - Server side"
 by ("Matej Lazar")
 native("jvm")
 module com.redhat.demo.net "1.2.0" {
