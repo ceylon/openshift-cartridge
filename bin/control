@@ -5,7 +5,6 @@ source ${OPENSHIFT_CEYLON_DIR}bin/util
 CEYLON_HOME=${OPENSHIFT_CEYLON_DIR}usr/ceylon-${OPENSHIFT_CEYLON_VERSION}/
 CEYLON_BIN_DIR=${CEYLON_HOME}bin
 
-OPENSHIFT_CEYLON_MODULES_REPO_DIR=${OPENSHIFT_CEYLON_DIR}data/ceylon_repo
 OPENSHIFT_CEYLON_LOG_DIR=${OPENSHIFT_CEYLON_DIR}log
 OPENSHIFT_CEYLON_RUN_DIR=${OPENSHIFT_CEYLON_DIR}run
 
@@ -16,7 +15,7 @@ function setupCeylonArgs(){
 
 	JAVA_OPTS="$JAVA_OPTS -Dcom.redhat.ceylon.common.tool.terminal.width=9999" #do not wrap output
 	# FIXME: this should not be required, but it is in 1.1 (bug should be fixed in 1.2)
-	JAVA_OPTS="$JAVA_OPTS -Dceylon.cache.repo=${OPENSHIFT_CEYLON_MODULES_REPO_DIR}/cache"
+	JAVA_OPTS="$JAVA_OPTS -Dceylon.cache.repo=${OPENSHIFT_REPO_DIR}/cache"
 
 	if test "${ENABLE_JPDA:-0}" -eq 1 -a "$1" = "run" ; then
 		JAVA_OPTS="$JAVA_OPTS -Xdebug -Xrunjdwp:transport=dt_socket,address=$OPENSHIFT_CEYLON_IP:8787,server=y,suspend=n"
@@ -28,11 +27,11 @@ function setupCeylonArgs(){
 	# extra repo from the application
 	ceylon_repos=" --rep=${OPENSHIFT_REPO_DIR}.openshift/config/modules"
 	# our cache location
-	ceylon_repos="${ceylon_repos} --cacherep=${OPENSHIFT_CEYLON_MODULES_REPO_DIR}/cache"
+	ceylon_repos="${ceylon_repos} --cacherep=${OPENSHIFT_REPO_DIR}/cache"
 	# FIXME: pretty sure that is not required
 	ceylon_repos="${ceylon_repos} --rep=http://modules.ceylon-lang.org/repo/1/"
 	# where we compile our modules
-	ceylon_repos="${ceylon_repos} --rep=${OPENSHIFT_CEYLON_MODULES_REPO_DIR}/repo"
+	ceylon_repos="${ceylon_repos} --rep=${OPENSHIFT_REPO_DIR}/modules"
 	# See if we need aether
 	if [ -f "${OPENSHIFT_REPO_DIR}/.openshift/markers/enable_aether" ]; then
 		ceylon_repos="${ceylon_repos} --rep=aether:$OPENSHIFT_DATA_DIR/.m2/conf/settings.xml"
@@ -135,7 +134,7 @@ function build() {
 
 	setupCeylonArgs "compile"
 
-    compile_params="${ceylon_args} ${ceylon_compile_args} ${ceylon_repos} --encoding=${ceylon_encoding:-utf8} --src=${OPENSHIFT_REPO_DIR}/source --resource=${OPENSHIFT_REPO_DIR}/resource --out=${OPENSHIFT_CEYLON_MODULES_REPO_DIR}/repo"
+    compile_params="${ceylon_args} ${ceylon_compile_args} ${ceylon_repos} --encoding=${ceylon_encoding:-utf8} --src=${OPENSHIFT_REPO_DIR}/source --resource=${OPENSHIFT_REPO_DIR}/resource --out=${OPENSHIFT_REPO_DIR}/modules"
 
 	printf "Compiling every module in ${OPENSHIFT_REPO_DIR}/source for the JVM:\n"
 	${CEYLON_BIN_DIR}/ceylon compile ${compile_params}

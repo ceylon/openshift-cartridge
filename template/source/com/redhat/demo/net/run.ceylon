@@ -62,8 +62,8 @@ shared void run() {
                     "OPENSHIFT_CEYLON_VERSION");
     assert (exists ceylonVersion);
 
-    value ceylonRepoDir = "data/ceylon_repo/repo/";
-    value ceylonCacheDir = "data/ceylon_repo/cache/";
+    value ceylonRepoDir = "modules/";
+    value ceylonCacheDir = "cache/";
 
     function fileExists(String path) {
         String subpath = path.replace("/modules/", ceylonRepoDir);
