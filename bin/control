@@ -16,6 +16,7 @@ function setupCeylonArgs(){
 	JAVA_OPTS="$JAVA_OPTS -Dcom.redhat.ceylon.common.tool.terminal.width=9999" #do not wrap output
 	# FIXME: this should not be required, but it is in 1.1 (bug should be fixed in 1.2)
 	JAVA_OPTS="$JAVA_OPTS -Dceylon.cache.repo=${OPENSHIFT_REPO_DIR}cache"
+	JAVA_OPTS="$JAVA_OPTS -Dceylon.user.repo=${OPENSHIFT_REPO_DIR}modules"
 
 	if test "${ENABLE_JPDA:-0}" -eq 1 -a "$1" = "run" ; then
 		JAVA_OPTS="$JAVA_OPTS -Xdebug -Xrunjdwp:transport=dt_socket,address=$OPENSHIFT_CEYLON_IP:8787,server=y,suspend=n"
