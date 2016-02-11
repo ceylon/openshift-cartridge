@@ -1,0 +1,44 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>Summable.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='//fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;&quot;&quot;Abstraction of types which support a binary addition
+   operator `x + y`. For [[numeric types|Numeric]], this is
+   just familiar numeric addition. For [[String]], it is
+   string concatenation.
+   
+       Integer next = current + 1;
+       String helloWorld = &quot;hello&quot; + &quot; &quot; + &quot;world&quot;;
+   
+   A concrete class that implements this interface should be 
+   a mathematical _semigroup_. That is, the addition 
+   operation should be associative, satisfying:
+   
+   - `(x+y)+z == x+(y+z)`
+   
+   A `Summable` type might be a _monoid_, that is, a 
+   semigroup with an additive identity element, usually 
+   denoted `0`, but this is not required. For example:
+   
+   - `String` is a monoid with identity element `&quot;&quot;`, 
+   - `Float` is a monoid with identity element `0.0`, and 
+   - `Integer` is a monoid with identity element `0`.
+   
+   For any monoid, the addition operation must satisfy:
+   
+   - `x + 0 == x`&quot;&quot;&quot;
+see (`class String`, `interface Numeric`)
+by (&quot;Gavin&quot;)
+tagged(&quot;Numbers&quot;, &quot;Strings&quot;)
+shared interface Summable&lt;Other&gt; of Other
+        given Other satisfies Summable&lt;Other&gt; {
+
+    &quot;The result of adding the given value to this value. 
+     This operation should never perform any kind of 
+     mutation upon either the receiving value or the 
+     argument value.&quot;
+    shared formal Other plus(Other other);
+    
+}
+</pre></body></html>

@@ -1,0 +1,5 @@
+; Plugin definition for the "ceylon run" tool
+summary=Executes a Ceylon program
+module=ceylon.runtime/1.2.1
+class=ceylon.modules.bootstrap.CeylonRunTool
+

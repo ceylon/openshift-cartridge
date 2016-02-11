@@ -1,0 +1,61 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>CallableConstructorDeclaration.ceylon</title><link href='../../.resources/favicon.ico' rel='shortcut icon'/>
+<link href='../../.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='../../.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='//fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '../../.resources/'</script><script src='../../.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='../../.resources/rainbow.min.js' type='text/javascript'></script><script src='../../.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='../../.resources/ceylon.js' type='text/javascript'></script><script src='../../.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>import ceylon.language.meta.model{
+    Type, 
+    CallableConstructor,
+    MemberClassCallableConstructor
+}
+
+&quot;&quot;&quot;Declaration model for callable constructors, for example
+ 
+       class WithConstructors {
+           shared new () {}
+           shared new clone(WithConstructors other) {}
+       
+       // ...
+       
+       CallableConstructorDeclaration default = `new WithConstructors`;
+       CallableConstructorDeclaration clone = `new WithConstructors.clone`;
+       
+   The initializer of a class with a parameter list can also be 
+   [[represented|ClassWithInitializerDeclaration.defaultConstructor]] 
+   as a `CallableConstructorDeclaration`.
+&quot;&quot;&quot;
+see (`interface ValueConstructorDeclaration`)
+shared sealed interface CallableConstructorDeclaration 
+        satisfies FunctionalDeclaration &amp; ConstructorDeclaration {
+    
+    &quot;True if the constructor has an [[abstract|ceylon.language::abstract]] annotation.&quot;
+    shared formal Boolean abstract;
+    
+    &quot;Whether this is the default constructor. The default constructor of a class is the constructor with no name.&quot;
+    shared formal Boolean defaultConstructor;
+    
+    &quot;The class this constructor constructs&quot;
+    shared actual formal ClassDeclaration container;
+    
+    shared actual formal Object invoke(Type&lt;&gt;[] typeArguments, Anything* arguments);
+    
+    shared actual formal Object memberInvoke
+            (Object container, Type&lt;&gt;[] typeArguments, Anything* arguments);
+    
+    &quot;Applies the given closed type arguments to the declaration of the class 
+     enclosing this constructor declaration, returning a function model 
+     for the constructor&quot;
+    shared actual formal CallableConstructor&lt;Result,Arguments&gt; apply
+            &lt;Result=Object,Arguments=Nothing&gt;
+            (Type&lt;&gt;* typeArguments)
+                given Arguments satisfies Anything[];
+    
+    &quot;Applies the given closed type arguments to the declaration of the member class 
+     enclosing this constructor declaration, returning a method model 
+     for the constructor&quot;
+    shared actual formal MemberClassCallableConstructor&lt;Container,Result,Arguments&gt; memberApply
+            &lt;Container=Nothing,Result=Object,Arguments=Nothing&gt;
+            (Type&lt;Object&gt; containerType, Type&lt;&gt;* typeArguments)
+                given Arguments satisfies Anything[];
+}
+</pre></body></html>

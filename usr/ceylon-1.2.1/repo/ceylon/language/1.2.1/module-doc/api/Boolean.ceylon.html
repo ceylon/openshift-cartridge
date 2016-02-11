@@ -1,0 +1,27 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>Boolean.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='//fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;A type capable of representing the values [[true]] and
+ [[false]] of Boolean logic.&quot;
+see (`function parseBoolean`)
+by (&quot;Gavin&quot;)
+tagged(&quot;Basic types&quot;)
+shared native abstract class Boolean()
+        of true | false {}
+
+&quot;A value representing truth in Boolean logic.&quot;
+tagged(&quot;Basic types&quot;)
+shared native object true
+        extends Boolean() {
+    string =&gt; &quot;true&quot;;
+}
+
+&quot;A value representing falsity in Boolean logic.&quot;
+tagged(&quot;Basic types&quot;)
+shared native object false
+        extends Boolean() {
+    string =&gt; &quot;false&quot;;
+}
+</pre></body></html>

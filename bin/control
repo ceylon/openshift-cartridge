@@ -29,7 +29,7 @@ function setupCeylonArgs(){
 	# our cache location
 	ceylon_repos="${ceylon_repos} --cacherep=${OPENSHIFT_REPO_DIR}/cache"
 	# FIXME: pretty sure that is not required
-	ceylon_repos="${ceylon_repos} --rep=http://modules.ceylon-lang.org/repo/1/"
+	ceylon_repos="${ceylon_repos} --rep=https://modules.ceylon-lang.org/repo/1/"
 	# where we compile our modules
 	ceylon_repos="${ceylon_repos} --rep=${OPENSHIFT_REPO_DIR}/modules"
 	# See if we need aether

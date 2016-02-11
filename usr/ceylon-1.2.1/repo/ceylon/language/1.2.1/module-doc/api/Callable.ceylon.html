@@ -1,0 +1,62 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>Callable.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='//fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;A reference to a function. The type arguments encode the 
+ [[return type|Return]] of the function along with its 
+ [[parameter types|Arguments]]. The parameter types are 
+ represented by a tuple type. Functions declared `void`
+ are considered to have the return type `Anything`.
+ 
+ For example, the type of the anonymous function
+ `(Float x, Integer y) =&gt; x^y+1` is:
+ 
+     Callable&lt;Float, [Float,Integer]&gt;
+ 
+ which we usually abbreviate to `Float(Float,Integer)`.
+ 
+ Likewise, the type of the function reference `plus&lt;Float&gt;` 
+ to the function [[plus]] is:
+ 
+     Callable&lt;Float, [Float,Float]&gt;
+ 
+ which we abbreviate as `Float(Float,Float)`.
+ 
+ A variadic function is represented using an unterminated 
+ tuple type. For example, the type of the function reference
+ `concatenate&lt;Object&gt;` to the function [[concatenate]] is:
+ 
+     Callable&lt;Object[], [{Object*}*]&gt;
+ 
+ which we usually abbreviate `Object({Object*}*)`.
+ 
+ A function with defaulted parameters is represented using
+ a union type. For example, the type of the method reference
+ `process.writeLine` to the method [[process.writeLine]] is:
+ 
+     Callable&lt;Anything, [String]|[]&gt;
+ 
+ which we usually abbreviate `Anything(String=)`.
+ 
+ Any instance of `Callable` may be _invoked_ by supplying a 
+ positional argument list:
+ 
+     Float(Float,Float) add = plus&lt;Float&gt;;
+     value four = add(2.0, 2.0);
+ 
+ or by supplying a tuple containing the arguments:
+ 
+     Float(Float,Float) add = plus&lt;Float&gt;;
+     [Float,Float] twoAndTwo = [2.0, 2.0];
+     value four = add(*twoAndTwo);
+ 
+ The type of the tuple must be assignable to the type 
+ argument of `Arguments`.
+ 
+ This interface may not be implemented by user code.&quot;
+see (`class Tuple`)
+tagged(&quot;Functions&quot;)
+shared native interface Callable&lt;out Return, in Arguments&gt; 
+        given Arguments satisfies Anything[] {}
+</pre></body></html>

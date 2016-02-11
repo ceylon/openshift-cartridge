@@ -1,0 +1,73 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>Entry.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='//fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;A pair containing a _key_ and an associated value called 
+ the _item_. Used primarily to represent the elements of a 
+ [[Map]]. The type `Entry&lt;Key,Item&gt;` may be abbreviated 
+ `Key-&gt;Item`. An instance of `Entry` may be constructed 
+ using the `-&gt;` operator:
+ 
+     String-&gt;Person entry = person.name-&gt;person;&quot;
+by (&quot;Gavin&quot;)
+tagged(&quot;Collections&quot;)
+shared final serializable
+class Entry&lt;out Key,out Item&gt;(key, item)
+        extends Object()
+        given Key satisfies Object {
+    
+    &quot;The key used to access the entry.&quot;
+    shared Key key;
+    
+    &quot;The item associated with the key.&quot;
+    shared Item item;
+    
+    &quot;A pair (2 element tuple) with the key and item of this 
+     entry. For any `entry`:
+     
+         entry.pair == [entry.key,entry.item]&quot;
+    shared [Key, Item] pair =&gt; [key, item];
+    
+    &quot;An `Entry` with the key and item of this entry if this 
+     entry&apos;s item is non-null, or `null` otherwise.&quot;
+    shared &lt;Key-&gt;Item&amp;Object&gt;? coalesced
+            =&gt; if (exists item) then key-&gt;item else null;
+    
+    &quot;Determines if this entry is equal to the given entry. 
+     Two entries are equal if they have the same key and 
+     the same item. 
+     
+     - The keys are considered the same if they are equal,
+       in the sense of [[value equality|Object.equals]].
+     - Two items are considered the same if they are both 
+       null or if neither is null and they are equal.&quot;
+    shared actual Boolean equals(Object that) {
+        if (is Entry&lt;Object,Anything&gt; that) {
+            if (this.key!=that.key) {
+                return false;
+            }
+            if (exists thisItem=this.item,
+                exists thatItem=that.item) {
+                return thisItem==thatItem;
+            }
+            else {
+                return !this.item exists &amp;&amp;
+                        !that.item exists;
+            }
+        }
+        else {
+            return false;
+        }
+    }
+    
+    shared actual Integer hash 
+            =&gt; (31 + key.hash) * 31 + (item?.hash else 0);
+    
+    &quot;A description of the entry in the form `key-&gt;item`. If 
+     [[item]] is `null`, its string representation is the 
+     string `\&quot;&lt;null&gt;\&quot;`.&quot;
+    shared actual String string 
+            =&gt; &quot;``key``-&gt;``stringify(item)``&quot;;
+}
+</pre></body></html>

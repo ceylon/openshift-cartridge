@@ -1,5 +1,5 @@
 
-import com.vasileff.ceylon.xmath.float {
+import ceylon.numeric.float {
     sin
 }
 

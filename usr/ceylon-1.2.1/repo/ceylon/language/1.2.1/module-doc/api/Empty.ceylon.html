@@ -1,0 +1,274 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>Empty.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='//fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>import ceylon.language { e=empty }
+
+&quot;A sequence with no elements. The type `Empty` may be
+ abbreviated `[]`, and an instance is produced by the 
+ expression `[]`. That is, in the following expression,
+ `none` has type `[]` and refers to the value `[]`:
+ 
+     [] none = [];
+ 
+ (Whether the syntax `[]` refers to the type or the value 
+ depends upon how it occurs grammatically.)&quot;
+see (`interface Sequence`)
+tagged(&quot;Sequences&quot;)
+shared interface Empty of e
+           satisfies Nothing[] &amp;
+                     Ranged&lt;Integer,Nothing,[]&gt; {
+    
+    //&quot;Returns `null` for any given index.&quot;
+    //shared actual Null get(Integer index) =&gt; null;
+    
+    &quot;Returns `null` for any given index.&quot;
+    shared actual Null getFromLast(Integer index) =&gt; null;
+    
+    &quot;Returns `null` for any given index.&quot;
+    shared actual Null getFromFirst(Integer index) =&gt; null;
+    
+    &quot;Returns `false` for any given element.&quot;
+    shared actual Boolean contains(Object element) =&gt; false;
+    
+    &quot;Returns `false` for any given index.&quot;
+    shared actual Boolean defines(Integer index) =&gt; false;
+    
+    &quot;Returns `[]`.&quot;
+    shared actual [] keys =&gt; this;
+    
+    &quot;Returns `[]`.&quot;
+    shared actual [] indexes() =&gt; this;
+    
+    &quot;Returns `true`.&quot;
+    shared actual Boolean empty =&gt; true;
+    
+    &quot;Returns 0.&quot;
+    shared actual Integer size =&gt; 0; 
+    
+    &quot;Returns `[]`.&quot;
+    shared actual [] reversed =&gt; this;
+    
+    &quot;Returns `[]`.&quot;
+    shared actual [] sequence() =&gt; this;
+    
+    &quot;Returns a string description of the empty sequence: 
+     `[]`.&quot;
+    shared actual String string =&gt; &quot;[]&quot;;
+    
+    &quot;Returns `null`.&quot;
+    shared actual Null lastIndex =&gt; null; 
+    
+    &quot;Returns `null`.&quot;
+    shared actual Null first =&gt; null;
+    
+    &quot;Returns `null`.&quot;
+    shared actual Null last =&gt; null;
+    
+    &quot;Returns `[]`.&quot;
+    shared actual [] rest =&gt; this;
+    
+    &quot;Returns `[]`.&quot;
+    shared actual [] clone() =&gt; this;
+    
+    &quot;Returns `[]`.&quot;
+    shared actual [] coalesced =&gt; this;
+    
+    &quot;Returns `[]`.&quot;
+    shared actual [] indexed =&gt; this;
+    
+    &quot;Returns `[]`.&quot;
+    shared actual [] repeat(Integer times) =&gt; this;
+    
+    &quot;Returns `[]`.&quot;
+    shared actual [] cycled =&gt; this;
+    
+    &quot;Returns `[]`.&quot;
+    shared actual [] paired =&gt; this;
+    
+    &quot;Returns an iterator that is already exhausted.&quot;
+    shared actual 
+    Iterator&lt;Nothing&gt; iterator() =&gt; emptyIterator;
+    
+    &quot;Returns `[]` for any given measure.&quot;
+    shared actual 
+    [] measure(Integer from, Integer length) =&gt; this;
+    
+    &quot;Returns `[]` for any given span.&quot;
+    shared actual 
+    [] span(Integer from, Integer to) =&gt; this;
+    
+    &quot;Returns `[]` for any given span.&quot;
+    shared actual 
+    [] spanTo(Integer to) =&gt; this;
+    
+    &quot;Returns `[]` for any given span.&quot;
+    shared actual 
+    [] spanFrom(Integer from) =&gt; this;
+    
+    &quot;Returns the given [[other]] iterable object.&quot;
+    shared actual 
+    Iterable&lt;Other,OtherAbsent&gt; 
+    chain&lt;Other,OtherAbsent&gt;
+            (Iterable&lt;Other,OtherAbsent&gt; other) 
+            given OtherAbsent satisfies Null 
+            =&gt; other;
+    
+    shared actual 
+    [] defaultNullElements&lt;Default&gt;
+            (Default defaultValue) 
+            given Default satisfies Object
+            =&gt; this;
+    
+    &quot;Returns 0 for any given predicate.&quot;
+    shared actual 
+    Integer count(Boolean selecting(Nothing element)) 
+            =&gt; 0;
+    
+    shared actual 
+    [] map&lt;Result&gt;(Result collecting(Nothing element)) 
+            =&gt; this;
+    
+    shared actual 
+    [] flatMap&lt;Result, OtherAbsent&gt;
+            (Iterable&lt;Result,OtherAbsent&gt; collecting(Nothing element))
+    		given OtherAbsent satisfies Null 
+            =&gt; this;
+    
+    shared actual 
+    [](*Args) spread&lt;Result,Args&gt;
+            (Result(*Args) method(Nothing element))
+            given Args satisfies Anything[] 
+            =&gt; flatten((Args args) =&gt; this);
+    
+    shared actual 
+    [] filter(Boolean selecting(Nothing element)) 
+            =&gt; this;
+    
+    shared actual 
+    Result fold&lt;Result&gt;(Result initial)
+            (Result accumulating(Result partial, 
+                                 Nothing element)) 
+            =&gt; initial;
+    
+    shared actual 
+    Null reduce&lt;Result&gt;
+            (Result accumulating(Result partial, 
+                                 Nothing element))
+            =&gt; null;
+    
+    shared actual 
+    Null find(Boolean selecting(Nothing element)) 
+            =&gt; null;
+    
+    shared actual 
+    [] sort(Comparison comparing(Nothing a, Nothing b)) 
+            =&gt; this;
+    
+    shared actual 
+    [] collect&lt;Result&gt;(Result collecting(Nothing element)) 
+            =&gt; this;
+    
+    shared actual 
+    [] select(Boolean selecting(Nothing element))
+            =&gt; this;
+    
+    shared actual 
+    Boolean any(Boolean selecting(Nothing element)) 
+            =&gt; false;
+    
+    shared actual 
+    Boolean every(Boolean selecting(Nothing element)) 
+            =&gt; true;
+    
+    shared actual 
+    [] skip(Integer skipping) =&gt; this;
+    
+    shared actual 
+    [] take(Integer taking) =&gt; this;
+    
+    shared actual 
+    [] skipWhile(Boolean skipping(Nothing elem)) =&gt; this;
+    
+    shared actual 
+    [] takeWhile(Boolean taking(Nothing elem)) =&gt; this;
+    
+    shared actual 
+    [] by(Integer step) =&gt; this;
+    
+    shared actual 
+    [Other] withLeading&lt;Other&gt;(Other element) =&gt; [element];
+    
+    shared actual 
+    [Other] withTrailing&lt;Other&gt;(Other element) =&gt; [element];
+    
+    shared actual 
+    Other[] append&lt;Other&gt;(Other[] elements) =&gt; elements;
+    
+    shared actual 
+    Other[] prepend&lt;Other&gt;(Other[] elements) =&gt; elements;
+    
+    shared actual 
+    {Other+} follow&lt;Other&gt;(Other head) =&gt; { head };
+    
+    shared actual 
+    [] sublist(Integer from, Integer to) =&gt; this;
+    
+    shared actual 
+    [] sublistFrom(Integer from) =&gt; this;
+    
+    shared actual 
+    [] sublistTo(Integer to) =&gt; this;
+    
+    shared actual 
+    [] initial(Integer length) =&gt; this;
+    
+    shared actual 
+    [] terminal(Integer length) =&gt; this;
+    
+    shared actual 
+    [] indexesWhere(Boolean selecting(Nothing element)) 
+            =&gt; this;
+    
+    shared actual 
+    Null firstIndexWhere(Boolean selecting(Nothing element)) 
+            =&gt; null;
+    
+    shared actual 
+    Null lastIndexWhere(Boolean selecting(Nothing element)) 
+            =&gt; null;
+    
+    shared actual 
+    [] trim(Boolean trimming(Nothing elem)) =&gt; this;
+    
+    shared actual 
+    [] trimLeading(Boolean trimming(Nothing elem)) =&gt; this;
+    
+    shared actual 
+    [] trimTrailing(Boolean trimming(Nothing elem)) =&gt; this;
+    
+    shared actual 
+    [[],[]] slice(Integer index) =&gt; [this, this];
+    
+    shared actual 
+    void each(void step(Nothing element)) {}
+    
+}
+
+&quot;A sequence with no elements, abbreviated `[]`. The unique 
+ instance of the type `[]`.&quot;
+by (&quot;Tako Schotanus&quot;)
+tagged(&quot;Sequences&quot;)
+shared object empty 
+		extends Object() 
+		satisfies [] {}
+
+&quot;An iterator that returns no elements.&quot;
+tagged(&quot;Streams&quot;)
+shared object emptyIterator 
+		satisfies Iterator&lt;Nothing&gt; {
+    next() =&gt; finished;
+    string =&gt; &quot;empty.iterator()&quot;;
+}
+</pre></body></html>

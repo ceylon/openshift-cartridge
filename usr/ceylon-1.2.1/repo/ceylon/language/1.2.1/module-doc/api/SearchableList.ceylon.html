@@ -1,0 +1,299 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>SearchableList.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='//fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;A [[List]] which can be efficiently searched for 
+ occurrences of a given element, or for inclusions of a 
+ given sublist of elements. This interface provides 
+ operations for finding:
+ 
+ - _occurrences_ of a single value in the list, and
+ - _inclusions_ of a given sublist of values in the list.
+ 
+ Occurrences and inclusions are identified by a list index
+ at which the value or sublist of values occurs in the list. 
+ In the case of an inclusion, it is the index of the first 
+ matching value from the sublist.
+ 
+ Inclusions may overlap. For example:
+ 
+     \&quot;yoyoyoyoyo\&quot;.inclusions(\&quot;yoy\&quot;)
+ 
+ produces the stream `{ 0, 2, 4, 6 }`.
+ 
+ An empty list is considered to be included at every index,
+ including the index [[size]] at the very end of the 
+ list. Thus:
+ 
+     \&quot;hello\&quot;.inclusions(\&quot;\&quot;)
+ 
+ produces the stream `{ 0, 1, 2, 3, 4, 5 }`, with 6 
+ inclusions in a string of length 5. 
+ 
+ In particular:
+ 
+ - `\&quot;\&quot;.inclusions(\&quot;x\&quot;)` is the empty stream `{}`, but
+ - `\&quot;\&quot;.inclusions(\&quot;\&quot;)` is the stream `{ 0 }`.&quot;
+see (`class String`, `class Array`)
+shared interface SearchableList&lt;Element&gt; 
+        satisfies List&lt;Element&gt; {
+    
+    &quot;Determines if the given [[value|element]] occurs at the 
+     given index in this list.&quot;
+    shared default 
+    Boolean occursAt(
+        &quot;The index at which the value might occur.&quot;
+        Integer index, 
+        &quot;The value. If null, it is considered to occur
+         at any index in this list with a null element.&quot;
+        Element element)
+            =&gt; let (elem = getFromFirst(index))
+            if (exists element, exists elem) 
+            then elem == element 
+            else element exists == elem exists;
+    
+    &quot;The indexes in this list at which the given 
+     [[value|element]] occurs.&quot;
+    shared default 
+    {Integer*} occurrences(
+        &quot;The value. If null, it is considered to occur
+         at any index in this list with a null element.&quot;
+        Element element,
+        &quot;The smallest index to consider.&quot;
+        Integer from = 0,
+        &quot;The number of indexes to consider.&quot;
+        Integer length = size-from)
+            //performance of comprehension was 
+            //worse than hand-written iterable
+            //=&gt; { for (i in from:length) 
+            //     if (occursAt(i, element)) i };
+            =&gt; object satisfies Iterable&lt;Integer&gt; {
+        value len = outer.size;
+        value max = 
+                from+length&gt;len 
+                    then len else from+length;
+        iterator() 
+                =&gt; object satisfies Iterator&lt;Integer&gt; {
+            variable value index = from;
+            shared actual Integer|Finished next() {
+                while (index&lt;max) {
+                    if (occursAt(index, element)) {
+                        return index++;
+                    }
+                    else {
+                        index++;
+                    }
+                }
+                return finished;
+            }
+        };
+        shared actual Integer size {
+            variable value size = 0;
+            for (index in from:max-from) {
+                if (occursAt(index,element)) {
+                    size++;
+                }
+            }
+            return size;
+        }
+        empty =&gt; occurs(element, from, length);
+        first =&gt; firstOccurrence(element, from, length);
+        last =&gt; lastOccurrence(element, from, length);
+    };
+    
+    &quot;Determines if the given [[value|element]] occurs as an 
+     element of this list, at any index that falls within
+     the segment `from:length` defined by the optional 
+     [[starting index|from]] and [[length]].&quot;
+    shared default 
+    Boolean occurs(
+        &quot;The value. If null, it is considered to occur
+         at any index in this list with a null element.&quot;
+        Element element,
+        &quot;The smallest index to consider.&quot;
+        Integer from = 0,
+        &quot;The number of indexes to consider.&quot;
+        Integer length = size-from)
+            =&gt; firstOccurrence(element, from, length) exists;
+    
+    &quot;The first index in this list at which the given 
+     [[value|element]] occurs, that falls within the segment 
+     `from:length` defined by the optional 
+     [[starting index|from]] and [[length]].&quot;
+    shared default 
+    Integer? firstOccurrence(
+        &quot;The value. If null, it is considered to occur
+         at any index in this list with a null element.&quot;
+        Element element,
+        &quot;The smallest index to consider.&quot;
+        Integer from = 0,
+        &quot;The number of indexes to consider.&quot;
+        Integer length = size-from) {
+        for (index in from:length) {
+            if (occursAt(index,element)) {
+                return index;
+            }
+        }
+        else {
+            return null;
+        }
+    }
+    
+    &quot;The last index in this list at which the given 
+     [[value|element]] occurs, that falls within the range 
+     `size-length-from:length` defined by the optional 
+     [[starting index|from]], interpreted as a reverse index 
+     counting from the _end_ of the list, and [[length]].&quot;
+    shared default 
+    Integer? lastOccurrence(
+        &quot;The value. If null, it is considered to occur
+         at any index in this list with a null element.&quot;
+        Element element,
+        &quot;The smallest index to consider, interpreted as
+         a reverse index counting from the _end_ of the 
+         list, where `0` is the last element of the list, 
+         and `size-1` is the first element of the list.&quot;
+        Integer from = 0,
+        &quot;The number of indexes to consider.&quot;
+        Integer length = size-from) {
+        //TODO: refine reversed to return a SearchableList
+        // =&gt; reversed.firstOccurrence(element, from, length)
+        for (index in (size-length-from:length).reversed) {
+            if (occursAt(index,element)) {
+                return index;
+            }
+        }
+        else {
+            return null;
+        }
+    }
+    
+    &quot;Determine if the given [[list|sublist]] occurs as a 
+     sublist at the given index of this list.&quot;
+    shared default 
+    Boolean includesAt(
+        &quot;The index at which the [[sublist]] might occur.&quot;
+        Integer index, 
+        List&lt;Element&gt; sublist) {
+        if (0 &lt;= index &lt;= size-sublist.size) {
+            variable value i = index;
+            for (element in sublist) {
+                if (exists element) {
+                    if (!occursAt(i, element)) {
+                        return false;
+                    }
+                }
+                else {
+                    assert (is Element null);
+                    if (!occursAt(i, null)) {
+                        return false;
+                    }
+                }
+                i++;
+            }
+            else {
+                return true;
+            }
+        }
+        else {
+            return false;
+        }
+    }
+    
+    &quot;The indexes in this list at which the given 
+     [[list|sublist]] occurs as a sublist, that are greater 
+     than or equal to the optional [[starting index|from]].&quot;
+    shared default 
+    {Integer*} inclusions(List&lt;Element&gt; sublist,
+        &quot;The smallest index to consider.&quot; 
+        Integer from = 0) 
+            //performance of comprehension was 
+            //worse than hand-written iterable
+            /*=&gt; { for (i in from:size+1-from-sublist.size) 
+                 if (includesAt(i, sublist)) i };*/
+            =&gt; object satisfies Iterable&lt;Integer&gt; {
+        value len = outer.size;
+        iterator() 
+                =&gt; object satisfies Iterator&lt;Integer&gt; {
+            value max = len+1-sublist.size;
+            variable value index = from;
+            shared actual Integer|Finished next() {
+                while (index&lt;max) {
+                    if (includesAt(index, sublist)) {
+                        return index++;
+                    }
+                    else {
+                        index++;
+                    }
+                }
+                return finished;
+            }
+        };
+        shared actual Integer size {
+            variable value size = 0;
+            for (index in from:len-from+1-sublist.size) {
+                if (includesAt(index,sublist)) {
+                    size++;
+                }
+            }
+            return size;
+        }
+        empty =&gt; includes(sublist, from);
+        first =&gt; firstInclusion(sublist, from);
+        last =&gt; lastInclusion(sublist, from);
+    };
+    
+    &quot;Determine if the given [[list|sublist]] occurs as a 
+     sublist at some index in this list, at any index that 
+     is greater than or equal to the optional 
+     [[starting index|from]].&quot;
+    shared default 
+    Boolean includes(List&lt;Element&gt; sublist,
+        &quot;The smallest index to consider.&quot;
+        Integer from = 0) 
+            =&gt; firstInclusion(sublist, from) exists;
+        
+    &quot;The first index in this list at which the given 
+     [[list|sublist]] occurs as a sublist, that is greater 
+     than or equal to the optional [[starting index|from]].&quot;
+    shared default 
+    Integer? firstInclusion(List&lt;Element&gt; sublist,
+        &quot;The smallest index to consider.&quot; 
+        Integer from = 0) {
+        for (index in from:size-from+1-sublist.size) {
+            if (includesAt(index,sublist)) {
+                return index;
+            }
+        }
+        else {
+            return null;
+        }
+    }
+    
+    &quot;The last index in this list at which the given 
+     [[list|sublist]] occurs as a sublist, that falls within 
+     the range `0:size-from+1-sublist.size` defined by the 
+     optional [[starting index|from]], interpreted as a 
+     reverse index counting from the _end_ of the list.&quot;
+    shared default 
+    Integer? lastInclusion(List&lt;Element&gt; sublist,
+        &quot;The smallest index to consider, interpreted as
+         a reverse index counting from the _end_ of the 
+         list, where `0` is the last element of the list, 
+         and `size-1` is the first element of the list.&quot;
+        Integer from = 0) {
+        //TODO: refine reversed to return a SearchableList
+        // =&gt; reversed.firstInclusion(element, from, length)
+        for (index in (0:size-from+1-sublist.size).reversed) {
+            if (includesAt(index,sublist)) {
+                return index;
+            }
+        }
+        else {
+            return null;
+        }
+    }
+    
+}
+</pre></body></html>

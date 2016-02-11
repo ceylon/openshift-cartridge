@@ -1,0 +1,55 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>language.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='//fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>
+&quot;Contains information about the Ceylon language version.&quot;
+see (`value process`, `value runtime`, `value system`,
+     `value operatingSystem`)
+tagged(&quot;Environment&quot;)
+shared native object language {
+    
+    &quot;The Ceylon language version.&quot;
+    shared String version =&gt; &quot;1.2.1&quot;;
+    
+    &quot;The Ceylon language major version.&quot;
+    shared Integer majorVersion =&gt; 1;
+    
+    &quot;The Ceylon language minor version.&quot;
+    shared Integer minorVersion =&gt; 2;
+    
+    &quot;The Ceylon language release version.&quot;
+    shared Integer releaseVersion =&gt; 1;
+    
+    &quot;The Ceylon language release name.&quot;
+    shared String versionName =&gt; &quot;A Series Of Unlikely Explanations&quot;;
+    
+    &quot;The major version of the code generated for the 
+     underlying runtime.&quot;
+    shared native Integer majorVersionBinary;
+    
+    &quot;The minor version of the code generated for the 
+     underlying runtime.&quot;
+    shared native Integer minorVersionBinary;
+    
+    shared actual String string =&gt; &quot;language&quot;;
+    
+}
+
+shared native(&quot;jvm&quot;) object language {
+    
+    shared native(&quot;jvm&quot;) Integer majorVersionBinary =&gt; 8;
+    
+    shared native(&quot;jvm&quot;) Integer minorVersionBinary =&gt; 0;
+    
+}
+
+shared native(&quot;js&quot;) object language {
+    
+    shared native(&quot;js&quot;) Integer majorVersionBinary =&gt; 8;
+    
+    shared native(&quot;js&quot;) Integer minorVersionBinary =&gt; 0;
+    
+}
+</pre></body></html>

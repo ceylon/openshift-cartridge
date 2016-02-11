@@ -1,0 +1,19 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>nothing.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='//fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;A value getter of type `Nothing`. The expression `nothing`
+ is formally assignable to any type, but produces an 
+ exception when evaluated.
+ 
+ (This is most useful for tool-generated implementations of
+ `formal` members.)&quot;
+throws (`class AssertionError`, 
+        &quot;when evaluated&quot;)
+tagged(&quot;Basic types&quot;)
+shared Nothing nothing {
+    &quot;nothing may not be evaluated&quot;
+    assert (false);
+}
+</pre></body></html>

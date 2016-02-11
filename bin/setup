@@ -1,9 +1,10 @@
 #!/bin/bash -eu
 
-version='1.2.0'
-echo "$version" > "${OPENSHIFT_CEYLON_DIR}env/OPENSHIFT_CEYLON_VERSION"
+version='1.2.1'
 
-mkdir -p ${OPENSHIFT_CEYLON_DIR}{log,data,run}
+mkdir -p ${OPENSHIFT_CEYLON_DIR}{log,data,run,env}
+
+echo "$version" > "${OPENSHIFT_CEYLON_DIR}env/OPENSHIFT_CEYLON_VERSION"
 
 OPENSHIFT_CEYLON_MODULES_REPO_DIR=${OPENSHIFT_CEYLON_DIR}data/ceylon_repo
 mkdir -p ${OPENSHIFT_CEYLON_MODULES_REPO_DIR}/repo

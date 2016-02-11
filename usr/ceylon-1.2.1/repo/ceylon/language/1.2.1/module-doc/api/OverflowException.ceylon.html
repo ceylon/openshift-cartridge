@@ -1,0 +1,20 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>OverflowException.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='//fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;Thrown when a mathematical operation caused a number to 
+ overflow from its bounds, or when a numeric narrowing
+ conversion fails because the number cannot be represented
+ within the bounds of the narrower type.
+ 
+ Note that:
+ 
+ - arithmetic operations on [[Integer]]s result in _silent_ 
+   overflow (JVM) or loss of precision (JavaScript), and 
+   thus never result in an `OverflowException`, and, 
+ - likewise, arithmetic operations on [[Float]] produce the 
+   value [[infinity]] instead of overflowing.&quot;
+shared class OverflowException(String message=&quot;Numeric overflow&quot;)
+        extends Exception(message) {}
+</pre></body></html>

@@ -1,0 +1,164 @@
+'\" -*- coding: us-ascii -*-
+.if \n(.g .ds T< \\FC
+.if \n(.g .ds T> \\F[\n[.fam]]
+.de URL
+\\$2 \(la\\$1\(ra\\$3
+..
+.if \n(.g .mso www.tmac
+.TH "ceylon config" 1 "10 February 2016" "" ""
+.SH NAME
+ceylon config \- Manages Ceylon configuration files
+.SH SYNOPSIS
+'nh
+.fi
+.ad l
+\fBceylon config\fR \kx
+.if (\nx>(\n(.l/2)) .nr x (\n(.l/5)
+'in \n(.iu+\nxu
+[--cwd=\fIdir\fR] [--file=\fIfile\fR] [--local] [--system] [--user] [--verbose[=\fIflags\fR]] get [--] {key}
+'in \n(.iu-\nxu
+.ad b
+'hy
+'nh
+.fi
+.ad l
+\fBceylon config\fR \kx
+.if (\nx>(\n(.l/2)) .nr x (\n(.l/5)
+'in \n(.iu+\nxu
+[--cwd=\fIdir\fR] [--file=\fIfile\fR] [--local] [--system] [--user] [--verbose[=\fIflags\fR]] keystore [--store-password[=\fIvalue\fR]] get-password [--] {alias}
+'in \n(.iu-\nxu
+.ad b
+'hy
+'nh
+.fi
+.ad l
+\fBceylon config\fR \kx
+.if (\nx>(\n(.l/2)) .nr x (\n(.l/5)
+'in \n(.iu+\nxu
+[--cwd=\fIdir\fR] [--file=\fIfile\fR] [--local] [--system] [--user] [--verbose[=\fIflags\fR]] keystore [--store-password[=\fIvalue\fR]] set-password [--] {alias} [password]
+'in \n(.iu-\nxu
+.ad b
+'hy
+'nh
+.fi
+.ad l
+\fBceylon config\fR \kx
+.if (\nx>(\n(.l/2)) .nr x (\n(.l/5)
+'in \n(.iu+\nxu
+[--cwd=\fIdir\fR] [--file=\fIfile\fR] [--local] [--system] [--user] [--verbose[=\fIflags\fR]] keystore [--store-password[=\fIvalue\fR]] unset-password [--] {alias}
+'in \n(.iu-\nxu
+.ad b
+'hy
+'nh
+.fi
+.ad l
+\fBceylon config\fR \kx
+.if (\nx>(\n(.l/2)) .nr x (\n(.l/5)
+'in \n(.iu+\nxu
+[--cwd=\fIdir\fR] [--file=\fIfile\fR] [--local] [--system] [--user] [--verbose[=\fIflags\fR]] list 
+'in \n(.iu-\nxu
+.ad b
+'hy
+'nh
+.fi
+.ad l
+\fBceylon config\fR \kx
+.if (\nx>(\n(.l/2)) .nr x (\n(.l/5)
+'in \n(.iu+\nxu
+[--cwd=\fIdir\fR] [--file=\fIfile\fR] [--local] [--system] [--user] [--verbose[=\fIflags\fR]] remove [--] {key}
+'in \n(.iu-\nxu
+.ad b
+'hy
+'nh
+.fi
+.ad l
+\fBceylon config\fR \kx
+.if (\nx>(\n(.l/2)) .nr x (\n(.l/5)
+'in \n(.iu+\nxu
+[--cwd=\fIdir\fR] [--file=\fIfile\fR] [--local] [--system] [--user] [--verbose[=\fIflags\fR]] remove-section [--] {name}
+'in \n(.iu-\nxu
+.ad b
+'hy
+'nh
+.fi
+.ad l
+\fBceylon config\fR \kx
+.if (\nx>(\n(.l/2)) .nr x (\n(.l/5)
+'in \n(.iu+\nxu
+[--cwd=\fIdir\fR] [--file=\fIfile\fR] [--local] [--system] [--user] [--verbose[=\fIflags\fR]] rename-section [--] {old-name} {new-name}
+'in \n(.iu-\nxu
+.ad b
+'hy
+'nh
+.fi
+.ad l
+\fBceylon config\fR \kx
+.if (\nx>(\n(.l/2)) .nr x (\n(.l/5)
+'in \n(.iu+\nxu
+[--cwd=\fIdir\fR] [--file=\fIfile\fR] [--local] [--system] [--user] [--verbose[=\fIflags\fR]] set [--] {key} {values}\&...
+'in \n(.iu-\nxu
+.ad b
+'hy
+.SH DESCRIPTION
+Can be used to list, update and remove settings in Ceylon's configuration files.
+.PP
+Setting names are of form \*(T<<section>.<key>\*(T>, for example, \*(T<defaults.encoding\*(T>.
+.SS "THE get SUBCOMMAND"
+Get the value defined for \*(T<<key>\*(T> in the config file
+.SS "THE keystore get-password SUBCOMMAND"
+Gets the password for \*(T<<alias>\*(T> in the keystore
+.SS "THE keystore set-password SUBCOMMAND"
+Sets the password for \*(T<<alias>\*(T> in the keystore. The program will issue a password prompt if \*(T<<password>\*(T> is omitted.
+.SS "THE keystore unset-password SUBCOMMAND"
+Unsets the password for \*(T<<alias>\*(T> in the keystore, removing the alias and its corresponding password.
+.SS "THE list SUBCOMMAND"
+Lists configuration values
+.SS "THE remove SUBCOMMAND"
+Removes the value of the \*(T<<key>\*(T> in the config file
+.SS "THE remove-section SUBCOMMAND"
+Removes the named \*(T<<section>\*(T> from the config file
+.SS "THE rename-section SUBCOMMAND"
+Renames the section \*(T<<old\-name>\*(T> in the config file to \*(T<<new\-name>\*(T>
+.SS "THE set SUBCOMMAND"
+Set the value of the \*(T<<key>\*(T> to \*(T<<values>\*(T> in the config file
+.SH OPTIONS
+.TP 
+--cwd=\fIdir\fR
+Specifies the current working directory for this tool. (default: the directory where the tool is run from)
+.TP 
+--file=\fIfile\fR
+The file to operate on.
+.TP 
+--local
+Apply operation to the local configuration.
+.TP 
+--system
+Apply operation to the system configuration.
+.TP 
+--user
+Apply operation to the user configuration.
+.TP 
+--verbose[=\fIflags\fR], -d
+Produce verbose output. If no \*(T<flags\*(T> are given then be verbose about everything, otherwise just be verbose about the flags which are present. Allowed flags include: \*(T<all\*(T>, \*(T<loader\*(T>.
+.SS "OPTIONS FOR keystore SUBCOMMAND"
+.TP 
+--store-password[=\fIvalue\fR]
+The password for accessing the keystore
+.SH EXAMPLE
+The following would list the settings active from within the current folder:
+.PP
+.nf
+\*(T<ceylon config list
+\*(T>.fi
+.PP
+This reads a named setting:
+.PP
+.nf
+\*(T<ceylon config get defaults.encoding
+\*(T>.fi
+.PP
+This writes a named setting:
+.PP
+.nf
+\*(T<ceylon config \-\-file=.ceylon/config set defaults.encoding UTF\-8\*(T>
+.fi

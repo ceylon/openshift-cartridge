@@ -1,0 +1,28 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>emptyOrSingleton.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='//fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;A singleton [[Tuple]] with the given [[element]] if the 
+ given element is non-null, or the [[empty sequence|Empty]] 
+ otherwise. This operation transforms an optional type `T?`
+ to a sequence type `[]|[T]` allowing optional values to be
+ the subject of operations defined for [[streams|Iterable]].
+ 
+ For example, [[flat mapping|Iterable.flatMap]] 
+ `emptyOrSingleton()` reproduces the behavior of 
+ [[Iterable.coalesced]]. The expression
+ 
+     { \&quot;1.23\&quot;, \&quot;foo\&quot;, \&quot;5.67\&quot;, \&quot;-1\&quot;, \&quot;\&quot; }
+             .map(parseFloat)
+             .flatMap(emptyOrSingleton&lt;Float?&gt;)
+ 
+ produces the stream:
+  
+     { 1.23, 5.67, -1.0 }&quot;
+see (`class Tuple`, `interface Empty`)
+tagged(&quot;Sequences&quot;)
+shared []|[Element&amp;Object] emptyOrSingleton&lt;Element&gt;
+        (Element element)
+        =&gt; if (exists element) then [element] else [];
+</pre></body></html>

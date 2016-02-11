@@ -1,0 +1,32 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>Exception.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='//fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;The supertype of all unexpected transient failures. An
+ `Exception` is usually unrecoverable from the point of view 
+ of the immediate caller of an operation.
+ 
+ For example, code that interacts with a relational database 
+ isn&apos;t typically written to recover from transaction 
+ rollback or loss of network connectivity. However, these 
+ conditions aren&apos;t completely unrecoverable from the point 
+ of view of the program&apos;s generic exception handling 
+ infrastructure. Therefore, they are best treated as 
+ `Exception`s.
+ 
+ A subclass of `Exception` represents a more specific kind 
+ of problem, and may define additional attributes which 
+ propagate information about problems of that kind.&quot;
+by (&quot;Gavin&quot;, &quot;Tom&quot;)
+shared native class Exception(description=null, cause=null) 
+        extends Throwable(description, cause) {
+    
+    &quot;A description of the problem.&quot;
+    String? description;
+    
+    &quot;The underlying cause of this exception.&quot;
+    Throwable? cause;
+    
+}
+</pre></body></html>

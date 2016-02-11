@@ -1,0 +1,46 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>ValueConstructor.ceylon</title><link href='../../.resources/favicon.ico' rel='shortcut icon'/>
+<link href='../../.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='../../.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='//fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '../../.resources/'</script><script src='../../.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='../../.resources/rainbow.min.js' type='text/javascript'></script><script src='../../.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='../../.resources/ceylon.js' type='text/javascript'></script><script src='../../.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>import ceylon.language.meta.declaration{ValueConstructorDeclaration}
+
+&quot;&quot;&quot;A callable constructor model represents the model of a Ceylon class 
+   value constructor that you can get and inspect
+   
+   ## Gettablity
+   
+   As with [[Value]] you can also get the value of a `ValueConstructor`, 
+   doing so obtains instance:
+   
+        shared class Color {
+            shared String hex;
+            shared new black {
+                this.hex=&quot;#000000&quot;;
+            }
+            shared new white {
+                this.hex=&quot;#ffffff&quot;;
+            }
+        }
+        
+        void test() {
+        ValueConstructor&lt;Color&gt; ctor = `Color.black`;
+        // This will print: #000000
+        print(ctor.get());
+        
+   &quot;&quot;&quot;
+shared sealed interface ValueConstructor&lt;out Type=Object&gt;
+        satisfies ValueModel&lt;Type&gt; &amp; Gettable&lt;Type&gt; {
+    
+    &quot;This value&apos;s declaration.&quot;
+    shared formal actual ValueConstructorDeclaration declaration;
+    
+    &quot;This value&apos;s closed type.&quot;
+    shared formal actual Class&lt;Type&gt; type;
+    
+    &quot;The class containing this constructor; the type of instances produced 
+     by this constructor.&quot;
+    shared actual formal Class&lt;Type&gt;? container;
+}
+
+</pre></body></html>

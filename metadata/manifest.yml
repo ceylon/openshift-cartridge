@@ -1,16 +1,17 @@
 Name: ceylon
 Cartridge-Short-Name: CEYLON
-Display-Name: Ceylon 1.2.0
+Display-Name: Ceylon 1.2.1
 Description: "Say more, more clearly."
-Version: '1.2.0'
+Version: '1.2.1'
 Versions:
+  - '1.2.1'
   - '1.2.0'
   - '1.1.0'
 License: "Please visit Ceylon website for license details."
 License-Url: http://ceylon-lang.org/code/licenses/
 Vendor: Red Hat
-Cartridge-Version: '0.2.0'
-Compatible-Versions: ['0.2.0', '0.1.0']
+Cartridge-Version: '1.2.1'
+Compatible-Versions: ['1.2.1', '0.2.0', '0.1.0']
 Cartridge-Vendor: ceylonlangorg
 Source-Url: https://github.com/ceylon/openshift-cartridge.git
 Categories:
@@ -49,11 +50,13 @@ Cart-Data:
     Type: environment
     Description: "Unique ID which identified the gear. This value changes between gears."
 Provides:
+  - ceylon-1.2.1
   - ceylon-1.2.0
   - ceylon-1.1.0
   - ceylon
   - "ceylon(version) = 1.1.0"
   - "ceylon(version) = 1.2.0"
+  - "ceylon(version) = 1.2.1"
 Publishes:
   publish-http-url:
     Type: "NET_TCP:httpd-proxy-info"
@@ -80,6 +83,7 @@ Scaling:
   Max: -1
 Group-Overrides:
   - components:
+    - ceylon-1.2.1
     - ceylon-1.2.0
     - ceylon-1.1.0
     - web_proxy
