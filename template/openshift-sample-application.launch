@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="com.redhat.ceylon.eclipse.ui.launching.ceylonJavaModule">
 <booleanAttribute key="CEYLON_LAUNCH_VERBOSE" value="false"/>
-<stringAttribute key="CEYLON_MODULE" value="com.redhat.demo.net/1.2.1"/>
+<stringAttribute key="CEYLON_MODULE" value="com.redhat.demo.net/1.2.2"/>
 <stringAttribute key="CEYLON_TOPLEVEL" value="run - default"/>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
 <listEntry value="/openshift-sample-application"/>
