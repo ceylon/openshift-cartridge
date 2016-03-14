@@ -1,0 +1,284 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>Set.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='//fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;A collection in which each distinct element occurs at most 
+ once. Two non-[[identical|Identifiable]] values are 
+ considered distinct only if they are unequal, according to
+ their own definition of [[value equality|Object.equals]].
+ 
+ A `Set` is a [[Collection]] of its elements. Sets may not
+ have [[null|Null]] elements.
+ 
+ A new `Set` may be obtained by calling the function [[set]].
+     
+     value words = set { \&quot;hello\&quot;, \&quot;world\&quot; };
+     value greetings = set { \&quot;hello\&quot;, \&quot;goodbye\&quot;, \&quot;hola\&quot;, \&quot;adios\&quot; };
+ 
+ The [[emptySet]] is a `Set` with no elements.
+ 
+ Sets may be the subject of the binary union, intersection, 
+ and complement operators `|`, `&amp;`, and `~`.
+ 
+     value greetingsInWords = words &amp; greetings;
+     value allWords = words | greetings;
+ 
+ An implementation of `Set` may compare elements for 
+ equality using [[Object.equals]] or [[Comparable.compare]].&quot;
+tagged(&quot;Collections&quot;)
+see (`function package.set`, `value emptySet`)
+shared interface Set&lt;out Element=Object&gt;
+        satisfies Collection&lt;Element&gt;
+        given Element satisfies Object {
+    
+    &quot;The fundamental operation for `Set`s. Determines if the
+     given value belongs to this set.&quot;
+    shared actual default Boolean contains(Object element)
+            =&gt; super.contains(element);
+    
+    &quot;A shallow copy of this set, that is, a set with the
+     same elements as this set, which do not change if the
+     elements of this set change.&quot;
+    shared actual formal Set&lt;Element&gt; clone();
+    
+    &quot;Determines if this set is a superset of the given 
+     `Set`, that is, if this set contains all of the 
+     elements in the given set.&quot;
+    shared default Boolean superset(Set&lt;&gt; set) {
+        for (element in set) {
+            if (!contains(element)) {
+                return false;
+            }
+        }
+        else {
+            return true;
+        }
+    }
+    
+    &quot;Determines if this set is a subset of the given `Set`, 
+     that is, if the given set contains all of the elements 
+     in this set.&quot;
+    shared default Boolean subset(Set&lt;&gt; set) {
+        for (element in this) {
+            if (!element in set) {
+                return false;
+            }
+        }
+        else {
+            return true;
+        }
+    }
+    
+    distinct =&gt; this;
+    
+    shared actual {Element*} 
+    defaultNullElements&lt;Default&gt;(Default defaultValue)
+            given Default satisfies Object =&gt; this;
+    
+    &quot;Returns a new `Set` containing all the elements of this 
+     set and all the elements of the given `Set`.
+     
+     For example:
+     
+         set { \&quot;hello\&quot;, \&quot;world\&quot; } | set { 1, 2, \&quot;hello\&quot; }
+     
+     Produces the set `{ \&quot;hello\&quot;, \&quot;world\&quot;, 1, 2 }` of 
+     type `Set&lt;String|Integer&gt;`.
+     
+     Note that it is possible for two sets of disjoint 
+     element type to be considered to have elements in 
+     common. For example, since \`1==1.0\` 
+     [[evaluates to true|Integer.equals]], 
+     the expression 
+     
+         set { 1 } | set { 1.0 }
+     
+     produces the set `{ 1 }`.&quot;
+    shared default 
+    Set&lt;Element|Other&gt; union&lt;Other&gt;(Set&lt;Other&gt; set)
+            given Other satisfies Object 
+            =&gt; package.set(chain(set));
+    
+    &quot;Returns a new `Set` containing only the elements that 
+     are present in both this set and the given `Set` and 
+     that are instances of the intersection `Element&amp;Other` 
+     of the element types of the two sets.
+     
+     For example:
+     
+         set { \&quot;hello\&quot;, \&quot;world\&quot; } &amp; set { 1, 2, \&quot;hello\&quot; }
+     
+     Produces the set `{ \&quot;hello\&quot; }` of type `Set&lt;String&gt;`.
+     
+     Note that, according to this definition, and even 
+     though `1==1.0` [[evaluates to true|Integer.equals]], 
+     the expression
+     
+         set { 1 } &amp; set { 1.0 }
+     
+     produces the empty set `{}`.&quot;
+    shared default 
+    Set&lt;Element&amp;Other&gt; intersection&lt;Other&gt;(Set&lt;Other&gt; set)
+            given Other satisfies Object
+            =&gt; package.set(filter((e) =&gt; e in set)
+                    .narrow&lt;Other&gt;());
+    
+    &quot;Returns a new `Set` containing all the elements in this 
+     set that are not contained in the given `Set`.
+     
+     For example:
+     
+         set { \&quot;hello\&quot;, \&quot;world\&quot; } ~ set { 1, 2, \&quot;hello\&quot; }
+     
+     Produces the set `{ \&quot;world\&quot; }` of type `Set&lt;String&gt;`.&quot;
+    shared default 
+    Set&lt;Element&gt; complement&lt;Other&gt;(Set&lt;Other&gt; set)
+            given Other satisfies Object 
+            =&gt; package.set(filter((e) =&gt; !e in set));
+    
+    &quot;Returns a new `Set` containing only the elements 
+     contained in either this set or the given `Set`, but no 
+     element contained in both sets.&quot;
+    shared default 
+    Set&lt;Element|Other&gt; exclusiveUnion&lt;Other&gt;(Set&lt;Other&gt; set)
+            given Other satisfies Object 
+            =&gt; package.set(filter((e) =&gt; !e in set)
+                    .chain(set.filter((e) =&gt; !e in this)));
+    
+    &quot;Two `Set`s are considered equal if they have the same 
+     size and if every element of the first set is also an 
+     element of the second set, as determined by 
+     [[contains]]. Equivalently, a set is equal to a second 
+     set if it is both a subset and a superset of the second
+     set.&quot;
+    shared actual default Boolean equals(Object that) {
+        if (is Set&lt;&gt; that,
+                that.size==size) {
+            for (element in this) {
+                if (!element in that) {
+                    return false;
+                }
+            }
+            else {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    shared actual default Integer hash {
+        variable Integer hashCode = 0;
+        for (elem in this) {
+            hashCode += elem.hash;
+        }
+        return hashCode;
+    }
+        
+}
+
+&quot;Create a new immutable [[Set]] containing every element 
+ produced by the given [[stream]], resolving items with
+ duplicate keys according to the given [[function|choosing]].
+ 
+ For example:
+ 
+     set { 0, 1, 1, 2, 3, 3, 3 }
+ 
+ produces the set `{ 0, 1, 2, 3 }`.
+ 
+ This is an eager operation and the resulting set does not 
+ reflect changes to the given [[stream]].&quot;
+see(`value Iterable.distinct`)
+shared Set&lt;Element&gt; set&lt;Element&gt;(
+    &quot;The stream of elements.&quot;
+    {Element*} stream,
+    &quot;A function that chooses between duplicate elements. By 
+     default, the element that occurs _earlier_ in the 
+     stream is chosen.&quot;
+    Element choosing(Element earlier, Element later) 
+            =&gt; earlier)
+        given Element satisfies Object
+        =&gt; object extends Object() 
+        satisfies Set&lt;Element&amp;Object&gt; {
+    
+    value elements =
+            stream.summarize(identity,
+                (Element? current, element)
+                        =&gt; if (exists current)
+                        then choosing(current, element)
+                        else element);
+    
+    contains(Object element) =&gt; elements.defines(element);
+    
+    iterator() =&gt; elements.keys.iterator();
+    
+    size =&gt; elements.size;
+    
+    empty =&gt; elements.empty;
+    
+    clone() =&gt; this;
+    
+};
+
+
+
+&quot;An immutable [[Set]] with no elements.&quot;
+tagged(&quot;Collections&quot;)
+shared object emptySet 
+        extends Object() 
+        satisfies Set&lt;Nothing&gt; {
+    
+    shared actual 
+    Set&lt;Other&gt; union&lt;Other&gt;(Set&lt;Other&gt; set)
+            given Other satisfies Object
+            =&gt; set;
+    
+    shared actual 
+    Set&lt;Nothing&gt; intersection&lt;Other&gt;(Set&lt;Other&gt; set)
+            given Other satisfies Object
+            =&gt; this;
+    
+    shared actual 
+    Set&lt;Other&gt; exclusiveUnion&lt;Other&gt;(Set&lt;Other&gt; set)
+            given Other satisfies Object
+            =&gt; set;
+    
+    shared actual 
+    Set&lt;Nothing&gt; complement&lt;Other&gt;(Set&lt;Other&gt; set)
+            given Other satisfies Object
+            =&gt; this;
+    
+    subset(Set&lt;&gt; set) =&gt; true;
+    superset(Set&lt;&gt; set) =&gt; set.empty;
+    
+    clone() =&gt; this;
+    iterator() =&gt; emptyIterator;
+    size =&gt; 0;
+    empty =&gt; true;
+    
+    contains(Object element) =&gt; false;
+    containsAny({Object*} elements) =&gt; false;
+    containsEvery({Object*} elements) =&gt; false;
+    
+    count(Boolean selecting(Nothing element)) =&gt; 0;
+    any(Boolean selecting(Nothing element)) =&gt; false;    
+    every(Boolean selecting(Nothing element)) =&gt; true;
+    
+    shared actual 
+    Null find(Boolean selecting(Nothing element)) 
+            =&gt; null;
+    
+    shared actual 
+    Null findLast(Boolean selecting(Nothing element))
+            =&gt; null;
+    
+    skip(Integer skipping) =&gt; this;
+    take(Integer taking) =&gt; this;
+    by(Integer step) =&gt; this;
+    
+    shared actual 
+    void each(void step(Nothing element)) {}
+    
+}
+</pre></body></html>

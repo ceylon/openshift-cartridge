@@ -1,0 +1,81 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>operatingSystem.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='//fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>import java.lang { System { lineSeparator } }
+
+&quot;Represents the operating system on which the current 
+ process is running.&quot;
+see (`value process`, `value runtime`, `value language`,
+    `value system`)
+tagged(&quot;Environment&quot;)
+shared native object operatingSystem {
+    
+    &quot;Returns the name of the operating system this process is
+     running on: `linux`, `mac`, `unix`, `windows` or `other`.&quot;
+    shared native String name {
+        String? os = process.propertyValue(&quot;os.name&quot;)?.lowercased;
+        if (exists os) {
+            if (os.contains(&quot;win&quot;)) {
+                return &quot;windows&quot;;
+            } else if (os.contains(&quot;mac&quot;)) {
+                return &quot;mac&quot;;
+            } else if (os.contains(&quot;linux&quot;)) {
+                return &quot;linux&quot;;
+            } else if (os.contains(&quot;nix&quot;)
+                    || os.contains(&quot;freebsd&quot;)
+                    || os.contains(&quot;openbsd&quot;)
+                    || os.contains(&quot;netbsd&quot;)
+                    || os.contains(&quot;sunos&quot;)) {
+                return &quot;unix&quot;;
+            }
+        }
+        return &quot;other&quot;;
+    }
+    
+    &quot;Returns the version of the operating system this 
+     process is running on or `Unknown` if it was not
+     possible to retrieve that information. The result
+     is completely dependent on the underlying system.&quot;
+    shared native String version =&gt; &quot;Unknown&quot;;
+    
+    &quot;The line ending character sequence on this platform.&quot;
+    shared native String newline;
+    
+    &quot;The character used on this platform to separate the 
+     folder/file elements of a path.&quot;
+    shared native String fileSeparator {
+        assert (exists result = process.propertyValue(&quot;file.separator&quot;));
+        return result;
+    }
+    
+    &quot;The character used on this platform to use as a 
+     separator between several paths in a list of paths.&quot;
+    shared native String pathSeparator {
+        assert (exists result = process.propertyValue(&quot;path.separator&quot;));
+        return result;
+    }
+    
+    string =&gt; &quot;operating system [``name`` / ``version``]&quot;;
+}
+
+shared native(&quot;jvm&quot;) object operatingSystem {
+    
+    shared native(&quot;jvm&quot;) String version =&gt;
+            process.propertyValue(&quot;os.version&quot;) else &quot;Unknown&quot;;
+    
+    shared native(&quot;jvm&quot;) String newline =&gt;
+            lineSeparator();
+    
+}
+
+shared native(&quot;js&quot;) object operatingSystem {
+    
+    shared native(&quot;js&quot;) String newline {
+        assert (exists result = process.propertyValue(&quot;line.separator&quot;));
+        return result;
+    }
+    
+}
+</pre></body></html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>NestableDeclaration.ceylon</title><link href='../../.resources/favicon.ico' rel='shortcut icon'/>
+<link href='../../.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='../../.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='//fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '../../.resources/'</script><script src='../../.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='../../.resources/rainbow.min.js' type='text/javascript'></script><script src='../../.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='../../.resources/ceylon.js' type='text/javascript'></script><script src='../../.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;A declaration which can be contained in a [[Package]] or in another [[NestableDeclaration]].
+ 
+ Functions, values, classes, interfaces and aliases are such declarations.&quot;
+shared sealed interface NestableDeclaration of 
+                                        FunctionOrValueDeclaration |
+                                        ClassOrInterfaceDeclaration |
+                                        ConstructorDeclaration |
+                                        SetterDeclaration |
+                                        AliasDeclaration
+        satisfies AnnotatedDeclaration &amp; TypedDeclaration {
+
+    &quot;True if this declaration is annotated with [[actual|ceylon.language::actual]].&quot;
+    shared formal Boolean actual;
+
+    &quot;True if this declaration is annotated with [[formal|ceylon.language::formal]].&quot;
+    shared formal Boolean formal;
+
+    &quot;True if this declaration is annotated with [[default|ceylon.language::default]].&quot;
+    shared formal Boolean default;
+
+    &quot;True if this declaration is annotated with [[shared|ceylon.language::shared]].&quot;
+    shared formal Boolean shared;
+
+    &quot;This declaration&apos;s package container.&quot;
+    shared formal Package containingPackage;
+    
+    &quot;This declaration&apos;s module container.&quot;
+    shared formal Module containingModule;
+    
+    &quot;This declaration&apos;s immediate container, which can be either a [[NestableDeclaration]]
+     or a [[Package]].&quot;
+    shared formal NestableDeclaration|Package container;
+    
+    &quot;True if this declaration is a toplevel declaration.&quot;
+    shared formal Boolean toplevel;
+}
+</pre></body></html>

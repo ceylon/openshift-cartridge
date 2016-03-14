@@ -1,0 +1,27 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>MemberClassValueConstructor.ceylon</title><link href='../../.resources/favicon.ico' rel='shortcut icon'/>
+<link href='../../.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='../../.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='//fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '../../.resources/'</script><script src='../../.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='../../.resources/rainbow.min.js' type='text/javascript'></script><script src='../../.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='../../.resources/ceylon.js' type='text/javascript'></script><script src='../../.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>import ceylon.language.meta.declaration{ValueConstructorDeclaration}
+
+&quot;A model for a value constructor of a member class.&quot;
+shared sealed interface MemberClassValueConstructor&lt;in Container=Nothing, out Type=Object&gt;
+        satisfies ValueModel&lt;Type&gt; &amp; Qualified&lt;ValueConstructor&lt;Type&gt;, Container&gt; {
+    
+    &quot;This value&apos;s declaration.&quot;
+    shared formal actual ValueConstructorDeclaration declaration;
+    
+    &quot;This value&apos;s closed type.&quot;
+    shared formal actual MemberClass&lt;Container, Type&gt; type;
+    
+    &quot;The class containing this constructor; the type of instances produced 
+     by this constructor.&quot;
+    shared actual formal ClassModel&lt;Type&gt; container;
+    
+    &quot;Binds this attribute to the given container instance. The instance type is checked at runtime.&quot;
+    throws(`class StorageException`,
+        &quot;If this attribute is not stored at runtime, for example if it is neither shared nor captured.&quot;)
+    shared actual formal ValueConstructor&lt;Type&gt; bind(Object container);
+}
+</pre></body></html>

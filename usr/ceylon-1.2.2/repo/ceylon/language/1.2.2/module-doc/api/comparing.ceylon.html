@@ -1,0 +1,42 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>comparing.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='//fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;A single comparator function which delegates to each of the 
+ given [[comparator functions|comparators]] in turn, 
+ returning the first result of [[smaller]] or [[larger]] if 
+ any, or returning [[equal]] otherwise.
+ 
+ Consider the following type:
+ 
+     class Person(shared Integer age, shared String name) {}
+ 
+ A stream of `Person`s may be sorted by `age`, breaking ties 
+ by `name`, like this:
+ 
+     people.sort(comparing(byDecreasing(Person.age), byIncreasing(Person.name)))
+ 
+ If no `comparators` are given, the resulting comparator
+ always returns `equal`.
+ 
+ This function is intended for use with [[Iterable.sort]]
+ and [[Iterable.max]].&quot;
+see (`function byDecreasing`,
+     `function byIncreasing`,
+     `function Iterable.max`,
+     `function Iterable.sort`)
+tagged(&quot;Comparisons&quot;)
+shared Comparison comparing&lt;in Value&gt;(Comparison(Value,Value)* comparators)
+            (Value x, Value y) {
+    for (compare in comparators) {
+        value comparison = compare(x, y);
+        if (comparison != equal) {
+            return comparison;
+        }
+    }
+    else {
+        return equal;
+    }
+}
+</pre></body></html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html><head><meta charset='UTF-8'/>
+<title>ceylon</title>
+<link rel='stylesheet' type='text/css' href='bootstrap.min.css'/>
+<link rel='stylesheet' type='text/css' href='doc-tool.css'/>
+</head>
+<body>
+<div class='navbar navbar-inverse navbar-static-top'>
+<div class='navbar-inner'>
+<a class='tool-header' href='index.html'>
+<i class='tool-logo'></i>
+<span class='tool-label'>The Ceylon Toolset</span>
+<span><code class='tool-name'>ceylon</code></span>
+<span class='tool-version'>1.2.2 13ebb05 (Charming But Irrational)</span>
+</a>
+<ul class='nav pull-right'><li class='divider-vertical'/><li id='infoDropdown' class='dropdown'><a href='#' title='Show keyboard shortcuts [Shortcut: ?]' role='button' class='dropdown-toggle' data-toggle='dropdown'><i class='icon-info'></i></a><ul id='info-dropdown-panel' class='dropdown-menu'><h4>Keyboard Shortcuts</h4><li class='divider'></li><div id='info-common-shortcuts'><div id='?'><span class='key badge'>?</span><span class='info muted'>Open this information panel</span></div><div id='i'><span class='key badge'>i</span><span class='info muted'>Jump to tool index</span></div><div id='s'><span class='key badge'>s</span><span class='info muted'>Jump to synopsis</span></div><div id='d'><span class='key badge'>d</span><span class='info muted'>Jump to description</span></div><div id='o'><span class='key badge'>o</span><span class='info muted'>Jump to options</span></div></div></ul></li></ul></div>
+</div>
+<div class='sub-navbar'>
+<div class='sub-navbar-inner'><div><code class='sub-navbar-tool'>ceylon</code></div>
+<div class='sub-navbar-summary'><p>The top level Ceylon tool is used to execute other Ceylon tools</p>
+</div>
+</div><div class='sub-navbar-menu'>
+<a href='index.html'><span title='Jump to tool index [Shortcut: I]'><span class='accesskey'>I</span>ndex</span></a><a href='#section-synopsis'><span title='Jump to tool synopsis [Shortcut: S]'><span class='accesskey'>S</span>ynopsis</span></a><a href='#section-description'><span title='Jump to tool description [Shortcut: D]'><span class='accesskey'>D</span>escription</span></a><a href='#section-options'><span title='Jump to tool options [Shortcut: O]'><span class='accesskey'>O</span>ptions</span></a></div></div>
+<div class='container-fluid'>
+<div class='section section-synopsis'>
+<table class='table table-condensed table-bordered'>
+<thead>
+<tr class='table-header' title='Click for expand/collapse'><td colspan='1' id='section-synopsis'><i class='icon-expand'></i><h2>Synopsis</h2>
+</td></tr>
+</thead>
+<tbody>
+<tr><td><div class='synopsis'><code>ceylon  <a href='#option--version'>--version</a></code></div>
+</td></tr><tr><td><div class='synopsis'><code>ceylon  [<a href='#option--stacktraces'>--stacktraces</a>] [<a href='#option--paginate'>--paginate</a>] [<a href='#option--no-pager'>--no-pager</a>] [<a href='#option--show-home'>--show-home</a>] [<a href='#option--cwd'>--cwd</a>=&lt;dir&gt;] [<a href='#option--config'>--config</a>=&lt;file&gt;] [<a href='#option--define'>--define</a>=&lt;key&gt;=&lt;value&gt;...] [<a href='#option--distribution'>--distribution</a>=&lt;version-or-url&gt;] [--] &lt;command&gt; [&lt;command‑options...&gt;] [&lt;command‑args...&gt;]</code></div>
+</td></tr></tbody></table></div>
+
+<div class='section section-description'>
+<table class='table table-condensed table-bordered'>
+<thead>
+<tr class='table-header' title='Click for expand/collapse'><td colspan='1' id='section-description'><i class='icon-expand'></i><h2> Description</h2>
+</td></tr>
+</thead>
+<tbody>
+<tr><td><p>If <code>--version</code> is present, print version information and exit. Otherwise <code>&lt;tool-arguments&gt;</code> should begin with the name of a ceylon tool or a list of comma-separated tool names which will be invoked one after the other with the same remaining command line arguments. The named tools are loaded and configured with the remaining command line arguments and control passes to those tools.</p>
+
+<ul>
+<li><p><code>bootstrap</code> - Generates a Ceylon bootstrap script in the current directory</p>
+</li>
+<li><p><code>browse</code> - Open module documentation in the browser</p>
+</li>
+<li><p><code>classpath</code> - Prints a classpath suitable for passing to Java tools to run a given Ceylon module</p>
+</li>
+<li><p><code>compile</code> - Compiles Ceylon and Java source code and directly produces module and source archives in a module repository.</p>
+</li>
+<li><p><code>compile-js</code> - Compiles Ceylon source code to JavaScript and directly produces module and source archives in a module repository</p>
+</li>
+<li><p><code>config</code> - Manages Ceylon configuration files</p>
+</li>
+<li><p><code>copy</code> - Copies modules from one module repository to another</p>
+</li>
+<li><p><code>doc</code> - Generates Ceylon API documentation from Ceylon source files</p>
+</li>
+<li><p><code>doc-tool</code> - Generates documentation about a tool</p>
+</li>
+<li><p><code>help</code> - Displays help information about other Ceylon tools</p>
+</li>
+<li><p><code>import-jar</code> - Imports a jar file into a Ceylon module repository</p>
+</li>
+<li><p><code>info</code> - Prints information about modules in repositories</p>
+</li>
+<li><p><code>jigsaw</code> - Tools to interop with Java 9 (Jigsaw) modules</p>
+</li>
+<li><p><code>new</code> - Generates a new Ceylon project</p>
+</li>
+<li><p><code>plugin</code> - Manages Ceylon command-line plugins</p>
+</li>
+<li><p><code>run</code> - Executes a Ceylon program</p>
+</li>
+<li><p><code>run-js</code> - Executes a Ceylon program</p>
+</li>
+<li><p><code>src</code> - Fetches source archives from a repository and extracts their contents into a source directory</p>
+</li>
+<li><p><code>test</code> - Executes tests</p>
+</li>
+<li><p><code>test-js</code> - Executes tests</p>
+</li>
+<li><p><code>version</code> - Shows and updates version numbers in module descriptors</p>
+</li>
+<li><p><code>war</code> - Generates a WAR file from a compiled <code>.car</code> file</p>
+</li>
+</ul>
+
+<p>See <code>ceylon help &lt;command&gt;</code> for more information about a particular subcommand.</p>
+</td></tr></tbody></table></div>
+<div class='section section-options'>
+<table class='table table-condensed table-bordered'>
+<thead>
+<tr class='table-header' title='Click for expand/collapse'><td colspan='2' id='section-options'><i class='icon-expand'></i><h2>Options</h2>
+</td></tr>
+</thead>
+<tbody>
+<tr><td class='span3' id='option--config'><code>--config=file</code></td>
+<td class='option-description'><p>Specifies the configuration file to use for this tool. (default: <code>./.ceylon/config</code>)</p>
+</td>
+</tr><tr><td class='span3' id='option--cwd'><code>--cwd=dir</code></td>
+<td class='option-description'><p>Specifies the current working directory for this tool. (default: the directory where the tool is run from)</p>
+</td>
+</tr><tr><td class='span3' id='option--define'><code>--define=key&gt;=&lt;value</code>, <code id='option-D'>-D key&gt;=&lt;value</code></td>
+<td class='option-description'><p>Set a system property</p>
+</td>
+</tr><tr><td class='span3' id='option--distribution'><code>--distribution=version-or-url</code></td>
+<td class='option-description'><p>Determines which Ceylon distribution will be used to run the command. Passing any version except the current (1.2.2) will result in a one-time download of the requested version from the official Ceylon website.</p>
+</td>
+</tr><tr><td class='span3' id='option--no-pager'><code>--no-pager</code></td>
+<td class='option-description'><p>Do not pipe Ceylon tool output into a pager.</p>
+</td>
+</tr><tr><td class='span3' id='option--paginate'><code>--paginate</code></td>
+<td class='option-description'><p>Pipe all Ceylon tool output into less (or if set, $CEYLON_PAGER or $PAGER) if standard output is a terminal. This overrides the <code>help.pager</code> and <code>defaults.pager</code> configuration options (see the &quot;Configuration Mechanism&quot; section below).</p>
+</td>
+</tr><tr><td class='span3' id='option--show-home'><code>--show-home</code></td>
+<td class='option-description'><p>Outputs the value for CEYLON_HOME and exits.</p>
+</td>
+</tr><tr><td class='span3' id='option--stacktraces'><code>--stacktraces</code></td>
+<td class='option-description'><p>If an error propagates to the top level tool, print its stack trace.</p>
+</td>
+</tr><tr><td class='span3' id='option--version'><code>--version</code>, <code id='option-v'>-v</code></td>
+<td class='option-description'><p>Print version information and exit, <em>ignoring all other options and arguments</em>.</p>
+</td>
+</tr></tbody></table></div><div class='section'>
+<table class='table table-condensed table-bordered'>
+<thead>
+<tr class='table-header' title='Click for expand/collapse'><td colspan='1'><i class='icon-expand'></i><h2> CONFIGURATION MECHANISM</h2>
+</td></tr>
+</thead>
+<tbody>
+<tr><td><p>Ceylon uses a simple text format to store customizations that are per repository and are per user. Such a configuration file may look like this:</p>
+
+<pre><code>#
+# A '#' or ';' character indicates a comment.
+#
+
+; global settings
+[defaults]
+    encoding = utf8
+    pager = false
+
+; local repository
+[repository &quot;LOCAL&quot;]
+    url = ./modules
+
+</code></pre>
+
+<p>Various commands read from the configuration file and adjust their operation accordingly. See ceylon-config(1) for a list and more details about the configuration mechanism.</p>
+</td></tr></tbody></table></div>
+</div><script type='text/javascript' src='jquery-1.8.2.min.js'></script><script type='text/javascript' src='bootstrap.min.js'></script><script type='text/javascript' src='doc-tool.js'></script><script type='text/javascript'>init();</script></body></html>

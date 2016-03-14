@@ -1,0 +1,163 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>runtime.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='//fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>import java.lang { System, Long, Double, Int=Integer, Math }
+
+&quot;Represents the machine and virtual machine on which the 
+ current process is executing.
+ 
+ Holds information about runtime name, version and about 
+ inherent limitations like minimum/maximum values that can 
+ be represented by the runtime.&quot;
+see (`value process`, `value language`, `value system`,
+     `value operatingSystem`)
+tagged(&quot;Environment&quot;)
+shared native object runtime  {
+    
+    &quot;The name of the runtime / virtual machine this process 
+     is running on.&quot;
+    shared native String name;
+    
+    &quot;The version of the runtime / virtual machine this 
+     process is running on.&quot;
+    shared native String version;
+    
+    &quot;The number of bits used to represent the value of an 
+     [[Integer]].&quot;
+    see (`class Integer`)
+    shared native Integer integerSize;
+    
+    &quot;The number of bits of [[Integer]] instances which may 
+     be manipulated via the methods inherited from
+     [[Binary]].&quot;
+    shared native Integer integerAddressableSize;
+    
+    &quot;The smallest [[Integer]] value that can be represented 
+     by the runtime.
+     
+     It is the minimum `Integer` that can be distinguished 
+     from its successor using below formula:
+     
+     `Integer(n-1) = Integer(n) - 1` with `Integer(0) = 0`&quot;
+    see (`class Integer`)
+    shared native Integer minIntegerValue;
+
+    &quot;The largest [[Integer]] value that can be represented 
+     by the runtime.
+     
+     It is the maximum `Integer` that can be distinguished 
+     from its predecessor using below formula:
+     
+     `Integer(n+1) = Integer(n) + 1` with `Integer(0) = 0`&quot;
+    see (`class Integer`)
+    shared native Integer maxIntegerValue;
+    
+    &quot;The maximum size of an [[Array]] that is possible for 
+     this runtime. Note that this is a theoretical limit 
+     only. In practice it is usually impossible to allocate 
+     an array of this size, due to memory constraints.&quot;
+    see (`class Array`)
+    shared native Integer maxArraySize;
+    
+    &quot;The largest finite [[Float]] value that can be 
+     represented by the runtime.&quot;
+    shared native Float maxFloatValue;
+
+    &quot;The smallest positive nonzero [[Float]] value that can 
+     be represented by the runtime.&quot;
+    shared native Float minFloatValue;
+    
+    &quot;The _machine epsilon_ for [[floating point|Float]]
+     values. That is, the smallest value `e` such that:
+     
+         1.0 + e &gt; 1.0&quot;
+    shared native Float epsilon; 
+    
+    &quot;The largest [[Integer]] that can be exactly represented
+     as a [[Float]] without loss of precision. The negative
+     of this value is the smallest `Integer` that can be
+     exactly represented as a `Float`.&quot;
+    see (`value Integer.float`)
+    shared native Integer maxExactIntegralFloat;
+    
+    string =&gt; &quot;runtime [``name`` / ``version``]&quot;;
+}
+
+shared native(&quot;jvm&quot;) object runtime  {
+    shared native(&quot;jvm&quot;) String name 
+            =&gt; &quot;jvm&quot;;
+    shared native(&quot;jvm&quot;) String version 
+            =&gt; System.getProperty(
+                    &quot;java.specification.version&quot;);
+    shared native(&quot;jvm&quot;) Integer integerSize 
+            =&gt; 64;
+    shared native(&quot;jvm&quot;) Integer integerAddressableSize 
+            =&gt; 64;
+    shared native(&quot;jvm&quot;) Integer minIntegerValue 
+            =&gt; Long.\iMIN_VALUE;
+    shared native(&quot;jvm&quot;) Integer maxIntegerValue 
+            =&gt; Long.\iMAX_VALUE;
+    shared native(&quot;jvm&quot;) Integer maxArraySize 
+            = Int.\iMAX_VALUE - 8;
+    shared native(&quot;jvm&quot;) Float maxFloatValue 
+            =&gt; Double.\iMAX_VALUE;
+    shared native(&quot;jvm&quot;) Float minFloatValue 
+            =&gt; Double.\iMIN_VALUE;    
+    shared native(&quot;jvm&quot;) Float epsilon 
+            = Math.ulp(1.0);
+    shared native(&quot;jvm&quot;) Integer maxExactIntegralFloat 
+            = 2^53-1;
+}
+
+shared native(&quot;js&quot;) object runtime  {
+    shared native(&quot;js&quot;) String name {
+        dynamic {
+            if (is String version 
+                = process.propertyValue(&quot;node.version&quot;)) {
+                return &quot;node.js&quot;;
+            }
+            else if (exists window) {
+                return &quot;Browser&quot;;
+            }
+            else {
+                return &quot;Unknown JavaScript environment&quot;;
+            }
+        }
+    }
+    shared native(&quot;js&quot;) String version {
+        dynamic { 
+            if (is String version 
+                = process.propertyValue(&quot;node.version&quot;)) {
+                return version;
+            }
+            else if (is String version 
+                = process.propertyValue(&quot;browser.version&quot;)) {
+                return version;
+            }
+            else {
+                return &quot;Unknown&quot;;
+            }
+        }
+    }
+    shared native(&quot;js&quot;) Integer integerSize =&gt; 53;
+    shared native(&quot;js&quot;) Integer integerAddressableSize =&gt; 32;
+    shared native(&quot;js&quot;) Integer minIntegerValue = -(2^53-1);
+    shared native(&quot;js&quot;) Integer maxIntegerValue = 2^53-1;
+    shared native(&quot;js&quot;) Integer maxArraySize = 2^32-1;
+    shared native(&quot;js&quot;) Float epsilon = 2.0^(-52);
+    shared native(&quot;js&quot;) Integer maxExactIntegralFloat 
+            =&gt; maxIntegerValue;
+    shared native(&quot;js&quot;) Float maxFloatValue {
+        dynamic {
+            return \iNumber.\iMAX_VALUE;
+        }
+    }
+    shared native(&quot;js&quot;) Float minFloatValue {
+        dynamic {
+            return \iNumber.\iMIN_VALUE;
+        }
+    }
+}
+</pre></body></html>

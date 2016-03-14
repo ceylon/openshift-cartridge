@@ -1,0 +1,106 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>Category.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='//fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;&quot;&quot;Abstract supertype of objects that contain other values, 
+   called *elements*, where it is possible to efficiently 
+   determine if a given value is an element. A `Category`
+   may not be finite, and its elements may not even be
+   countable. Thus, unlike [[streams|Iterable]], the 
+   elements of a generic `Category` are not iterable.
+   
+   `Category` models a mathematical set, but is distinct 
+   from the [[Set]] collection type which represents finite
+   sets.
+   
+   The `in` operator may be used to determine if a value
+   belongs to a `Category`:
+   
+       if (69 in 0..100) { ... }
+       assert (key-&gt;item in { for (n in 0..100) n.string-&gt;n**2 });
+   
+   An object may be a `Category` of two different disjoint
+   element types. For example, [[String]] is a `Category`
+   of its `Character`s and of its substrings.
+   
+       if (&quot;hello&quot; in &quot;hello world&quot;) { ... }
+       assert (&apos;.&apos; in string);
+   
+   Every meaningful `Category` is formed from elements with
+   some equivalence relation. Ordinarily, that equivalence
+   relation is [[value equality|Object.equals]]. Thus,
+   ordinarily, `x==y` implies that `x in cat == y in cat`.
+   But this contract is not required since it is possible to 
+   form a meaningful `Category` using a different 
+   equivalence relation. For example, an `IdentitySet` is a 
+   meaningful `Category`, where the equivalence relation is
+   [[identity equality|Identifiable]].
+   
+   Since [[Null]] is not considered to have any meaningful
+   equivalence relation, a `Category` may not contain the
+   [[null value|null]].
+   
+   Note that even though `Category&lt;Element&gt;` is declared
+   contravariant in its [[element type|Element]], most types
+   that inherit `Category` are covariant in their element
+   type, and therefore satisfy `Category&lt;Object&gt;`, resulting
+   in some loss of typesafety. For such types, [[contains]] 
+   should return `false` for any value that is not an 
+   instance of the element type. For example, `String` is a 
+   `Category&lt;Object&gt;`, not a `Category&lt;Character|String&gt;`,
+   and `x in string` evaluates to `false` for every `x` that
+   is not a `String` or `Character`.&quot;&quot;&quot;
+by (&quot;Gavin&quot;)
+tagged(&quot;Collections&quot;)
+shared interface Category&lt;in Element=Object&gt;
+        given Element satisfies Object {
+    
+    &quot;Returns `true` if the given value belongs to this
+     `Category`, that is, if it is an element of this
+     `Category`, or `false` otherwise.
+     
+     For most `Category`s the following relationship is 
+     satisfied by every pair of elements `x` and `y`:
+     
+     - if `x==y`, then `x in category == y in category`
+     
+     However, it is possible to form a useful `Category` 
+     consistent with some other equivalence relation, for 
+     example `===`. Therefore implementations of `contains()` 
+     which do not satisfy this relationship are tolerated.&quot;
+    see (`function containsEvery`, `function containsAny`)
+    shared formal Boolean contains(Element element);
+    
+    &quot;Returns `true` if every one of the given values belongs 
+     to this `Category`, or `false` otherwise.&quot;
+    see (`function contains`, `function containsAny`)
+    shared default 
+    Boolean containsEvery({Element*} elements) {
+        for (element in elements) {
+            if (!contains(element)) {
+                return false;
+            }
+        }
+        else {
+            return true;
+        }
+    }
+
+    &quot;Returns `true` if any one of the given values belongs 
+     to this `Category`, or `false` otherwise.&quot;
+    see (`function contains`, `function containsEvery`)
+    shared default 
+    Boolean containsAny({Element*} elements) {
+        for (element in elements) {
+            if (contains(element)) {
+                return true;
+            }
+        }
+        else {
+            return false;
+        }
+    }
+
+}
+</pre></body></html>

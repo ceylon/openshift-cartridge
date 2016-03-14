@@ -1,0 +1,103 @@
+'\" -*- coding: us-ascii -*-
+.if \n(.g .ds T< \\FC
+.if \n(.g .ds T> \\F[\n[.fam]]
+.de URL
+\\$2 \(la\\$1\(ra\\$3
+..
+.if \n(.g .mso www.tmac
+.TH "ceylon import-jar" 1 "10 March 2016" "" ""
+.SH NAME
+ceylon import-jar \- Imports a jar file into a Ceylon module repository
+.SH SYNOPSIS
+'nh
+.fi
+.ad l
+\fBceylon import-jar\fR \kx
+.if (\nx>(\n(.l/2)) .nr x (\n(.l/5)
+'in \n(.iu+\nxu
+[--cacherep=\fIurl\fR] [--cwd=\fIdir\fR] [--descriptor=\fIfile\fR] [--dry-run] [--force] [--ignore-annotations] [--maven-overrides=\fIurl\fR] [--missing-dependency-packages=\fIvalue\fR...] [--no-default-repositories] [--offline] [--out=\fIurl\fR] [--overrides=\fIurl\fR] [--pass=\fIsecret\fR] [--rep=\fIurl\fR...] [--show-classes] [--show-suggestions] [--sysrep=\fIurl\fR] [--timeout=\fIseconds\fR] [--update-descriptor] [--user=\fIname\fR] [--verbose[=\fIflags\fR]] [--] {module} {jar-file} [source-jar-file]
+'in \n(.iu-\nxu
+.ad b
+'hy
+.SH DESCRIPTION
+Imports the given \*(T<<jar\-file>\*(T> using the module name and version given by \*(T<<module>\*(T> into the repository named by the \*(T<\-\-out\*(T> option.
+.PP
+\*(T<<module>\*(T> is a module name and version separated with a slash, for example \*(T<com.example.foobar/1.2.0\*(T>.
+.PP
+\*(T<<jar\-file>\*(T> is the name of the Jar file to import.
+.PP
+\*(T<<source\-jar\-file>\*(T> is an optional name of a Jar file containing the sources for the Jar file to import.
+.SH OPTIONS
+.TP 
+--cacherep=\fIurl\fR
+Specifies the folder to use for caching downloaded modules. (default: \*(T<~/.ceylon/cache\*(T>)
+.TP 
+--cwd=\fIdir\fR
+Specifies the current working directory for this tool. (default: the directory where the tool is run from)
+.TP 
+--descriptor=\fIfile\fR
+Specify a module.xml or module.properties file to be used as the module descriptor
+.TP 
+--dry-run
+Performs all the sanity checks but does not publish the JAR.
+.TP 
+--force
+Skips sanity checks and forces publication of the JAR.
+.TP 
+--ignore-annotations
+Do not check annotations for imports (default: \*(T<false\*(T>).
+.TP 
+--maven-overrides=\fIurl\fR
+Specifies the XML file to use to load Maven artifact overrides. See http://ceylon-lang.org/documentation/current/reference/repository/maven/ for information. Deprecated: use --overrides.
+.TP 
+--missing-dependency-packages=\fIvalue\fR
+Specifies which packages a missing dependency contains. Can be specified multiple times. Format: \*(T<module\-name/module\-version=package\-wildcard(,package\-wildcard)*\*(T>, where \*(T<package\-wildcard\*(T> supports \*(T<*\*(T>, \*(T<**\*(T> and \*(T<?\*(T> wildcards.
+.TP 
+--no-default-repositories
+Indicates that the default repositories should not be used.
+.TP 
+--offline, -L
+Enables offline mode that will prevent connections to remote repositories.
+.TP 
+--out=\fIurl\fR, -o \fIurl\fR
+Specifies the output module repository (which must be publishable). (default: \*(T<./modules\*(T>)
+.TP 
+--overrides=\fIurl\fR
+Specifies the XML file to use to load module overrides. See http://ceylon-lang.org/documentation/current/reference/repository/maven/ for information. \fIExperimental\fR.
+.TP 
+--pass=\fIsecret\fR
+Sets the password for use with an authenticated output repository (no default).
+.TP 
+--rep=\fIurl\fR
+Specifies a module repository containing dependencies. Can be specified multiple times. (default: \*(T<modules\*(T>, \*(T<~/.ceylon/repo\*(T>, \*(T<https://modules.ceylon\-lang.org/repo/1\*(T>)
+.TP 
+--show-classes
+Shows all external classes that are not declared as imports instead of their packages only.
+.TP 
+--show-suggestions
+Shows suggestions for modules based on missing package names (this can take a long time).
+.TP 
+--sysrep=\fIurl\fR
+Specifies the system repository containing essential modules. (default: \*(T<$CEYLON_HOME/repo\*(T>)
+.TP 
+--timeout=\fIseconds\fR, -T \fIseconds\fR
+Sets the timeout for connections to remote repositories, use 0 for no timeout (default: 20).
+.TP 
+--update-descriptor
+Whenever possible will create or adjust the descriptor file with the necessary definitions.
+.TP 
+--user=\fIname\fR
+Sets the user name for use with an authenticated output repository (no default).
+.TP 
+--verbose[=\fIflags\fR], -d
+Produce verbose output. If no \*(T<flags\*(T> are given then be verbose about everything, otherwise just be verbose about the flags which are present. Allowed flags include: \*(T<all\*(T>, \*(T<loader\*(T>.
+.SH DESCRIPTORS
+When the import-jar tool analyses the <jar-file> and complains about missing dependencies a module descriptor file should be provided. The name of this file can be provided using the \*(T<\-\-descriptor\*(T> option or, when left out, the tool will look for \*(T<<jar\-file>.module.properties\*(T> or \*(T<<jar\-file>.module.xml\*(T>. 
+.PP
+The format of these \*(T<.properties\*(T> or \*(T<.xml\*(T> files is documented online: http://www.ceylon-lang.org/documentation/1.1/reference/structure/module/#legacy_modules 
+.PP
+If the option \*(T<\-\-update\-descriptor\*(T> is given the tool will try to update the given descriptor file with the available information (for now this only works for the \*(T<.properties\*(T> files). If the file didn't exist yet it will be created.
+.PP
+If the option \*(T<\-\-source\-jar\-file\*(T> is given the tool will try to include the source jar into the module as well, including a SHA1 of that source jar.
+.SH REPOSITORIES
+Repositories like those specified with the \*(T<\-\-rep\*(T> or \*(T<\-\-out\*(T> options can be file paths, HTTP urls to remote servers or can be names of repositories when prepended with a \*(T<+\*(T> symbol. These names refer to repositories defined in the configuration file or can be any of the following predefined names \*(T<+SYSTEM\*(T>, \*(T<+CACHE\*(T>, \*(T<+LOCAL\*(T>, \*(T<+USER\*(T>, \*(T<+REMOTE\*(T> or \*(T<+MAVEN\*(T>. For more information see http://ceylon-lang.org/documentation/1.2/reference/repository/tools

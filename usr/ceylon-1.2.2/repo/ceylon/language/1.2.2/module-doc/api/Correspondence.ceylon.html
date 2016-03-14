@@ -1,0 +1,119 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>Correspondence.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='//fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;Abstract supertype of objects which associate values with 
+ keys. A `Correspondence&lt;Key,Item&gt;` may be a viewed as a 
+ partial function from domain `Key` to range `Item`, where
+ some `Key`s have no `Item`.
+ 
+ `Correspondence` does not satisfy [[Category]], since in 
+ some cases&amp;mdash;`List`, for example&amp;mdash;it is convenient 
+ to consider the subtype a `Category` of its indexed items, 
+ and in other cases&amp;mdash;`Map`, for example&amp;mdash;it is 
+ convenient to treat the subtype as a `Category` of its 
+ [[entries|Entry]].
+ 
+ The item corresponding to a given key may be obtained from 
+ a `Correspondence` using the item operator:
+ 
+     value bg = settings[\&quot;backgroundColor\&quot;] else white;
+ 
+ The `get()` operation and item operator result in an
+ optional type, to reflect the possibility that there may be
+ no item for the given key.&quot;
+see (`interface Map`, 
+     `interface List`, 
+     `interface Category`)
+by (&quot;Gavin&quot;)
+tagged(&quot;Collections&quot;)
+shared interface Correspondence&lt;in Key, out Item=Anything&gt;
+        given Key satisfies Object {
+    
+    &quot;Returns the value defined for the given key, or `null` 
+     if there is no value defined for the given key.&quot;
+    see (`function Correspondence.getAll`)
+    shared formal Item? get(Key key);
+    
+    &quot;Determines if there is a value defined for the given 
+     key.&quot;
+    see (`function Correspondence.definesAny`, 
+         `function Correspondence.definesEvery`, 
+         `value Correspondence.keys`)
+    shared formal Boolean defines(Key key);
+    
+    /*&quot;Return a boolean value indicating whether there is an
+     item with the given [[key]], together with the 
+     [[item|Item]] for that key, if any.
+     
+         value found -&gt; item = map.lookup(key);
+         if (found) {
+             print(item);
+         }
+     
+     This operation is useful for correspondences which 
+     contain [[null]] items, where a null return value for 
+     [[get]] does not distinguish between:
+     
+     - the case that there is no item for the given key, and
+     - the case that `null` is the item for the given key.&quot;
+    shared default
+    see (`function defines`, `function get`)
+    Boolean-&gt;Item? lookup(Key key)
+            =&gt; if (defines(key))
+               then true -&gt; get(key)
+               else false -&gt; null;*/
+    
+    &quot;The `Category` of all keys for which a value is defined
+     by this `Correspondence`.&quot;
+    see (`function Correspondence.defines`)
+    shared default Category&lt;Key&gt; keys
+            =&gt; object 
+            satisfies Category&lt;Key&gt; {
+        contains(Key key) =&gt; defines(key);
+    };
+    
+    &quot;Determines if this `Correspondence` defines a value for
+     every one of the given keys.&quot;
+    see (`function Correspondence.defines`)
+    shared default 
+    Boolean definesEvery({Key*} keys) {
+        for (key in keys) {
+            if (!defines(key)) {
+                return false;
+            }
+        }
+        else {
+            return true;
+        }
+    }
+    
+    &quot;Determines if this `Correspondence` defines a value for
+     any one of the given keys.&quot;
+    see (`function Correspondence.defines`)
+    shared default 
+    Boolean definesAny({Key*} keys) {
+        for (key in keys) {
+            if (defines(key)) {
+                return true;
+            }
+        }
+        else {
+            return false;
+        }
+    }
+    
+    &quot;Returns the items defined for the given keys, in the 
+     same order as the corresponding keys. For any key which 
+     does not have an item defined, the resulting stream 
+     contains the value `null`.&quot;
+    see (`function Correspondence.get`)
+    shared default 
+    Iterable&lt;Item?,Absent&gt; getAll&lt;Absent&gt;
+            (Iterable&lt;Key,Absent&gt; keys) 
+            given Absent satisfies Null
+            =&gt; { for (key in keys) get(key) };
+    
+}
+</pre></body></html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>ValueDeclaration.ceylon</title><link href='../../.resources/favicon.ico' rel='shortcut icon'/>
+<link href='../../.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='../../.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='//fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '../../.resources/'</script><script src='../../.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='../../.resources/rainbow.min.js' type='text/javascript'></script><script src='../../.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='../../.resources/ceylon.js' type='text/javascript'></script><script src='../../.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>import ceylon.language.meta.model { 
+    Value, 
+    Attribute, 
+    AppliedType = Type, 
+    IncompatibleTypeException, 
+    StorageException 
+}
+
+&quot;&quot;&quot;A value declaration.
+   
+   &lt;a name=&quot;toplevel-sample&quot;&gt;&lt;/a&gt;
+   ### Usage sample for toplevel value
+   
+   Getting a model requires applying type arguments to the
+   value declaration with [[apply]] in order to be able to read that value. For example, here is how you would
+   obtain a value model that you can read from a toplevel attribute declaration:
+   
+       String foo = &quot;Hello&quot;;
+       
+       void test(){
+           // We need to apply the the foo declaration in order to get the foo value model
+           Value&lt;String&gt; valueModel = `value foo`.apply&lt;String&gt;();
+           // This will print: Hello
+           print(valueModel.get());
+       }
+   
+   &lt;a name=&quot;member-sample&quot;&gt;&lt;/a&gt;
+   ### Usage sample for attributes
+	
+   For attributes it is a bit longer, because attributes need to be applied the containing type, so you should 
+   use [[memberApply]] and start by giving the containing closed type:
+   
+       class Outer(){
+           shared String foo =&gt; &quot;Hello&quot;;
+       }
+	
+       void test(){
+           // Apply the containing closed type `Outer` to the attribute declaration `Outer.foo`
+           Attribute&lt;Outer,String&gt; valueModel = `value Outer.foo`.memberApply&lt;Outer,String&gt;(`Outer`);
+           // We now have an Attribute, which needs to be applied to a containing instance in order to become a
+           // readable value:
+           Value&lt;String&gt; boundValueModel = valueModel(Outer());
+           // This will print: Hello
+           print(boundValueModel.get());
+       }
+   &quot;&quot;&quot;
+shared sealed interface ValueDeclaration
+        satisfies FunctionOrValueDeclaration &amp; NestableDeclaration &amp; GettableDeclaration {
+    
+    &quot;True if this declaration is annotated with [[late|ceylon.language::late]].&quot;
+    shared formal Boolean late;
+    
+    &quot;True if this declaration is annotated with [[variable|ceylon.language::variable]].&quot;
+    shared formal Boolean variable;
+
+    &quot;True if this declaration is an `object` declaration, whose type is an anonymous class.&quot;
+    shared formal Boolean objectValue;
+    
+    &quot;This value&apos;s anonymous class declaration if this value is an object declaration. `null` otherwise.&quot;
+    shared formal ClassDeclaration? objectClass;
+
+    &quot;Applies this value declaration in order to obtain a value model. 
+     See [this code sample](#toplevel-sample) for an example on how to use this.&quot;
+    throws(`class IncompatibleTypeException`, &quot;If the specified `Get` or `Set` type arguments are not compatible with the actual result.&quot;)
+    shared formal Value&lt;Get, Set&gt; apply&lt;Get=Anything, Set=Nothing&gt;();
+
+    &quot;Applies the given closed container type to this attribute declaration in order to obtain an attribute model. 
+     See [this code sample](#member-sample) for an example on how to use this.&quot;
+    throws(`class IncompatibleTypeException`, &quot;If the specified `Container`, `Get` or `Set` type arguments are not compatible with the actual result.&quot;)
+    shared formal Attribute&lt;Container, Get, Set&gt; memberApply&lt;Container=Nothing, Get=Anything, Set=Nothing&gt;(AppliedType&lt;Object&gt; containerType);
+    
+    &quot;Reads the current value of this toplevel value.&quot;
+    shared actual default Anything get()
+            =&gt; apply&lt;Anything, Nothing&gt;().get();
+    
+    &quot;Reads the current value of this attribute on the given container instance.&quot;
+    throws(`class IncompatibleTypeException`, &quot;If the specified container is not compatible with this attribute.&quot;)
+    throws(`class StorageException`,
+           &quot;If this attribute is not stored at runtime, for example if it is neither shared nor captured.&quot;)
+    shared actual default Anything memberGet(Object container)
+            =&gt; memberApply&lt;Nothing, Anything, Nothing&gt;(`Nothing`).bind(container).get();
+
+    &quot;Sets the current value of this toplevel value.&quot;
+    shared default void set(Anything newValue)
+        =&gt; apply&lt;Anything,Nothing&gt;().setIfAssignable(newValue);
+
+    &quot;Sets the current value of this attribute on the given container instance.&quot;
+    throws(`class IncompatibleTypeException`, &quot;If the specified container or new value type is not compatible with this attribute.&quot;)
+    throws(`class StorageException`,
+           &quot;If this attribute is not stored at runtime, for example if it is neither shared nor captured.&quot;)
+    shared formal void memberSet(Object container, Anything newValue);
+    //=&gt; memberApply&lt;Nothing, Anything, Nothing&gt;(`Nothing`).bind(container).setIfAssignable(newValue);
+
+    &quot;Returns the setter declaration for this variable if there is one, `null` otherwise.&quot;
+    shared formal SetterDeclaration? setter;
+
+}
+</pre></body></html>

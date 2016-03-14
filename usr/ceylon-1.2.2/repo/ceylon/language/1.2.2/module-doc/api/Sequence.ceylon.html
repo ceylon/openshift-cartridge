@@ -1,0 +1,409 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>Sequence.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='//fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;A nonempty, immutable sequence of values. The type 
+ `Sequence&lt;Element&gt;` may be abbreviated `[Element+]`.
+ 
+ Given a possibly-empty sequence of type `[Element*]`, the 
+ `if (nonempty ...)` construct, or, alternatively, 
+ `assert (nonempty ...)`, may be used to narrow to a 
+ sequence type to a nonempty sequence type:
+ 
+     [Integer*] nums = ... ;
+     if (nonempty nums) {
+         Integer first = nums.first;
+         Integer max = max(nums);
+         [Integer+] squares = nums.collect((Integer i) =&gt; i**2));
+         [Integer+] sorted = nums.sort(byIncreasing((Integer i) =&gt; i));
+     }
+ 
+ Operations like `first`, `max()`, `collect()`, and `sort()`, 
+ which polymorphically produce a nonempty or non-null output 
+ when given a nonempty input are called 
+ _emptiness-preserving_.
+ 
+ `Sequence` has the following subtypes:
+ 
+ - [[ArraySequence]], a sequence backed by an [[Array]],
+ - [[Range]], an efficient representation of a sequence of 
+   adjacent [[enumerable values|Enumerable]],
+ - [[Tuple]], a typed linked list, and
+ - [[Singleton]], a sequence of just one element.&quot;
+see (`interface Empty`, 
+	 `class ArraySequence`, 
+	 `class Range`, 
+	 `class Tuple`, 
+	 `class Singleton`)
+by (&quot;Gavin&quot;)
+tagged(&quot;Sequences&quot;)
+shared sealed interface Sequence&lt;out Element=Anything&gt;
+        satisfies Element[] &amp; 
+                  {Element+} {
+    
+    &quot;The first element of the sequence, that is, the element
+     with index `0`.&quot;
+    shared actual formal Element first;
+
+    &quot;The last element of the sequence, that is, the element
+     with index `sequence.lastIndex`.&quot;
+    shared actual formal Element last;
+    
+    &quot;Returns `false`, since every `Sequence` contains at
+     least one element.&quot;
+    shared actual Boolean empty =&gt; false;
+    
+    &quot;The non-negative length of this sequence, that is, the
+     number of elements in this sequence.&quot;
+    shared actual formal Integer size;
+    
+    &quot;The index of the last element of the sequence.&quot;
+    see (`value size`)
+    shared actual default Integer lastIndex =&gt; size-1;
+    
+    &quot;An integer [[Range]] containing all indexes of this 
+     sequence, that is, the range `0..sequence.lastIndex`.&quot;
+    shared actual default Range&lt;Integer&gt; keys =&gt; indexes();
+    
+    &quot;An integer [[Range]] containing all indexes of this 
+     sequence, that is, the range `0..sequence.lastIndex`.&quot;
+    shared actual default Range&lt;Integer&gt; indexes() 
+            =&gt; 0..lastIndex;
+    
+    &quot;This nonempty sequence.&quot;
+    shared default actual [Element+] sequence() =&gt; this;
+    
+    &quot;The rest of the sequence, without the first element.&quot;
+    shared actual formal Element[] rest;
+    
+    &quot;A sequence containing the elements of this sequence in
+     reverse order to the order in which they occur in this
+     sequence.&quot;
+    shared default actual [Element+] reversed =&gt; Reverse();
+    
+    &quot;Produces a sequence formed by repeating the elements of
+     this sequence the given [[number of times|times]], or
+     the [[empty sequence|empty]] if `times&lt;=0`.&quot;
+    shared default actual Element[] repeat(Integer times) 
+            =&gt; times&gt;0 then Repeat(times) else [];
+    
+    &quot;This nonempty sequence.&quot;
+    shared actual default [Element+] clone() =&gt; this;
+    
+    /*shared actual default Element[] repeat(Integer times) {
+        value resultSize = size*times;
+        value array = arrayOfSize(resultSize, first);
+        variable value i = 1;
+        while (i &lt; resultSize) {
+            array.set(i, getElement(i%size));
+        }
+        return ArraySequence(array); 
+    }*/
+    
+    &quot;A nonempty sequence containing the elements of this
+     container, sorted according to a function imposing a 
+     partial order upon the elements.&quot;
+    shared default actual 
+    [Element+] sort(
+        &quot;The function comparing pairs of elements.&quot;
+        Comparison comparing(Element x, Element y)) {
+        value array = Array(this);
+        array.sortInPlace(comparing);
+        return ArraySequence(array);
+    }
+
+    &quot;A nonempty sequence containing the results of applying 
+     the given mapping to the elements of this sequence.&quot;
+    shared default actual 
+    [Result+] collect&lt;Result&gt;(
+        &quot;The transformation applied to the elements.&quot;
+        Result collecting(Element element)) {
+        object list
+                extends Object() 
+                satisfies List&lt;Result&gt; {
+            lastIndex =&gt; outer.lastIndex;
+            size = outer.size;
+            getFromFirst(Integer index)
+                    =&gt; if (0&lt;=index&lt;size) 
+                    then collecting(outer.getElement(index))
+                    else null;
+        }
+        return ArraySequence(Array(list)); 
+    }
+    
+    &quot;Return a nonempty sequence containing the given 
+     [[element]], followed by the elements of this 
+     sequence.&quot;
+    shared actual default 
+    [Other,Element+] withLeading&lt;Other&gt;(Other element)
+            =&gt; [element, *this];
+    
+    &quot;Return a nonempty sequence containing the elements of 
+     this sequence, followed by the given [[element]].&quot;
+    shared actual default
+    [Element|Other+] withTrailing&lt;Other&gt;(Other element) 
+            =&gt; JoinedSequence(this, Singleton(element));
+    
+    &quot;Return a nonempty sequence containing the elements of 
+     this sequence, followed by the given [[elements]].&quot;
+    shared actual default 
+    [Element|Other+] append&lt;Other&gt;(Other[] elements)
+            =&gt; if (nonempty elements) 
+            then JoinedSequence(this, elements)
+            else this;
+    
+    &quot;Return a nonempty sequence containing the given 
+     [[elements]], followed by the elements of this 
+     sequence.&quot;
+    shared actual default 
+    [Element|Other+] prepend&lt;Other&gt;(Other[] elements)
+            =&gt; if (nonempty elements)
+            then JoinedSequence(elements, this)
+            else this;
+    
+    shared actual default 
+    Boolean contains(Object element) 
+            =&gt; (super of List&lt;Element&gt;).contains(element);
+    
+    shared actual default 
+    Boolean shorterThan(Integer length) 
+            =&gt; (super of List&lt;Element&gt;).shorterThan(length);
+    
+    shared actual default 
+    Boolean longerThan(Integer length) 
+            =&gt; (super of List&lt;Element&gt;).longerThan(length);
+    
+    shared default actual 
+    Element? find(Boolean selecting(Element&amp;Object elem))
+            =&gt; (super of List&lt;Element&gt;).find(selecting);
+    
+    shared default actual 
+    Element? findLast(Boolean selecting(Element&amp;Object elem))
+            =&gt; (super of List&lt;Element&gt;).findLast(selecting);
+    
+    shared actual default 
+    [Element[],Element[]] slice(Integer index)
+            =&gt; [this[...index-1], this[index...]];
+    
+    shared actual default 
+    Element[] measure(Integer from, Integer length) 
+            =&gt; if (length &gt; 0)
+            then span(from, from + length - 1)
+            else [];
+    
+    shared actual default 
+    Element[] span(Integer from, Integer to) {
+        if (from &lt;= to) {
+            return 
+                if (to &gt;= 0 &amp;&amp; from &lt;= lastIndex) 
+                then ArraySequence(Array(sublist(from,to)))
+                else [];
+        }
+        else {
+            return 
+                if (from &gt;= 0 &amp;&amp; to &lt;= lastIndex) 
+                then ArraySequence(Array(sublist(to,from).reversed))
+                else [];
+        }
+    }
+    
+    shared actual default 
+    Element[] spanFrom(Integer from) {
+        if (from &lt;= 0) {
+            return this;
+        }
+        else if (from &lt; size) {
+            return ArraySequence(Array(sublistFrom(from)));
+        }
+        else {
+            return [];
+        }
+    }
+    
+    shared actual default 
+    Element[] spanTo(Integer to) {
+        if (to &gt;= lastIndex) {
+            return this;
+        }
+        else if (to &gt;= 0) {
+            return ArraySequence(Array(sublistTo(to)));
+        }
+        else {
+            return [];
+        }
+    }
+    
+    shared actual default 
+    String string =&gt; (super of Sequential&lt;Element&gt;).string;
+    
+    Element getElement(Integer index) {
+        if (exists element = getFromFirst(index)) { 
+            return element;
+        }
+        else {
+            assert (is Element null);
+            return null; 
+        }
+    }
+    
+    class Reverse() 
+            extends Object() 
+            satisfies [Element+] {
+        
+        size =&gt; outer.size;
+        first =&gt; outer.last;
+        last =&gt; outer.first;
+        rest =&gt; size==1 then [] else outer[size-2..0]; //TODO optimize!
+        
+        reversed =&gt; outer;
+        
+        getFromFirst(Integer index) 
+                =&gt; outer.getFromFirst(size-1-index);
+        
+        measure(Integer from, Integer length) 
+                =&gt; if (length&gt;0)
+                    then let (start = size-1-from)
+                        outer[start..start-length+1]
+                    else [];
+        
+        span(Integer from, Integer to) 
+                =&gt; outer[to..from];
+        
+        spanFrom(Integer from) 
+                =&gt; let (endIndex = size-1)
+                    if (from&lt;=endIndex)
+                        then outer[endIndex-from..0]
+                        else [];
+        
+        spanTo(Integer to)
+                =&gt; if (to&gt;=0) 
+                    then let (endIndex = size-1) 
+                        outer[endIndex..endIndex-to]
+                    else [];
+        
+        iterator() 
+                =&gt; let (outerList = outer) 
+            object satisfies Iterator&lt;Element&gt; {
+                variable value index = outerList.size-1;
+                next() =&gt; index&lt;0 
+                    then finished 
+                    else outerList.getElement(index--);
+                string =&gt; &quot;``outer.string``.iterator()&quot;;
+            };
+        
+    }
+    
+    class Repeat(Integer times)
+            extends Object()
+            satisfies [Element+] {
+        
+        assert (times&gt;0);
+        
+        last =&gt; outer.last;
+        
+        first =&gt; outer.first;
+        size =&gt; outer.size*times;
+        rest =&gt; sublistFrom(1).sequence(); //TODO!
+        
+        getFromFirst(Integer index)
+                =&gt; let (size = outer.size)
+                    if (index&lt;size*times)
+                        then outer.getFromFirst(index%size)
+                        else null;
+        
+        iterator() =&gt; CycledIterator(outer,times);
+        
+    }
+    
+}
+
+&quot;A [[nonempty sequence|Sequence]] of the given [[elements]], 
+ or  `null` if the given stream is empty. A non-null, but
+ possibly empty, [[sequence|Sequential]] may be obtained 
+ using the `else` operator:
+ 
+     [Element*] sequenceOfElements = sequence(elements) else [];&quot;
+by (&quot;Gavin&quot;)
+see (`function Iterable.sequence`)
+tagged(&quot;Sequences&quot;)
+shared [Element+]|Absent sequence&lt;Element,Absent=Null&gt;
+        (Iterable&lt;Element, Absent&gt; elements)
+        given Absent satisfies Null {
+    if (nonempty sequence = elements.sequence()) {
+        return sequence;
+    }
+    else {
+        assert (is Absent null);
+        return null;
+    }
+}
+
+class JoinedSequence&lt;Element&gt;
+        ([Element+] firstSeq, [Element+] secondSeq)
+        extends Object()
+        satisfies [Element+] {
+    
+    size =&gt; firstSeq.size + secondSeq.size;
+    
+    first =&gt; firstSeq.first;
+    last =&gt; secondSeq.last;
+    
+    rest =&gt; firstSeq.rest.append(secondSeq);
+    
+    getFromFirst(Integer index)
+            =&gt; let (cutover = firstSeq.size) 
+                if (index&lt;cutover)
+                    then firstSeq.getFromFirst(index) 
+                    else secondSeq.getFromFirst(index-cutover);
+    
+    slice(Integer index) 
+            =&gt; if (index==firstSeq.size)
+            then [firstSeq, secondSeq] 
+            else super.slice(index);
+    
+    spanTo(Integer to) 
+            =&gt; if (to==firstSeq.size-1) 
+            then firstSeq 
+            else super.spanTo(to);
+    
+    spanFrom(Integer from) 
+            =&gt; if (from==firstSeq.size)
+            then secondSeq 
+            else super.spanFrom(from);
+    
+    shared actual 
+    Element[] measure(Integer from, Integer length) {
+        if (from==0 &amp;&amp; 
+                length==firstSeq.size) {
+            return firstSeq;
+        }
+        else if (from==firstSeq.size &amp;&amp; 
+                length&gt;=secondSeq.size) {
+            return secondSeq;
+        }
+        else {
+            return super.measure(from, length);
+        }
+    }
+    
+    shared actual 
+    Element[] span(Integer from, Integer to) {
+        if (from&lt;=0 &amp;&amp; 
+                to==firstSeq.size-1) {
+            return firstSeq;
+        }
+        else if (from==firstSeq.size &amp;&amp; 
+                to&gt;=size-1) {
+            return secondSeq;
+        }
+        else {
+            return super.span(from, to);
+        }
+    }
+    
+    iterator() =&gt; ChainedIterator(firstSeq,secondSeq);
+    
+}
+
+</pre></body></html>

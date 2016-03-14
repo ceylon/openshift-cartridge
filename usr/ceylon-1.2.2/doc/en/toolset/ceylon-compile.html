@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html><head><meta charset='UTF-8'/>
+<title>ceylon compile</title>
+<link rel='stylesheet' type='text/css' href='bootstrap.min.css'/>
+<link rel='stylesheet' type='text/css' href='doc-tool.css'/>
+</head>
+<body>
+<div class='navbar navbar-inverse navbar-static-top'>
+<div class='navbar-inner'>
+<a class='tool-header' href='index.html'>
+<i class='tool-logo'></i>
+<span class='tool-label'>The Ceylon Toolset</span>
+<span><code class='tool-name'>ceylon compile</code></span>
+<span class='tool-version'>1.2.2 13ebb05 (Charming But Irrational)</span>
+</a>
+<ul class='nav pull-right'><li class='divider-vertical'/><li id='infoDropdown' class='dropdown'><a href='#' title='Show keyboard shortcuts [Shortcut: ?]' role='button' class='dropdown-toggle' data-toggle='dropdown'><i class='icon-info'></i></a><ul id='info-dropdown-panel' class='dropdown-menu'><h4>Keyboard Shortcuts</h4><li class='divider'></li><div id='info-common-shortcuts'><div id='?'><span class='key badge'>?</span><span class='info muted'>Open this information panel</span></div><div id='i'><span class='key badge'>i</span><span class='info muted'>Jump to tool index</span></div><div id='s'><span class='key badge'>s</span><span class='info muted'>Jump to synopsis</span></div><div id='d'><span class='key badge'>d</span><span class='info muted'>Jump to description</span></div><div id='o'><span class='key badge'>o</span><span class='info muted'>Jump to options</span></div></div></ul></li></ul></div>
+</div>
+<div class='sub-navbar'>
+<div class='sub-navbar-inner'><div><code class='sub-navbar-tool'>ceylon compile</code></div>
+<div class='sub-navbar-summary'><p>Compiles Ceylon and Java source code and directly produces module and source archives in a module repository.</p>
+</div>
+</div><div class='sub-navbar-menu'>
+<a href='index.html'><span title='Jump to tool index [Shortcut: I]'><span class='accesskey'>I</span>ndex</span></a><a href='#section-synopsis'><span title='Jump to tool synopsis [Shortcut: S]'><span class='accesskey'>S</span>ynopsis</span></a><a href='#section-description'><span title='Jump to tool description [Shortcut: D]'><span class='accesskey'>D</span>escription</span></a><a href='#section-options'><span title='Jump to tool options [Shortcut: O]'><span class='accesskey'>O</span>ptions</span></a></div></div>
+<div class='container-fluid'>
+<div class='section section-synopsis'>
+<table class='table table-condensed table-bordered'>
+<thead>
+<tr class='table-header' title='Click for expand/collapse'><td colspan='1' id='section-synopsis'><i class='icon-expand'></i><h2>Synopsis</h2>
+</td></tr>
+</thead>
+<tbody>
+<tr><td><div class='synopsis'><code>ceylon compile  [<a href='#option--auto-export-maven-dependencies'>--auto-export-maven-dependencies</a>] [<a href='#option--cacherep'>--cacherep</a>=&lt;url&gt;] [<a href='#option--cwd'>--cwd</a>=&lt;dir&gt;] [<a href='#option--encoding'>--encoding</a>=&lt;encoding&gt;] [<a href='#option--flat-classpath'>--flat-classpath</a>] [<a href='#option--generate-module-info'>--generate-module-info</a>] [<a href='#option--javac'>--javac</a>=&lt;option&gt;...] [<a href='#option--maven-overrides'>--maven-overrides</a>=&lt;url&gt;] [<a href='#option--no-default-repositories'>--no-default-repositories</a>] [<a href='#option--no-osgi'>--no-osgi</a>] [<a href='#option--no-pom'>--no-pom</a>] [<a href='#option--offline'>--offline</a>] [<a href='#option--osgi-provided-bundles'>--osgi-provided-bundles</a>=&lt;modules&gt;] [<a href='#option--out'>--out</a>=&lt;url&gt;] [<a href='#option--overrides'>--overrides</a>=&lt;url&gt;] [<a href='#option--pack200'>--pack200</a>] [<a href='#option--pass'>--pass</a>=&lt;secret&gt;] [<a href='#option--progress'>--progress</a>] [<a href='#option--rep'>--rep</a>=&lt;url&gt;...] [<a href='#option--resource'>--resource</a>=&lt;dirs&gt;...] [<a href='#option--resource-root'>--resource-root</a>=&lt;folder-name&gt;] [<a href='#option--source'>--source</a>=&lt;dirs&gt;...] [<a href='#option--src'>--src</a>=&lt;dirs&gt;...] [<a href='#option--suppress-warning'>--suppress-warning</a>[=&lt;warnings&gt;...]] [<a href='#option--sysrep'>--sysrep</a>=&lt;url&gt;] [<a href='#option--timeout'>--timeout</a>=&lt;seconds&gt;] [<a href='#option--user'>--user</a>=&lt;name&gt;] [<a href='#option--verbose'>--verbose</a>[=&lt;flags&gt;]] [--] [&lt;moduleOrFile...&gt;]</code></div>
+</td></tr></tbody></table></div>
+
+<div class='section section-description'>
+<table class='table table-condensed table-bordered'>
+<thead>
+<tr class='table-header' title='Click for expand/collapse'><td colspan='1' id='section-description'><i class='icon-expand'></i><h2> Description</h2>
+</td></tr>
+</thead>
+<tbody>
+<tr><td><p>The default module repositories are <code>modules</code> and <code>https://modules.ceylon-lang.org/repo/1</code>, while the default source directory is <code>source</code> and the default resource directory is <code>resource</code>. The default output module repository is <code>modules</code>.</p>
+
+<p>The <code>&lt;moduleOrFile&gt;</code> arguments can be either module names (without versions) or file paths specifying the Ceylon or Java source code to compile.</p>
+
+<p>When <code>&lt;moduleOrFile&gt;</code> specifies a module the compiler searches for compilation units and resource files belonging to the specified modules in the specified source and resource directories. For each specified module, the compiler generates a module archive, source archive, and their checksum files in the specified output module repository.</p>
+
+<p>When <code>&lt;moduleOrFile&gt;</code> specifies a source file only that file is compiled and the module archive is created or updated with the .class files produced. The source file path is treated as relative to the current directory (it still needs to be located either in the default source folder or in any folder defined by the configuration file or <code>--source</code> options!).</p>
+
+<p>When <code>&lt;moduleOrFile&gt;</code> specifies a resource file only that file is added to the module archive. The resource file path is treated as relative to the current directory (it still needs to be located either in the default resource folder or in any folder defined by the configuration file or <code>--resource</code> options!).</p>
+
+<p>All program elements imported by a compilation unit must belong to the same module as the compilation unit, or must belong to a module that is explicitly imported in the module descriptor.</p>
+
+<p>The compiler searches for dependencies in the following locations:</p>
+
+<ul>
+<li>module archives in the specified repositories,</li>
+<li>source archives in the specified repositories, and</li>
+<li>module directories in the specified source directories.</li>
+</ul>
+</td></tr></tbody></table></div>
+<div class='section section-options'>
+<table class='table table-condensed table-bordered'>
+<thead>
+<tr class='table-header' title='Click for expand/collapse'><td colspan='2' id='section-options'><i class='icon-expand'></i><h2>Options</h2>
+</td></tr>
+</thead>
+<tbody>
+<tr><td class='span3' id='option--auto-export-maven-dependencies'><code>--auto-export-maven-dependencies</code></td>
+<td class='option-description'><p>When using JBoss Modules (the default), treats all module dependencies between Maven modules as shared.</p>
+</td>
+</tr><tr><td class='span3' id='option--cacherep'><code>--cacherep=url</code></td>
+<td class='option-description'><p>Specifies the folder to use for caching downloaded modules. (default: <code>~/.ceylon/cache</code>)</p>
+</td>
+</tr><tr><td class='span3' id='option--cwd'><code>--cwd=dir</code></td>
+<td class='option-description'><p>Specifies the current working directory for this tool. (default: the directory where the tool is run from)</p>
+</td>
+</tr><tr><td class='span3' id='option--encoding'><code>--encoding=encoding</code>, <code id='option-E'>-E encoding</code></td>
+<td class='option-description'><p>Sets the encoding used for reading source files(default: platform-specific).</p>
+</td>
+</tr><tr><td class='span3' id='option--flat-classpath'><code>--flat-classpath</code></td>
+<td class='option-description'><p>Launches the Ceylon module using a flat classpath.</p>
+</td>
+</tr><tr><td class='span3' id='option--generate-module-info'><code>--generate-module-info</code></td>
+<td class='option-description'><p>Generate Java 9 (Jigsaw) <code>module-info.class</code> module descriptor in the generated Ceylon archive.</p>
+</td>
+</tr><tr><td class='span3' id='option--javac'><code>--javac=option</code></td>
+<td class='option-description'><p>Passes an option to the underlying java compiler.</p>
+</td>
+</tr><tr><td class='span3' id='option--maven-overrides'><code>--maven-overrides=url</code></td>
+<td class='option-description'><p>Specifies the XML file to use to load Maven artifact overrides. See http://ceylon-lang.org/documentation/current/reference/repository/maven/ for information. Deprecated: use --overrides.</p>
+</td>
+</tr><tr><td class='span3' id='option--no-default-repositories'><code>--no-default-repositories</code></td>
+<td class='option-description'><p>Indicates that the default repositories should not be used.</p>
+</td>
+</tr><tr><td class='span3' id='option--no-osgi'><code>--no-osgi</code></td>
+<td class='option-description'><p>Indicates that the generated car file should not contain OSGi module declarations.</p>
+</td>
+</tr><tr><td class='span3' id='option--no-pom'><code>--no-pom</code></td>
+<td class='option-description'><p>Indicates that the generated car file should not contain Maven POM module declarations.</p>
+</td>
+</tr><tr><td class='span3' id='option--offline'><code>--offline</code>, <code id='option-L'>-L</code></td>
+<td class='option-description'><p>Enables offline mode that will prevent connections to remote repositories.</p>
+</td>
+</tr><tr><td class='span3' id='option--osgi-provided-bundles'><code>--osgi-provided-bundles=modules</code></td>
+<td class='option-description'><p>Comma-separated list of module names. The listed modules are expected to be OSGI bundles provided by the framework, and will be omitted from the generated MANIFEST 'Required-Bundle' OSGI header.</p>
+</td>
+</tr><tr><td class='span3' id='option--out'><code>--out=url</code>, <code id='option-o'>-o url</code></td>
+<td class='option-description'><p>Specifies the output module repository (which must be publishable). (default: <code>./modules</code>)</p>
+</td>
+</tr><tr><td class='span3' id='option--overrides'><code>--overrides=url</code></td>
+<td class='option-description'><p>Specifies the XML file to use to load module overrides. See http://ceylon-lang.org/documentation/current/reference/repository/maven/ for information. <em>Experimental</em>.</p>
+</td>
+</tr><tr><td class='span3' id='option--pack200'><code>--pack200</code></td>
+<td class='option-description'><p>Try to make the generated car file smaller by repacking it using <code>pack200</code>.</p>
+</td>
+</tr><tr><td class='span3' id='option--pass'><code>--pass=secret</code></td>
+<td class='option-description'><p>Sets the password for use with an authenticated output repository (no default).</p>
+</td>
+</tr><tr><td class='span3' id='option--progress'><code>--progress</code></td>
+<td class='option-description'><p>Print progress information.</p>
+</td>
+</tr><tr><td class='span3' id='option--rep'><code>--rep=url</code></td>
+<td class='option-description'><p>Specifies a module repository containing dependencies. Can be specified multiple times. (default: <code>modules</code>, <code>~/.ceylon/repo</code>, <code>https://modules.ceylon-lang.org/repo/1</code>)</p>
+</td>
+</tr><tr><td class='span3' id='option--resource'><code>--resource=dirs</code>, <code id='option-r'>-r dirs</code></td>
+<td class='option-description'><p>Path to directory containing resource files. Can be specified multiple times; you can also specify several paths separated by your operating system's <code>PATH</code> separator. (default: <code>./resource</code>)</p>
+</td>
+</tr><tr><td class='span3' id='option--resource-root'><code>--resource-root=folder-name</code>, <code id='option-R'>-R folder-name</code></td>
+<td class='option-description'><p>Sets the special resource folder name whose files will end up in the root of the resulting module CAR file (default: ROOT).</p>
+</td>
+</tr><tr><td class='span3' id='option--source'><code>--source=dirs</code></td>
+<td class='option-description'><p>An alias for <code>--src</code> (default: <code>./source</code>)</p>
+</td>
+</tr><tr><td class='span3' id='option--src'><code>--src=dirs</code>, <code id='option-s'>-s dirs</code></td>
+<td class='option-description'><p>Path to directory containing source files. Can be specified multiple times; you can also specify several paths separated by your operating system's <code>PATH</code> separator. (default: <code>./source</code>)</p>
+</td>
+</tr><tr><td class='span3' id='option--suppress-warning'><code>--suppress-warning[=warnings]</code>, <code id='option-W'>-W</code></td>
+<td class='option-description'><p>Suppress the reporting of the given warnings. If no <code>warnings</code> are given then suppresss the reporting of all warnings, otherwise just suppresss those which are present. Allowed flags include: <code>filenameNonAscii</code>, <code>filenameCaselessCollision</code>, <code>deprecation</code>, <code>compilerAnnotation</code>, <code>doclink</code>, <code>expressionTypeNothing</code>, <code>unusedDeclaration</code>, <code>unusedImport</code>, <code>ceylonNamespace</code>, <code>javaNamespace</code>, <code>suppressedAlready</code>, <code>suppressesNothing</code>, <code>unknownWarning</code>, <code>ambiguousAnnotation</code>, <code>similarModule</code>, <code>importsOtherJdk</code>, <code>javaAnnotationElement</code>.</p>
+</td>
+</tr><tr><td class='span3' id='option--sysrep'><code>--sysrep=url</code></td>
+<td class='option-description'><p>Specifies the system repository containing essential modules. (default: <code>$CEYLON_HOME/repo</code>)</p>
+</td>
+</tr><tr><td class='span3' id='option--timeout'><code>--timeout=seconds</code>, <code id='option-T'>-T seconds</code></td>
+<td class='option-description'><p>Sets the timeout for connections to remote repositories, use 0 for no timeout (default: 20).</p>
+</td>
+</tr><tr><td class='span3' id='option--user'><code>--user=name</code></td>
+<td class='option-description'><p>Sets the user name for use with an authenticated output repository (no default).</p>
+</td>
+</tr><tr><td class='span3' id='option--verbose'><code>--verbose[=flags]</code>, <code id='option-d'>-d</code></td>
+<td class='option-description'><p>Produce verbose output. If no <code>flags</code> are given then be verbose about everything, otherwise just be verbose about the flags which are present. Allowed flags include: <code>all</code>, <code>loader</code>, <code>ast</code>, <code>code</code>, <code>cmr</code>, <code>benchmark</code>.</p>
+</td>
+</tr></tbody></table></div><div class='section'>
+<table class='table table-condensed table-bordered'>
+<thead>
+<tr class='table-header' title='Click for expand/collapse'><td colspan='1'><i class='icon-expand'></i><h2> Configuration file</h2>
+</td></tr>
+</thead>
+<tbody>
+<tr><td><p>The compile tool accepts the following options from the Ceylon configuration file: <code>defaults.offline</code>, <code>defaults.encoding</code>, <code>compiler.source</code>, <code>compiler.resource</code> and <code>repositories</code> (the equivalent options on the command line always have precedence).</p>
+</td></tr></tbody></table></div>
+<div class='section'>
+<table class='table table-condensed table-bordered'>
+<thead>
+<tr class='table-header' title='Click for expand/collapse'><td colspan='1'><i class='icon-expand'></i><h2> Repositories</h2>
+</td></tr>
+</thead>
+<tbody>
+<tr><td><p>Repositories like those specified with the <code>--rep</code> or <code>--out</code> options can be file paths, HTTP urls to remote servers or can be names of repositories when prepended with a <code>+</code> symbol. These names refer to repositories defined in the configuration file or can be any of the following predefined names <code>+SYSTEM</code>, <code>+CACHE</code>, <code>+LOCAL</code>, <code>+USER</code>, <code>+REMOTE</code> or <code>+MAVEN</code>. For more information see http://ceylon-lang.org/documentation/1.2/reference/repository/tools</p>
+</td></tr></tbody></table></div>
+<div class='section'>
+<table class='table table-condensed table-bordered'>
+<thead>
+<tr class='table-header' title='Click for expand/collapse'><td colspan='1'><i class='icon-expand'></i><h2> Specifying <code>javac</code> options</h2>
+</td></tr>
+</thead>
+<tbody>
+<tr><td><p>It is possible to pass options to the <code>javac</code> compiler by prefixing them with <code>--javac=</code> and separating the javac option from its argument (if any) using another <code>=</code>. For example:</p>
+
+<ul>
+<li>The option <code>--javac=-target=1.6</code> is equivalent to <code>javac</code>'s <code>-target 1.6</code> and,</li>
+<li>the option <code>--javac=-g:none</code> is equivalent to <code>javac</code>'s <code>-g:none</code></li>
+</ul>
+
+<p>Execute <code>ceylon compile --javac=-help</code> for a list of the standard javac options, and ceylon compile --javac=-X for a list of the non-standard javac options.</p>
+
+<p><strong>Important note</strong>: There is no guarantee that any particular <code>javac</code> option or combination of options will work, or continue to work in future releases.</p>
+</td></tr></tbody></table></div>
+</div><script type='text/javascript' src='jquery-1.8.2.min.js'></script><script type='text/javascript' src='bootstrap.min.js'></script><script type='text/javascript' src='doc-tool.js'></script><script type='text/javascript'>init();</script></body></html>

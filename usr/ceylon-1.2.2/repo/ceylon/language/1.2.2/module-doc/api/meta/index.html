@@ -1,0 +1,228 @@
+<!DOCTYPE html><html><head><meta charset='UTF-8'/>
+<title>Package [ceylon, language, meta]</title><link href='../.resources/favicon.ico' rel='shortcut icon'/>
+<link href='../.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='../.resources/bootstrap.min.css' rel='stylesheet' type='text/css'/>
+<link href='../.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='//fonts.googleapis.com/css?family=Source+Sans+Pro|Inconsolata|Inconsolata:700|PT+Sans|PT+Sans:700' rel='stylesheet' type='text/css'/>
+</head><body><div class='navbar navbar-inverse navbar-static-top'><div class='navbar-inner'><a class='module-header' href='../index.html'><i class='module-logo'></i><span class='module-label'>module</span><span class='module-name'>ceylon.language</span><span class='module-version'>1.2.2</span></a><ul class='nav pull-right'><li class='divider-vertical' /><li><a class='expand-all' href='#' title='Expand All [Shortcut: + plus]'><i class='icon-expand-all'></i></a></li><li><a class='collapse-all' href='#' title='Collapse All [Shortcut: - minus]'><i class='icon-collapse-all'></i></a></li><li id='infoDropdown' class='dropdown'><a href='#' title='Show keyboard shortcuts [Shortcut: ?]' role='button' class='dropdown-toggle' data-toggle='dropdown'><i class='icon-info'></i></a><ul id='info-dropdown-panel' class='dropdown-menu'><h4>Keyboard Shortcuts</h4><li class='divider'></li><div class='row-fluid'><div id='info-common-shortcuts' class='span6'><div id='f'><span class='key badge'>f</span><span class='info muted'>Open filter by tags</span></div><div id='s'><span class='key badge'>s</span><span class='info muted'>Open search page</span></div><div id='?'><span class='key badge'>?</span><span class='info muted'>Open this information panel</span></div></div><div id='info-expand-collapse-shortcuts' class='span6'><div id='+'><span class='key badge'>+</span><span class='info muted'>Expand all</span></div><div id='-'><span class='key badge'>-</span><span class='info muted'>Collapse all</span></div></div></div><li class='divider'></li><div class='row-fluid'><div id='info-doc-shortcuts' class='span6'><h5>Documentation:</h5><div id='o'><span class='key badge'>o</span><span class='info muted'>Jump to module documentation</span></div><div id='p'><span class='key badge'>p</span><span class='info muted'>Jump to package documentation</span></div><div id='l'><span class='key badge'>l</span><span class='info muted'>Jump to aliases</span></div><div id='n'><span class='key badge'>n</span><span class='info muted'>Jump to annotations</span></div><div id='z'><span class='key badge'>z</span><span class='info muted'>Jump to initializer</span></div><div id='t'><span class='key badge'>t</span><span class='info muted'>Jump to constructors</span></div><div id='v'><span class='key badge'>v</span><span class='info muted'>Jump to values</span></div><div id='f'><span class='key badge'>f</span><span class='info muted'>Jump to functions</span></div><div id='i'><span class='key badge'>i</span><span class='info muted'>Jump to interfaces</span></div><div id='c'><span class='key badge'>c</span><span class='info muted'>Jump to classes</span></div><div id='e'><span class='key badge'>e</span><span class='info muted'>Jump to exceptions</span></div></div><div id='info-search-shortcuts' class='span6'><h5>Search page:</h5><div id='enter'><span class='key badge'>enter</span><span class='info muted'>Jump to selected declaration</span></div><div id='esc'><span class='key badge'>esc</span><span class='info muted'>Clear search query/Go to overview</span></div><div id='up'><span class='key badge'>up</span><span class='info muted'>Move selection up</span></div><div id='down'><span class='key badge'>down</span><span class='info muted'>Move selection down</span></div></div></div></ul></li></ul><ul class='nav pull-right'><li class='divider-vertical' /><li><a href='../api-index.html' title='Index'></i>Index</a></li><li><a href='../search.html' title='Search this module [Shortcut: S]'><i class='icon-search'></i>Search</a></li><li id='filterDropdown' class='dropdown'><a href='#' title='Filter declarations by tags [Shortcut: F]' role='button' class='dropdown-toggle' data-toggle='dropdown'><i class='icon-filter'></i>Filter <span id='filterDropdownLinkInfo'></span> <b class='caret'></b></a><ul id='filterDropdownPanel' class='dropdown-menu'><h4 id='filterDropdownPanelInfo'>Filter declarations by tags</h4><li class='divider'></li><div id='filterDropdownPanelTags'></div><li class='divider'></li><div id='filterActions'><a id='filterActionAll'>All</a><a id='filterActionNone'>None</a><a id='filterActionMore'>Show more</a></div></ul></li></ul></div></div><div class='sub-navbar'><a class='link-source-code' href='../meta/package.ceylon.html'><i class='icon-source-code'></i>Source Code</a><div class='sub-navbar-inner'><span class='sub-navbar-label'>package</span><i class='icon-package'></i><span class='sub-navbar-name'><span class='package-identifier'><a class='link' href='../index.html#section-package' title='Go to package ceylon.language'>ceylon.language</a>.<a class='link-custom-text' href='../meta/index.html' title='Go to package ceylon.language.meta'>meta</a></span></span></div><div class='sub-navbar-menu'><a href='../index.html'><span title='Jump to module documentation [Shortcut: O]'><span class='accesskey'>O</span>verview</span></a><a href='#section-attributes'><span title='Jump to values [Shortcut: V]'><span class='accesskey'>V</span>alues</span></a><a href='#section-methods'><span title='Jump to functions [Shortcut: F]'><span class='accesskey'>F</span>unctions</span></a><a href='#section-classes'><span title='Jump to classes [Shortcut: C]'><span class='accesskey'>C</span>lasses</span></a></div></div><div class='container-fluid'><div class='package-description'><div class='tags section'><a class='tag label' name='Metamodel' href='javascript:;' title='Enable/disable tag filter'>Metamodel</a></div><div class='doc'><p>The Ceylon metamodel base package.</p>
+<p>The Ceylon metamodel allows you to:</p>
+<ul>
+<li>dynamically inspect modules, packages, functions, values and types,</li>
+<li>invoke functions, constructors and class initialisers,</li>
+<li>read and write values, and</li>
+<li>inspect the annotations on program elements.</li>
+</ul>
+<h3>A little bit of terminology</h3>
+<p>There are a few concepts and terms in the Ceylon metamodel API that you should be familiar with:</p>
+<ul>
+<li>A <em>declaration</em> is the definition of a Ceylon construct, such as a module, package, value, function
+or class. Declarations are singletons: there is only a single instance of a given class declaration,
+for example. You can inspect declarations to get information about how they were defined by their
+author. You cannot directly invoke function or class declarations, but you can <em>apply</em> them to get
+a <em>model</em> that you can invoke.</li>
+<li>A <em>model</em> is a Ceylon definition that represents a declaration where all the type variables have
+been bound to <em>closed type</em> values. You can query models for their member models and you can directly
+invoke models.</li>
+<li>A <em>closed type</em> is a type which does not contain any unbound type variables.</li>
+<li>An <em>open type</em> is a type which may contain unbound type variables.</li>
+</ul>
+<p>For example, given the following Ceylon program:</p>
+<pre data-language="ceylon">shared abstract class MyList&lt;T&gt;() satisfies List&lt;T&gt;{}
+</pre>
+<p>The declaration of <code>MyList</code> represents the class declaration and contains the information that it is
+<code>abstract</code> and that it satisfies the <code>List&lt;T&gt;</code> open type. That type is open because it contains an
+unbound type variable <code>T</code>, which is not bound when we inspect the <code>MyList</code> class declaration.</p>
+<p>Given an particular instance of <code>MyList</code>, we can query its (closed) type with the <a class='link' href='../meta/index.html#type' title='Go to ceylon.language.meta::type'><code><span class='identifier'>type()</span></code></a> function,
+and we obtain a closed type representing (for example) <code>MyList&lt;Integer&gt;</code>. Object instances necessarily
+have a closed type at runtime, since in order to instantiate an object, all type arguments must be
+provided and known during instantiation, so the type of an object instance at runtime is necessarily
+a closed type: they cannot contain unbound type variables.</p>
+<p>Closed types that represent class or interfaces are also models. For example, the closed type of our
+<code>MyList&lt;Integer&gt;</code> instance is both a closed type and a class model: you can query its satisfied types
+and find that it satisfies <code>List&lt;Integer&gt;</code> closed type and model (as opposed to the class declaration
+of <code>MyList</code> which satisfies the <code>List&lt;T&gt;</code> open type). You can also invoke that model to obtain a new
+instance of <code>MyList&lt;Integer&gt;</code>.</p>
+<h3>Model and declaration literals</h3>
+<p>Ceylon supports getting declaration values using either the declaration API or using declaration
+literals:</p>
+<ul>
+<li><code>`module ceylon.file`</code> returns the <a class='link-custom-text' href='../meta/declaration/Module.type.html' title='Go to ceylon.language.meta.declaration::Module'>Module</a>
+declaration which corresponds to the <code>ceylon.file</code> module you imported in your module descriptor, or
+to the current module if it is <code>ceylon.file</code>. You can also obtain a reference to the current module
+with <code>`module`</code>.</li>
+<li><code>`package ceylon.language.meta`</code> returns the <a class='link-custom-text' href='../meta/declaration/Package.type.html' title='Go to ceylon.language.meta.declaration::Package'>Package</a>
+declaration from your current module or its imports. You can also obtain a reference to the current package
+with <code>`package`</code>.</li>
+<li><code>`interface List`</code> returns the <a class='link-custom-text' href='../meta/declaration/InterfaceDeclaration.type.html' title='Go to ceylon.language.meta.declaration::InterfaceDeclaration'>InterfaceDeclaration</a>
+for the <a class='link-custom-text' href='../List.type.html' title='Go to ceylon.language::List'>List</a> type. You can also obtain a reference to the current interface
+with <code>`interface`</code>.</li>
+<li><code>`class Integer`</code> returns the <a class='link-custom-text' href='../meta/declaration/ClassDeclaration.type.html' title='Go to ceylon.language.meta.declaration::ClassDeclaration'>ClassDeclaration</a>
+for the <a class='link-custom-text' href='../Integer.type.html' title='Go to ceylon.language::Integer'>Integer</a> type. You can also obtain a reference to the current class
+with <code>`class`</code>.</li>
+<li><code>`new Array.ofSize`</code> returns the
+<a class='link-custom-text' href='../meta/declaration/CallableConstructorDeclaration.type.html' title='Go to ceylon.language.meta.declaration::CallableConstructorDeclaration'>CallableConstructorDeclaration</a>
+for the <a class='link' href='../Array.type.html#ofSize' title='Go to ceylon.language::Array.ofSize'><code><span class='type-identifier'>Array</span>.<span class='identifier'>ofSize()</span></code></a> constructor. Similarly <code>`new Color.black`</code> for
+<a class='link-custom-text' href='../meta/declaration/ValueConstructorDeclaration.type.html' title='Go to ceylon.language.meta.declaration::ValueConstructorDeclaration'>value constructors</a>.</li>
+<li><code>`function type`</code> returns the <a class='link-custom-text' href='../meta/declaration/FunctionDeclaration.type.html' title='Go to ceylon.language.meta.declaration::FunctionDeclaration'>FunctionDeclaration</a>
+for the <a class='link' href='../meta/index.html#type' title='Go to ceylon.language.meta::type'><code><span class='identifier'>type()</span></code></a> function. Similarly <code>`function List.shorterThan`</code> for methods.</li>
+<li><code>`value modules`</code> returns the <a class='link-custom-text' href='../meta/declaration/ValueDeclaration.type.html' title='Go to ceylon.language.meta.declaration::ValueDeclaration'>ValueDeclaration</a>
+for the <a class='link' href='../meta/index.html#modules' title='Go to ceylon.language.meta::modules'><code><span class='identifier'>modules</span></code></a> value. Similarly <code>`function List.size`</code> for attributes.</li>
+<li><code>`alias AliasName`</code> returns the <a class='link-custom-text' href='../meta/declaration/AliasDeclaration.type.html' title='Go to ceylon.language.meta.declaration::AliasDeclaration'>AliasDeclaration</a>
+for the <code>AliasName</code> type alias.</li>
+<li><code>`given T`</code> returns the <a class='link-custom-text' href='../meta/declaration/TypeParameter.type.html' title='Go to ceylon.language.meta.declaration::TypeParameter'>TypeParameter</a>
+for the <code>T</code> type parameter.</li>
+</ul>
+<p>Note that declaration literals cannot have type arguments specified on types or methods, as declarations are not types.</p>
+<p>You can also get access to closed types and model using either the model API or using literals:</p>
+<ul>
+<li><code>`List&lt;Integer>`</code> returns the <a class='link-custom-text' href='../meta/model/Interface.type.html' title='Go to ceylon.language.meta.model::Interface'>Interface</a> model and
+closed type for the <a class='link-custom-text' href='../List.type.html' title='Go to ceylon.language::List'>List</a> type applied with the <a class='link-custom-text' href='../Integer.type.html' title='Go to ceylon.language::Integer'>Integer</a> type argument.</li>
+<li><code>`Integer`</code> returns the <a class='link-custom-text' href='../meta/model/Class.type.html' title='Go to ceylon.language.meta.model::Class'>Class</a> model and closed type
+for the <a class='link-custom-text' href='../Integer.type.html' title='Go to ceylon.language::Integer'>Integer</a> type.</li>
+<li><code>`Array<Integer>.ofSize`</code> returns the
+<a class='link-custom-text' href='../meta/model/CallableConstructor.type.html' title='Go to ceylon.language.meta.model::CallableConstructor'>CallableConstructor</a> model
+for the <a class='link-custom-text' href='../Array.type.html#ofSize' title='Go to ceylon.language::Array.ofSize'>Array<Integer>.ofSize</a> constructor.
+Similarly <code>`Color.black`</code> for
+<a class='link-custom-text' href='../meta/model/ValueConstructor.type.html' title='Go to ceylon.language.meta.model::ValueConstructor'>value constructor models</a>.</li>
+<li><code>`type&lt;Integer>`</code> returns the <a class='link-custom-text' href='../meta/model/Function.type.html' title='Go to ceylon.language.meta.model::Function'>Function</a> model
+for the <a class='link' href='../meta/index.html#type' title='Go to ceylon.language.meta::type'><code><span class='identifier'>type()</span></code></a> function applied with the <a class='link-custom-text' href='../Integer.type.html' title='Go to ceylon.language::Integer'>Integer</a> type argument.
+Similarly <code>`List&lt;Integer>.shorterThan`</code> for
+<a class='link-custom-text' href='../meta/model/Method.type.html' title='Go to ceylon.language.meta.model::Method'>method models</a>.</li>
+<li><code>`modules`</code> returns the <a class='link-custom-text' href='../meta/model/Value.type.html' title='Go to ceylon.language.meta.model::Value'>Value</a> model
+for the <a class='link' href='../meta/index.html#modules' title='Go to ceylon.language.meta::modules'><code><span class='identifier'>modules</span></code></a> value. Similarly <code>`List&lt;Integer>.size`</code> for
+<a class='link-custom-text' href='../meta/model/Attribute.type.html' title='Go to ceylon.language.meta.model::Attribute'>attribute models</a>.</li>
+<li><code>`A &amp; B`</code> returns a <a class='link-custom-text' href='../meta/model/IntersectionType.type.html' title='Go to ceylon.language.meta.model::IntersectionType'>IntersectionType</a>
+for the <code>A &amp; B</code> intersection type.</li>
+<li><code>`A | B`</code> returns a <a class='link-custom-text' href='../meta/model/UnionType.type.html' title='Go to ceylon.language.meta.model::UnionType'>UnionType</a>
+for the <code>A | B</code> union type.</li>
+<li><code>`T`</code> returns a <a class='link-custom-text' href='../meta/model/Type.type.html' title='Go to ceylon.language.meta.model::Type'>Type</a> representing the runtime type
+argument value for the <code>T</code> type parameter.</li>
+</ul>
+<p>Notice that all model and close type literals must be applied with all required type arguments.</p>
+<h3>Accessing the metamodel using the API</h3>
+<p>Aside from declaration and model literals there are several ways you can start using the metamodel API:</p>
+<ul>
+<li>The <a class='link' href='../meta/index.html#modules' title='Go to ceylon.language.meta::modules'><code><span class='identifier'>modules</span></code></a> object contains a list of all currently loaded <a class='link-custom-text' href='../meta/declaration/Module.type.html' title='Go to ceylon.language.meta.declaration::Module'>Module</a>
+declarations. Note that these contain even modules you did not import as it contains all transitive
+dependencies, and may contain multiple different versions of the same module.</li>
+<li>The <a class='link' href='../meta/index.html#classDeclaration' title='Go to ceylon.language.meta::classDeclaration'><code><span class='identifier'>classDeclaration()</span></code></a> function will return the
+<code><a class='link' href='../meta/declaration/ClassDeclaration.type.html' title='Go to ceylon.language.meta.declaration::ClassDeclaration'><span class='type-identifier'>ClassDeclaration</span></a></code> of the given instance.</li>
+<li>The <a class='link' href='../meta/index.html#type' title='Go to ceylon.language.meta::type'><code><span class='identifier'>type()</span></code></a> function will return the closed type of the given instance, which can only be a
+<a class='link-custom-text' href='../meta/model/ClassModel.type.html' title='Go to ceylon.language.meta.model::ClassModel'>ClassModel</a> since only classes can be instantiated.</li>
+<li>The <a class='link' href='../meta/index.html#typeLiteral' title='Go to ceylon.language.meta::typeLiteral'><code><span class='identifier'>typeLiteral()</span></code></a> function is the functional equivalent to closed type literals: it turns a type argument
+value into a metamodel closed type.</li>
+<li>The <a href="declaration/index.html">declaration</a> package contains all the declaration and open types.</li>
+<li>The <a href="model/index.html">model</a> package contains all the model and closed types.</li>
+</ul>
+<h3>Inspecting annotations</h3>
+<p>Constrained annotations can be inspected using the <a class='link' href='../meta/index.html#annotations' title='Go to ceylon.language.meta::annotations'><code><span class='identifier'>annotations()</span></code></a>
+function, like this:</p>
+<pre data-language="ceylon">// Does the process declaration have the Shared annotation?
+value isShared = annotations(`SharedAnnotation`, `value process`) exists;
+</pre>
+<p>or the related <a class='link' href='../meta/index.html#optionalAnnotation' title='Go to ceylon.language.meta::optionalAnnotation'><code><span class='identifier'>optionalAnnotation()</span></code></a> and <a class='link' href='../meta/index.html#sequencedAnnotations' title='Go to ceylon.language.meta::sequencedAnnotations'><code><span class='identifier'>sequencedAnnotations()</span></code></a> functions.</p>
+<p>Note that annotations are queried for via their
+<code><a class='link' href='../Annotation.type.html' title='Go to ceylon.language::Annotation'><span class='type-identifier'>Annotation</span></a></code> type,
+not by the annotation constructor which was used to annotate
+the program element.</p>
+</div><div class='by section'><span class='title'>By: </span><span class='value'>Gavin King, Stephane Epardaud, Tom Bentley</span></div></div><table id='section-packages' class='table table-condensed table-bordered table-hover'><thead><tr class='table-header' title='Click for expand/collapse'><td colspan='2'><i class='icon-expand'></i>Subpackages</td></tr></thead><tbody><tr><td><i class='icon-package'></i><a class='link' href='../meta/declaration/index.html'>ceylon.language.meta.declaration</a></td><td><div class='tags section'><a class='tag label' name='Metamodel' href='javascript:;' title='Enable/disable tag filter'>Metamodel</a></div><p>The Ceylon metamodel open type and declaration package.</p></td></tr><tr><td><i class='icon-package'></i><a class='link' href='../meta/model/index.html'>ceylon.language.meta.model</a></td><td><div class='tags section'><a class='tag label' name='Metamodel' href='javascript:;' title='Enable/disable tag filter'>Metamodel</a></div><p>The Ceylon metamodel closed type and model package.</p></td></tr></tbody></table><table id='section-attributes' class='table table-condensed table-bordered table-hover'><thead><tr class='table-header' title='Click for expand/collapse'><td colspan='2'><i class='icon-expand'></i>Values</td></tr></thead><tbody><tr><td id='modules' nowrap><i class='icon-shared-member'></i><code class='decl-label'>modules</code></td><td><a class='link-one-self' title='Link to this declaration' href='../meta/index.html#modules'><i class='icon-link'></i></a><a class='link-source-code' title='Link to source code' href='../meta/modules.ceylon.html#3,37'><i class='icon-source-code'></i>Source Code</a><code class='signature'><span class='modifiers'>shared</span> <a class='link' href='../meta/modules.object.html' title='Go to ceylon.language.meta::modules'><span class='type-identifier'>modules</span></a> <span class='identifier'>modules</span></code><div class='description'><div class='doc section'><p>Represents the list of Ceylon modules currently loaded at runtime.</p>
+<p>Note that this contains all loaded modules, including those that are
+not imported by your module.</p>
+<p>Since Ceylon supports module isolation at runtime, it is possible that
+there are more than one version of a given module loaded at the same time.</p>
+<h3>Usage example</h3>
+<p>Here's how you would iterate all the loaded modules and print their name and version:</p>
+<pre data-language="ceylon">import ceylon.language.meta { modules }
+
+for(mod in modules.list){
+    print("Module: ``mod.name``/``mod.version``");
+}
+</pre>
+</div></div></td></tr></tbody></table><table id='section-methods' class='table table-condensed table-bordered table-hover'><thead><tr class='table-header' title='Click for expand/collapse'><td colspan='2'><i class='icon-expand'></i>Functions</td></tr></thead><tbody><tr><td id='annotations' nowrap><i class='icon-shared-member'></i><code class='decl-label'>annotations</code></td><td><a class='link-one-self' title='Link to this declaration' href='../meta/index.html#annotations'><i class='icon-link'></i></a><a class='link-source-code' title='Link to source code' href='../meta/annotations.ceylon.html#12,26'><i class='icon-source-code'></i>Source Code</a><a id='annotations-annotationType'></a><a id='annotations-programElement'></a><code class='signature'><span class='modifiers'>shared</span> <span class='type-parameter'>Values</span> <span class='identifier'>annotations</span>&lt;<span class='type-parameter'>Value, Values, <span class='type-parameter-keyword'>in </span>ProgramElement</span>&gt;(<a class='link' href='../meta/model/Class.type.html' title='Go to ceylon.language.meta.model::Class'><span class='type-identifier'>Class</span></a>&lt;<a class='link' href='../ConstrainedAnnotation.type.html' title='Go to ceylon.language::ConstrainedAnnotation'><span class='type-identifier'>ConstrainedAnnotation</span></a>&lt;<span class='type-parameter'>Value</span>,<span class='type-parameter'>Values</span>,<span class='type-parameter'>ProgramElement</span>,<a class='link' href='../Anything.type.html' title='Go to ceylon.language::Anything'><span class='type-identifier'>Anything</span></a>&gt;,<a class='link' href='../Nothing.type.html' title='Go to ceylon.language::Nothing'><span class='type-identifier'>Nothing</span></a>&gt; <span class='parameter'>annotationType</span>, <span class='type-parameter'>ProgramElement</span> <span class='parameter'>programElement</span>)<div class='type-parameter-constraint'><span class='type-parameter-keyword'>given</span> <span class='type-parameter'>Value</span> <span class='keyword'>satisfies</span> <a class='link' href='../ConstrainedAnnotation.type.html' title='Go to ceylon.language::ConstrainedAnnotation'><span class='type-identifier'>ConstrainedAnnotation</span></a>&lt;<span class='type-parameter'>Value</span>,<span class='type-parameter'>Values</span>,<span class='type-parameter'>ProgramElement</span>,<a class='link' href='../Anything.type.html' title='Go to ceylon.language::Anything'><span class='type-identifier'>Anything</span></a>&gt;</div><div class='type-parameter-constraint'><span class='type-parameter-keyword'>given</span> <span class='type-parameter'>ProgramElement</span> <span class='keyword'>satisfies</span> <a class='link' href='../Annotated.type.html' title='Go to ceylon.language::Annotated'><span class='type-identifier'>Annotated</span></a></div></code><div class='description'><div class='doc section'><p>The annotations of the <a class='link-custom-text' href='../meta/index.html#annotations-annotationType' title='Go to ceylon.language.meta::annotations.annotationType'>given type</a>
+applied to the <a class='link-custom-text' href='../meta/index.html#annotations-programElement' title='Go to ceylon.language.meta::annotations.programElement'>given program element</a>.
+For example:</p>
+<pre data-language="ceylon">// Does the process declaration have any annotations
+// of type SharedAnnotation?
+value isShared = annotations(`SharedAnnotation`, `value process`) exists;
+</pre>
+<p>The annotations may be returned in any order.</p>
+</div></div></td></tr><tr><td id='classDeclaration' nowrap><i class='icon-shared-member'></i><code class='decl-label'>classDeclaration</code></td><td><a class='link-one-self' title='Link to this declaration' href='../meta/index.html#classDeclaration'><i class='icon-link'></i></a><a class='link-source-code' title='Link to source code' href='../meta/classDeclaration.ceylon.html#3,8'><i class='icon-source-code'></i>Source Code</a><a id='classDeclaration-instance'></a><code class='signature'><span class='modifiers'>shared</span> <a class='link' href='../meta/declaration/ClassDeclaration.type.html' title='Go to ceylon.language.meta.declaration::ClassDeclaration'><span class='type-identifier'>ClassDeclaration</span></a> <span class='identifier'>classDeclaration</span>(<a class='link' href='../Anything.type.html' title='Go to ceylon.language::Anything'><span class='type-identifier'>Anything</span></a> <span class='parameter'>instance</span>)</code><div class='description'><div class='doc section'><p>Returns the class declaration for a given instance. Since only classes
+can be instantiated, this will always be a <code><a class='link' href='../meta/declaration/ClassDeclaration.type.html' title='Go to ceylon.language.meta.declaration::ClassDeclaration'><span class='type-identifier'>ClassDeclaration</span></a></code> model.</p>
+<p>Using <code>declaration</code> can be more efficient than using <a class='link' href='../meta/index.html#type' title='Go to ceylon.language.meta::type'><code><span class='identifier'>type()</span></code></a> and
+obtaining the ClassDeclaration from the returned ClassModel.</p>
+</div></div></td></tr><tr><td id='optionalAnnotation' nowrap><i class='icon-shared-member'></i><code class='decl-label'>optionalAnnotation</code></td><td><a class='link-one-self' title='Link to this declaration' href='../meta/index.html#optionalAnnotation'><i class='icon-link'></i></a><a class='link-source-code' title='Link to source code' href='../meta/optionalAnnotation.ceylon.html#3,16'><i class='icon-source-code'></i>Source Code</a><a id='optionalAnnotation-annotationType'></a><a id='optionalAnnotation-programElement'></a><code class='signature'><span class='modifiers'>shared</span> <span class='link-dropdown'><span class='type-parameter'>Value</span>?<span class='dropdown'><a class='dropdown-toggle' data-toggle='dropdown' href='#'><b title='Show more links' class='caret'></b></a><ul class='dropdown-menu'><li><a class='link' href='../Null.type.html'>Go to Null <small>abbreviations X? means Null|X</small></a></li></ul></span></span> <span class='identifier'>optionalAnnotation</span>&lt;<span class='type-parameter'>Value, <span class='type-parameter-keyword'>in </span>ProgramElement</span>&gt;(<a class='link' href='../meta/model/Class.type.html' title='Go to ceylon.language.meta.model::Class'><span class='type-identifier'>Class</span></a>&lt;<a class='link' href='../OptionalAnnotation.type.html' title='Go to ceylon.language::OptionalAnnotation'><span class='type-identifier'>OptionalAnnotation</span></a>&lt;<span class='type-parameter'>Value</span>,<span class='type-parameter'>ProgramElement</span>,<a class='link' href='../Anything.type.html' title='Go to ceylon.language::Anything'><span class='type-identifier'>Anything</span></a>&gt;,<a class='link' href='../Nothing.type.html' title='Go to ceylon.language::Nothing'><span class='type-identifier'>Nothing</span></a>&gt; <span class='parameter'>annotationType</span>, <span class='type-parameter'>ProgramElement</span> <span class='parameter'>programElement</span>)<div class='type-parameter-constraint'><span class='type-parameter-keyword'>given</span> <span class='type-parameter'>Value</span> <span class='keyword'>satisfies</span> <a class='link' href='../OptionalAnnotation.type.html' title='Go to ceylon.language::OptionalAnnotation'><span class='type-identifier'>OptionalAnnotation</span></a>&lt;<span class='type-parameter'>Value</span>,<span class='type-parameter'>ProgramElement</span>,<a class='link' href='../Anything.type.html' title='Go to ceylon.language::Anything'><span class='type-identifier'>Anything</span></a>&gt;</div><div class='type-parameter-constraint'><span class='type-parameter-keyword'>given</span> <span class='type-parameter'>ProgramElement</span> <span class='keyword'>satisfies</span> <a class='link' href='../Annotated.type.html' title='Go to ceylon.language::Annotated'><span class='type-identifier'>Annotated</span></a></div></code><div class='description'><div class='doc section'><p>The value of given optional annotation type on the given program element,
+or null if the program element was not annotated with that annotation type.
+For example:</p>
+<pre data-language="ceylon">// Does the process declaration have the Shared annotation?
+value isShared = optionalAnnotation(`SharedAnnotation`, `value process`) exists;
+</pre>
+</div></div></td></tr><tr><td id='sequencedAnnotations' nowrap><i class='icon-shared-member'></i><code class='decl-label'>sequencedAnnotations</code></td><td><a class='link-one-self' title='Link to this declaration' href='../meta/index.html#sequencedAnnotations'><i class='icon-link'></i></a><a class='link-source-code' title='Link to source code' href='../meta/sequencedAnnotations.ceylon.html#3,18'><i class='icon-source-code'></i>Source Code</a><a id='sequencedAnnotations-annotationType'></a><a id='sequencedAnnotations-programElement'></a><code class='signature'><span class='modifiers'>shared</span> <span class='link-dropdown'><span class='type-parameter'>Value</span>[]<span class='dropdown'><a class='dropdown-toggle' data-toggle='dropdown' href='#'><b title='Show more links' class='caret'></b></a><ul class='dropdown-menu'><li><a class='link' href='../Sequential.type.html'>Go to Sequential <small>abbreviation X[] or [X*] means Sequential&lt;X&gt;</small></a></li></ul></span></span> <span class='identifier'>sequencedAnnotations</span>&lt;<span class='type-parameter'>Value, <span class='type-parameter-keyword'>in </span>ProgramElement</span>&gt;(<a class='link' href='../meta/model/Class.type.html' title='Go to ceylon.language.meta.model::Class'><span class='type-identifier'>Class</span></a>&lt;<a class='link' href='../SequencedAnnotation.type.html' title='Go to ceylon.language::SequencedAnnotation'><span class='type-identifier'>SequencedAnnotation</span></a>&lt;<span class='type-parameter'>Value</span>,<span class='type-parameter'>ProgramElement</span>,<a class='link' href='../Anything.type.html' title='Go to ceylon.language::Anything'><span class='type-identifier'>Anything</span></a>&gt;,<a class='link' href='../Nothing.type.html' title='Go to ceylon.language::Nothing'><span class='type-identifier'>Nothing</span></a>&gt; <span class='parameter'>annotationType</span>, <span class='type-parameter'>ProgramElement</span> <span class='parameter'>programElement</span>)<div class='type-parameter-constraint'><span class='type-parameter-keyword'>given</span> <span class='type-parameter'>Value</span> <span class='keyword'>satisfies</span> <a class='link' href='../SequencedAnnotation.type.html' title='Go to ceylon.language::SequencedAnnotation'><span class='type-identifier'>SequencedAnnotation</span></a>&lt;<span class='type-parameter'>Value</span>,<span class='type-parameter'>ProgramElement</span>,<a class='link' href='../Anything.type.html' title='Go to ceylon.language::Anything'><span class='type-identifier'>Anything</span></a>&gt;</div><div class='type-parameter-constraint'><span class='type-parameter-keyword'>given</span> <span class='type-parameter'>ProgramElement</span> <span class='keyword'>satisfies</span> <a class='link' href='../Annotated.type.html' title='Go to ceylon.language::Annotated'><span class='type-identifier'>Annotated</span></a></div></code><div class='description'><div class='doc section'><p>The values of given sequenced annotation type on the given program element,
+or empty if the program element was not annotated with that annotation type.
+For example:</p>
+<pre data-language="ceylon">// Does the sum declaration have any ThrownException annotations?
+value throwsSomething = sequencedAnnotation(`ThrownException`, `function sum`) nonempty;
+</pre>
+<p>The annotations may be returned in any order.</p>
+</div></div></td></tr><tr><td id='type' nowrap><i class='icon-shared-member'></i><code class='decl-label'>type</code></td><td><a class='link-one-self' title='Link to this declaration' href='../meta/index.html#type'><i class='icon-link'></i></a><a class='link-source-code' title='Link to source code' href='../meta/type.ceylon.html#3,7'><i class='icon-source-code'></i>Source Code</a><a id='type-instance'></a><code class='signature'><span class='modifiers'>shared</span> <a class='link' href='../meta/model/ClassModel.type.html' title='Go to ceylon.language.meta.model::ClassModel'><span class='type-identifier'>ClassModel</span></a>&lt;<span class='type-parameter'>Type</span>,<a class='link' href='../Nothing.type.html' title='Go to ceylon.language::Nothing'><span class='type-identifier'>Nothing</span></a>&gt; <span class='identifier'>type</span>&lt;<span class='type-parameter'><span class='type-parameter-keyword'>out </span>Type</span>&gt;(<span class='type-parameter'>Type</span> <span class='parameter'>instance</span>)<div class='type-parameter-constraint'><span class='type-parameter-keyword'>given</span> <span class='type-parameter'>Type</span> <span class='keyword'>satisfies</span> <a class='link' href='../Anything.type.html' title='Go to ceylon.language::Anything'><span class='type-identifier'>Anything</span></a></div></code><div class='description'><div class='doc section'><p>Returns the closed type and model of a given instance. Since only classes
+can be instantiated, this will always be a <code><a class='link' href='../meta/model/ClassModel.type.html' title='Go to ceylon.language.meta.model::ClassModel'><span class='type-identifier'>ClassModel</span></a></code> model.</p>
+</div><div class='see section'><span class='title'>See also </span><span class='value'><a class='link' href='../meta/index.html#classDeclaration' title='Go to ceylon.language.meta::classDeclaration'><code><span class='identifier'>classDeclaration()</span></code></a></span></div></div></td></tr><tr><td id='typeLiteral' nowrap><i class='icon-shared-member'></i><code class='decl-label'>typeLiteral</code></td><td><a class='link-one-self' title='Link to this declaration' href='../meta/index.html#typeLiteral'><i class='icon-link'></i></a><a class='link-source-code' title='Link to source code' href='../meta/typeLiteral.ceylon.html#3,11'><i class='icon-source-code'></i>Source Code</a><code class='signature'><span class='modifiers'>shared</span> <a class='link' href='../meta/model/Type.type.html' title='Go to ceylon.language.meta.model::Type'><span class='type-identifier'>ClosedType</span></a>&lt;<span class='type-parameter'>Type</span>&gt; <span class='identifier'>typeLiteral</span>&lt;<span class='type-parameter'><span class='type-parameter-keyword'>out </span>Type</span>&gt;()<div class='type-parameter-constraint'><span class='type-parameter-keyword'>given</span> <span class='type-parameter'>Type</span> <span class='keyword'>satisfies</span> <a class='link' href='../Anything.type.html' title='Go to ceylon.language::Anything'><span class='type-identifier'>Anything</span></a></div></code><div class='description'><div class='doc section'><p>Functional equivalent to type literals. Allows you to get a closed type instance
+for a given type argument.</p>
+<p>For example:</p>
+<pre data-language="ceylon">assert(is Interface&lt;List&lt;Integer&gt;&gt; listOfIntegers = typeLiteral&lt;List&lt;Integer&gt;&gt;());
+</pre>
+</div></div></td></tr></tbody></table><table id='section-classes' class='table table-condensed table-bordered table-hover'><thead><tr class='table-header' title='Click for expand/collapse'><td colspan='2'><i class='icon-expand'></i>Classes</td></tr></thead><tbody><tr><td id='modules' nowrap><i class='icon-object'></i><a class='decl-label' href='../meta/modules.object.html'><code>modules</code></a></td><td><a class='link-one-self' title='Link to this declaration' href='../meta/index.html#modules'><i class='icon-link'></i></a><a class='link-source-code' href='../meta/modules.ceylon.html'><i class='icon-source-code'></i>Source Code</a><code class='signature'><span class='modifiers'>shared</span> <a class='link' href='../meta/modules.object.html' title='Go to ceylon.language.meta::modules'><span class='type-identifier'>modules</span></a></code><div class='description'><div class='doc section'><p>Represents the list of Ceylon modules currently loaded at runtime.</p>
+<p>Note that this contains all loaded modules, including those that are
+not imported by your module.</p>
+<p>Since Ceylon supports module isolation at runtime, it is possible that
+there are more than one version of a given module loaded at the same time.</p>
+<h3>Usage example</h3>
+<p>Here's how you would iterate all the loaded modules and print their name and version:</p>
+<pre data-language="ceylon">import ceylon.language.meta { modules }
+
+for(mod in modules.list){
+    print("Module: ``mod.name``/``mod.version``");
+}
+</pre>
+</div></div></td></tr></tbody></table></div><script type='text/javascript'>var resourceBaseUrl = '../.resources/'</script><script type='text/javascript' src='../.resources/jquery-1.8.2.min.js'></script><script type='text/javascript' src='../.resources/bootstrap.min.js'></script><script type='text/javascript' src='../.resources/rainbow.min.js'></script><script type='text/javascript' src='../.resources/ceylon.js'></script><script type='text/javascript' src='../.resources/index.js'></script><script type='text/javascript' src='../.resources/ceylondoc.js'></script><script type='text/javascript'>jQuery('html').keypress(function(evt){
+  evt = evt || window.event;
+  var keyCode = evt.keyCode || evt.which;
+  if( !evt.ctrlKey && !evt.altKey ) {
+    if (keyCode == 63) {
+      $('#infoDropdown > .dropdown-toggle').click();
+    }
+    if(keyCode == 102){
+      document.location = '#section-methods';
+    }
+    if(keyCode == 118){
+      document.location = '#section-attributes';
+    }
+    if(keyCode == 115){
+      document.location = '../search.html';
+    }
+    if(keyCode == 99){
+      document.location = '#section-classes';
+    }
+    if(keyCode == 97){
+      document.location = '#section-attributes';
+    }
+    if(keyCode == 112){
+      document.location = 'index.html';
+    }
+    if(keyCode == 111){
+      document.location = '../index.html';
+    }
+    if(keyCode == 109){
+      document.location = '#section-methods';
+    }
+  }
+});
+enableInfoKeybordShortcut('\\?');
+enableInfoKeybordShortcut('f');
+enableInfoKeybordShortcut('v');
+enableInfoKeybordShortcut('s');
+enableInfoKeybordShortcut('c');
+enableInfoKeybordShortcut('a');
+enableInfoKeybordShortcut('p');
+enableInfoKeybordShortcut('o');
+enableInfoKeybordShortcut('m');
+</script></body></html>

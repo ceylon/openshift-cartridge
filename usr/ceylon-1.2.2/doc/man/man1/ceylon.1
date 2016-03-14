@@ -1,0 +1,149 @@
+'\" -*- coding: us-ascii -*-
+.if \n(.g .ds T< \\FC
+.if \n(.g .ds T> \\F[\n[.fam]]
+.de URL
+\\$2 \(la\\$1\(ra\\$3
+..
+.if \n(.g .mso www.tmac
+.TH ceylon 1 "10 March 2016" "" ""
+.SH NAME
+ceylon \- The top level Ceylon tool is used to execute other Ceylon tools
+.SH SYNOPSIS
+'nh
+.fi
+.ad l
+\fBceylon\fR \kx
+.if (\nx>(\n(.l/2)) .nr x (\n(.l/5)
+'in \n(.iu+\nxu
+{--version}
+'in \n(.iu-\nxu
+.ad b
+'hy
+'nh
+.fi
+.ad l
+\fBceylon\fR \kx
+.if (\nx>(\n(.l/2)) .nr x (\n(.l/5)
+'in \n(.iu+\nxu
+[--stacktraces] [--paginate] [--no-pager] [--show-home] [--cwd=\fIdir\fR] [--config=\fIfile\fR] [--define=\fIkey>=<value\fR...] [--distribution=\fIversion-or-url\fR] [--] {command} [command\&-\&options]\&... [command\&-\&args]\&...
+'in \n(.iu-\nxu
+.ad b
+'hy
+.SH DESCRIPTION
+If \*(T<\-\-version\*(T> is present, print version information and exit. Otherwise \*(T<<tool\-arguments>\*(T> should begin with the name of a ceylon tool or a list of comma-separated tool names which will be invoked one after the other with the same remaining command line arguments. The named tools are loaded and configured with the remaining command line arguments and control passes to those tools.
+.TP 0.2i
+\(bu
+\*(T<bootstrap\*(T> - Generates a Ceylon bootstrap script in the current directory
+.TP 0.2i
+\(bu
+\*(T<browse\*(T> - Open module documentation in the browser
+.TP 0.2i
+\(bu
+\*(T<classpath\*(T> - Prints a classpath suitable for passing to Java tools to run a given Ceylon module
+.TP 0.2i
+\(bu
+\*(T<compile\*(T> - Compiles Ceylon and Java source code and directly produces module and source archives in a module repository.
+.TP 0.2i
+\(bu
+\*(T<compile\-js\*(T> - Compiles Ceylon source code to JavaScript and directly produces module and source archives in a module repository
+.TP 0.2i
+\(bu
+\*(T<config\*(T> - Manages Ceylon configuration files
+.TP 0.2i
+\(bu
+\*(T<copy\*(T> - Copies modules from one module repository to another
+.TP 0.2i
+\(bu
+\*(T<doc\*(T> - Generates Ceylon API documentation from Ceylon source files
+.TP 0.2i
+\(bu
+\*(T<doc\-tool\*(T> - Generates documentation about a tool
+.TP 0.2i
+\(bu
+\*(T<help\*(T> - Displays help information about other Ceylon tools
+.TP 0.2i
+\(bu
+\*(T<import\-jar\*(T> - Imports a jar file into a Ceylon module repository
+.TP 0.2i
+\(bu
+\*(T<info\*(T> - Prints information about modules in repositories
+.TP 0.2i
+\(bu
+\*(T<jigsaw\*(T> - Tools to interop with Java 9 (Jigsaw) modules
+.TP 0.2i
+\(bu
+\*(T<new\*(T> - Generates a new Ceylon project
+.TP 0.2i
+\(bu
+\*(T<plugin\*(T> - Manages Ceylon command-line plugins
+.TP 0.2i
+\(bu
+\*(T<run\*(T> - Executes a Ceylon program
+.TP 0.2i
+\(bu
+\*(T<run\-js\*(T> - Executes a Ceylon program
+.TP 0.2i
+\(bu
+\*(T<src\*(T> - Fetches source archives from a repository and extracts their contents into a source directory
+.TP 0.2i
+\(bu
+\*(T<test\*(T> - Executes tests
+.TP 0.2i
+\(bu
+\*(T<test\-js\*(T> - Executes tests
+.TP 0.2i
+\(bu
+\*(T<version\*(T> - Shows and updates version numbers in module descriptors
+.TP 0.2i
+\(bu
+\*(T<war\*(T> - Generates a WAR file from a compiled \*(T<.car\*(T> file
+.PP
+See \*(T<ceylon help <command>\*(T> for more information about a particular subcommand.
+.SH OPTIONS
+.TP 
+--config=\fIfile\fR
+Specifies the configuration file to use for this tool. (default: \*(T<./.ceylon/config\*(T>)
+.TP 
+--cwd=\fIdir\fR
+Specifies the current working directory for this tool. (default: the directory where the tool is run from)
+.TP 
+--define=\fIkey>=<value\fR, -D \fIkey>=<value\fR
+Set a system property
+.TP 
+--distribution=\fIversion-or-url\fR
+Determines which Ceylon distribution will be used to run the command. Passing any version except the current (1.2.2) will result in a one-time download of the requested version from the official Ceylon website.
+.TP 
+--no-pager
+Do not pipe Ceylon tool output into a pager.
+.TP 
+--paginate
+Pipe all Ceylon tool output into less (or if set, $CEYLON_PAGER or $PAGER) if standard output is a terminal. This overrides the \*(T<help.pager\*(T> and \*(T<defaults.pager\*(T> configuration options (see the "Configuration Mechanism" section below).
+.TP 
+--show-home
+Outputs the value for CEYLON_HOME and exits.
+.TP 
+--stacktraces
+If an error propagates to the top level tool, print its stack trace.
+.TP 
+--version, -v
+Print version information and exit, \fIignoring all other options and arguments\fR.
+.SH "CONFIGURATION MECHANISM"
+Ceylon uses a simple text format to store customizations that are per repository and are per user. Such a configuration file may look like this:
+.PP
+.nf
+\*(T<#
+# A '#' or ';' character indicates a comment.
+#
+
+; global settings
+[defaults]
+    encoding = utf8
+    pager = false
+
+; local repository
+[repository "LOCAL"]
+    url = ./modules
+
+\*(T>.fi
+.PP
+Various commands read from the configuration file and adjust their operation accordingly. See ceylon-config(1) for a list and more details about the configuration mechanism.

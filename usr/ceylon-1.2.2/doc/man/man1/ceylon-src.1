@@ -1,0 +1,84 @@
+'\" -*- coding: us-ascii -*-
+.if \n(.g .ds T< \\FC
+.if \n(.g .ds T> \\F[\n[.fam]]
+.de URL
+\\$2 \(la\\$1\(ra\\$3
+..
+.if \n(.g .mso www.tmac
+.TH "ceylon src" 1 "10 March 2016" "" ""
+.SH NAME
+ceylon src \- Fetches source archives from a repository and extracts their contents into a source directory
+.SH SYNOPSIS
+'nh
+.fi
+.ad l
+\fBceylon src\fR \kx
+.if (\nx>(\n(.l/2)) .nr x (\n(.l/5)
+'in \n(.iu+\nxu
+[--cacherep=\fIurl\fR] [--cwd=\fIdir\fR] [--doc=\fIdirs\fR] [--maven-overrides=\fIurl\fR] [--no-default-repositories] [--offline] [--overrides=\fIurl\fR] [--rep=\fIurl\fR...] [--resource=\fIdir\fR] [--resource-root=\fIfolder-name\fR] [--script=\fIdir\fR] [--source=\fIdir\fR] [--src=\fIdir\fR] [--sysrep=\fIurl\fR] [--timeout=\fIseconds\fR] [--verbose[=\fIflags\fR]] [--] {module}\&...
+'in \n(.iu-\nxu
+.ad b
+'hy
+.SH DESCRIPTION
+Fetches any sources, resources, documentation and scripts that can be found for given \*(T<module\*(T> from the first configured repository to contain the module and extracts the them into their respective output directories. Multiple modules can be given.
+.PP
+This tool is especially useful for working with example projects.
+.SH OPTIONS
+.TP 
+--cacherep=\fIurl\fR
+Specifies the folder to use for caching downloaded modules. (default: \*(T<~/.ceylon/cache\*(T>)
+.TP 
+--cwd=\fIdir\fR
+Specifies the current working directory for this tool. (default: the directory where the tool is run from)
+.TP 
+--doc=\fIdirs\fR
+The output doc directory (default: \*(T<./doc\*(T>)
+.TP 
+--maven-overrides=\fIurl\fR
+Specifies the XML file to use to load Maven artifact overrides. See http://ceylon-lang.org/documentation/current/reference/repository/maven/ for information. Deprecated: use --overrides.
+.TP 
+--no-default-repositories
+Indicates that the default repositories should not be used.
+.TP 
+--offline, -L
+Enables offline mode that will prevent connections to remote repositories.
+.TP 
+--overrides=\fIurl\fR
+Specifies the XML file to use to load module overrides. See http://ceylon-lang.org/documentation/current/reference/repository/maven/ for information. \fIExperimental\fR.
+.TP 
+--rep=\fIurl\fR
+Specifies a module repository containing dependencies. Can be specified multiple times. (default: \*(T<modules\*(T>, \*(T<~/.ceylon/repo\*(T>, \*(T<https://modules.ceylon\-lang.org/repo/1\*(T>)
+.TP 
+--resource=\fIdir\fR, -r \fIdir\fR
+The output resource directory (default: \*(T<./resource\*(T>)
+.TP 
+--resource-root=\fIfolder-name\fR, -R \fIfolder-name\fR
+Sets the special resource folder name whose files will end up in the root of the resulting module CAR file (default: ROOT).
+.TP 
+--script=\fIdir\fR, -x \fIdir\fR
+The output script directory (default: \*(T<./script\*(T>)
+.TP 
+--source=\fIdir\fR
+An alias for \*(T<\-\-src\*(T> (default: \*(T<./source\*(T>)
+.TP 
+--src=\fIdir\fR, -s \fIdir\fR
+The output source directory (default: \*(T<./source\*(T>)
+.TP 
+--sysrep=\fIurl\fR
+Specifies the system repository containing essential modules. (default: \*(T<$CEYLON_HOME/repo\*(T>)
+.TP 
+--timeout=\fIseconds\fR, -T \fIseconds\fR
+Sets the timeout for connections to remote repositories, use 0 for no timeout (default: 20).
+.TP 
+--verbose[=\fIflags\fR], -d
+Produce verbose output. If no \*(T<flags\*(T> are given then be verbose about everything, otherwise just be verbose about the flags which are present. Allowed flags include: \*(T<all\*(T>, \*(T<loader\*(T>.
+.SH EXAMPLES
+A typical workflow might be:
+.PP
+.nf
+\*(T<mkdir my\-project
+cd my\-project
+ceylon src org.example.foo
+ceylon compile org.example.foo
+ceylon run org.example.foo\*(T>
+.fi

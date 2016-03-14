@@ -1,0 +1,512 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>Map.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='//fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;&quot;&quot;A collection which maps _keys_ to _items_, where a key 
+   can map to at most one item. Each such mapping may be 
+   represented by an [[Entry]]. Thus, each distinct key 
+   occurs in at most one entry. Two 
+   non-[[identical|Identifiable]] keys are considered 
+   distinct only if they are unequal, according to their own 
+   definition of [[value equality|Object.equals]].
+   
+   A `Map` is a [[Collection]] of its `Entry`s, and a 
+   [[Correspondence]] from keys to items.
+   
+   A new `Map` may be obtained by calling the function 
+   [[ceylon.language::map]].
+   
+       value settings = map { &quot;lang&quot;-&gt;&quot;en_AU&quot;, &quot;loc&quot;-&gt;&quot;ES&quot; };
+   
+   The [[emptyMap]] is a `Map` with no entries.
+   
+   The presence of an entry in a map may be tested using the 
+   `in` operator:
+   
+       if (&quot;lang&quot;-&gt;&quot;en_AU&quot; in settings) { ... }
+ 
+   The entries of the map may be iterated using `for`:
+   
+       for (key-&gt;item in settings) { ... }
+   
+   The item for a key may be obtained using the item
+   operator:
+   
+       String lang = settings[&quot;lang&quot;] else &quot;en_US&quot;;
+   
+   An implementation of `Map` may compare keys for equality 
+   using [[Object.equals]] or [[Comparable.compare]].&quot;&quot;&quot;
+see (`class Entry`, `function package.map`,
+     `function forKey`, `function forItem`, 
+     `function byItem`, `function byKey`,
+      `value emptyMap`)
+tagged(&quot;Collections&quot;)
+shared interface Map&lt;out Key=Object, out Item=Anything&gt;
+        satisfies Collection&lt;Key-&gt;Item&gt; &amp;
+                  Correspondence&lt;Object,Item&gt;
+        given Key satisfies Object {
+    
+    &quot;Returns the item of the entry with the given [[key]], 
+     or `null` if there is no entry with the given `key` in
+     this map.&quot;
+    see (`function getOrDefault`)
+    shared actual formal Item? get(Object key);
+    
+    &quot;Determines if there is an entry in this map with the
+     given [[key]].&quot;
+    see (`function contains`)
+    shared actual formal Boolean defines(Object key);
+    
+    &quot;Returns the item of the entry with the given [[key]], 
+     or the given [[default]] if there is no entry with the 
+     given `key` in this map.
+     
+     For maps with non-null items, the expression:
+     
+         map.getOrDefault(key, def)
+     
+     is equivalent to this common idiom:
+     
+         map[key] else def
+     
+     However, when the map has null items, `getOrDefault()`
+     will preserve them.
+     
+     Note that high-quality implementations of `Map` should 
+     refine this default implementation.&quot;
+    see (`function get`)
+    shared default Item|Default getOrDefault&lt;Default&gt;
+            (Object key, Default default) {
+        if (defines(key)) {
+            if (exists item = get(key)) {
+                return item;
+            }
+            else {
+                assert (is Item null);
+                return null;
+            }
+        }
+        else {
+            return default;
+        }
+    }
+    
+    function lookup(Object key)
+            =&gt; getOrDefault(key, Missing.instance);
+    
+    &quot;Determines if the given [[value|entry]] is an [[Entry]]
+     belonging to this map.&quot;
+    see (`function defines`)
+    shared actual default Boolean contains(Object entry) {
+        if (is Object-&gt;Anything entry, defines(entry.key)) {
+            value item = get(entry.key);
+            value entryItem = entry.item;
+            return
+                if (exists item, exists entryItem)
+                then item == entryItem 
+                else entryItem exists == item exists;
+        }
+        else {
+            return false;
+        }
+    }
+    
+    distinct =&gt; this;
+    
+    shared actual {&lt;Key-&gt;Item&gt;*} 
+    defaultNullElements&lt;Default&gt;(Default defaultValue)
+            given Default satisfies Object =&gt; this;
+    
+    &quot;A shallow copy of this map, that is, a map with the
+     same entries as this map, which do not change if the
+     entries in this map change.&quot;
+    shared actual formal Map&lt;Key,Item&gt; clone();
+    
+    &quot;A [[Collection]] containing the keys of this map.&quot;
+    //TODO: should be a Set
+    shared actual default Collection&lt;Key&gt; keys
+            =&gt; object extends Object() 
+                      satisfies Set&lt;Key&gt; {
+        contains(Object key) =&gt; outer.defines(key);
+        iterator() =&gt; outer.map(Entry.key).iterator();
+        size =&gt; outer.size;
+        empty =&gt; outer.empty;
+        clone() =&gt; set(this);
+    };
+    
+    &quot;A [[Collection]] containing the items stored in this 
+     map. An element can be stored under more than one key 
+     in the map, and so it can occur more than once in the 
+     resulting collection.&quot;
+    shared default Collection&lt;Item&gt; items =&gt; Items();
+    
+    &quot;A bag of items.&quot;
+    class Items() extends Object() 
+                  satisfies Collection&lt;Item&gt; {
+        contains(Object item) 
+                =&gt; outer.any((entry) 
+                    =&gt; if (exists it = entry.item) 
+                            then it==item 
+                            else false);
+        iterator() =&gt; outer.map(Entry.item).iterator();
+        size =&gt; outer.size;
+        empty =&gt; outer.empty;
+        clone() =&gt; [*this];
+        //implement hash and equals for bag semantics
+        hash =&gt; frequencies().hash;
+        equals(Object that) 
+                =&gt; if (is Items that) 
+                then frequencies()==that.frequencies() 
+                else false;
+    }
+    
+    &quot;Invert this map, producing a new immutable map where 
+     the keys of the new map are the non-null items of this
+     map, and each item of the new map is a nonempty 
+     sequence of keys of this map.
+     
+     For example, the expression:
+     
+         { \&quot;fee\&quot;, \&quot;fi\&quot;, \&quot;fo\&quot;, \&quot;fum\&quot;, \&quot;foo\&quot; }
+            .tabulate(String.size)
+            .inverse()
+     
+     produces the map 
+     `{ 2-&gt;[\&quot;fo\&quot;, \&quot;fi\&quot;], 3-&gt;[ \&quot;fum\&quot;, \&quot;fee\&quot;, \&quot;foo\&quot;] }`.
+     
+     The order of keys in the key sequences is not defined
+     and should not be relied upon.
+     
+     This is an eager operation, and the resulting map does
+     not reflect changes to this map.&quot;
+    shared default Map&lt;Item&amp;Object, [Key+]&gt; inverse() 
+            =&gt; coalescedMap
+                .summarize&lt;Item&amp;Object,ElementEntry&lt;Key&gt;&gt;
+                    (Entry.item, (keys, Key-&gt;Item entry) 
+                        =&gt; ElementEntry(keys, entry.key));
+                //not very useful, since the entries of a
+                //map don&apos;t usually have a very meaningful
+                //order (except for TreeMaps!)
+                //.mapItems((_, item) =&gt; item.reversed);
+    
+    &quot;Two maps are considered equal iff they have the same 
+     _entry sets_. The entry set of a `Map` is the set of 
+     `Entry`s belonging to the map. Therefore, the maps are 
+     equal iff they have same set of `keys`, and for every 
+     key in the key set, the maps have equal items.&quot;
+    shared actual default Boolean equals(Object that) {
+        if (is Map&lt;Object,Anything&gt; that,
+            that.size==size) {
+            for (entry in this) {
+                value thatItem = that[entry.key];
+                if (exists thisItem = entry.item) {
+                    if (exists thatItem) {
+                        if (thatItem!=thisItem) {
+                            return false;
+                        }
+                    }
+                    else {
+                        return false;
+                    }
+                }
+                else if (thatItem exists) {
+                    return false;
+                }
+            }
+            else {
+                return true;
+            }
+        }
+        else {
+            return false;
+        }
+    }
+    
+    shared actual default Integer hash {
+        variable Integer hashCode = 0;
+        for (elem in this) {
+            hashCode += elem.hash;
+        }
+        return hashCode;
+    }
+    
+    &quot;Produces a map with the same [[keys]] as this map. For 
+     every key, the item is the result of applying the given 
+     [[transformation|Map.mapItems.mapping]] function to its 
+     associated item in this map. This is a lazy operation, 
+     returning a view of this map.&quot;
+    shared default 
+    Map&lt;Key,Result&gt; mapItems&lt;Result&gt;(
+        &quot;The function that transforms a key/item pair of
+         this map, producing the item of the resulting map.&quot;
+        Result mapping(Key key, Item item)) 
+            given Result satisfies Object
+            =&gt; object
+            extends Object()
+            satisfies Map&lt;Key,Result&gt; {
+        
+        defines(Object key) =&gt; outer.defines(key);
+        
+        shared actual Result? get(Object key) { 
+            if (is Key key) {
+                return
+                    switch (item = outer.lookup(key))
+                    case (Missing.instance) null
+                    else mapping(key, item);
+            }
+            else {
+                return null;
+            } 
+        }
+        
+        shared actual Result|Default
+        getOrDefault&lt;Default&gt;
+                (Object key, Default default) {
+            if (is Key key) {
+                return
+                    switch (item = outer.lookup(key))
+                    case (Missing.instance) default 
+                    else mapping(key, item);
+            }
+            else {
+                return default;
+            }
+        }
+        
+        function mapEntry(Key-&gt;Item entry) 
+                =&gt; entry.key
+                -&gt; mapping(entry.key, entry.item);
+        
+        iterator() =&gt; outer.map(mapEntry).iterator();
+        
+        size =&gt; outer.size;
+        
+        clone() =&gt; outer.clone().mapItems(mapping);
+        
+    };
+    
+    &quot;Produces a map containing the elements of this map, 
+     after replacing every `null` item in the map with the 
+     [[given default value|defaultValue]]. The item `null` 
+     does not ocur in the resulting map.&quot;
+    see (`value coalescedMap`)
+    shared default
+    Map&lt;Key,Item&amp;Object|Default&gt;
+    defaultNullItems&lt;Default&gt;(
+        &quot;A default value that replaces `null` items.&quot;
+        Default defaultValue)
+            given Default satisfies Object
+            =&gt; mapItems((key, elem) 
+                =&gt; elem else defaultValue);
+    
+    &quot;Produces a map by applying a [[filtering]] function 
+     to the [[keys]] of this map. This is a lazy operation, 
+     returning a view of this map.&quot;
+    shared default 
+    Map&lt;Key,Item&gt; filterKeys(
+        &quot;The predicate function that filters the keys of 
+         this map, determining if there is a corresponding
+         entry in the resulting map.&quot;
+        Boolean filtering(Key key))
+            =&gt; object
+            extends Object()
+            satisfies Map&lt;Key,Item&gt; {
+        
+        get(Object key)
+                =&gt; if (is Key key, filtering(key))
+                then outer[key] 
+                else null;
+        
+        defines(Object key) 
+                =&gt; if (is Key key, filtering(key))
+                then outer.defines(key) 
+                else false;
+        
+        shared actual Item|Default
+        getOrDefault&lt;Default&gt;
+                (Object key, Default default) 
+                =&gt; if (is Key key, filtering(key))
+                then outer.getOrDefault(key, default)
+                else default;
+        
+        iterator() 
+                =&gt; outer.filter(forKey(filtering))
+                        .iterator();
+        
+        clone() =&gt; outer.clone().filterKeys(filtering);
+        
+    };
+    
+    &quot;Produces a map whose keys are the union of the keys
+     of this map, with the keys of the given [[map|other]].
+     For any given key in the resulting map, its associated
+     item is the item associated with the key in the given
+     map, if any, or the item associated with the key in 
+     this map otherwise.
+     
+     That is, for any `key` in the resulting patched map:
+     
+         map.patch(other)[key] == other.getOrDefault(key, map[key])
+     
+     This is a lazy operation producing a view of this map
+     and the given map.&quot;
+    shared default
+    Map&lt;Key|OtherKey,Item|OtherItem&gt; 
+    patch&lt;OtherKey,OtherItem&gt;
+            (Map&lt;OtherKey,OtherItem&gt; other) 
+            given OtherKey satisfies Object
+            =&gt; object 
+            extends Object()
+            satisfies Map&lt;Key|OtherKey,Item|OtherItem&gt; {
+        
+        defines(Object key) 
+                =&gt; other.defines(key) || 
+                   outer.defines(key);
+        
+        get(Object key) 
+                =&gt; switch (result = other.lookup(key))
+                case (Missing.instance) outer.get(key) 
+                else result;
+        
+        shared actual OtherItem|Item|Default 
+        getOrDefault&lt;Default&gt;
+                (Object key, Default default) 
+                =&gt; switch (result = other.lookup(key))
+                case (Missing.instance)
+                    outer.getOrDefault(key, default)
+                else result;
+        
+        clone() =&gt; outer.clone().patch(other.clone());
+        
+        contains(Object entry)
+                =&gt; if (is Object-&gt;Anything entry)
+                then entry in other ||
+                        !other.defines(entry.key)
+                            &amp;&amp; entry in outer
+                else false;
+        
+        //efficient when map is much smaller than outer,
+        //which is probably the common case 
+        size =&gt; outer.size +
+                other.keys.count(not(outer.defines));
+        
+        iterator()
+                =&gt; ChainedIterator(other,
+                        outer.filter(not(other.contains)));
+        
+    };
+    
+    &quot;A map with every entry of this map whose item is
+     non-null.&quot;
+    see (`function defaultNullItems`)
+    shared default
+    Map&lt;Key,Item&amp;Object&gt; coalescedMap 
+            =&gt; object
+            extends Object()
+            satisfies Map&lt;Key,Item&amp;Object&gt; {
+        
+        defines(Object key) =&gt; outer[key] exists;
+        
+        get(Object key) =&gt; outer[key] of &lt;Item&amp;Object&gt;?;
+        
+        shared actual Default|Item&amp;Object 
+        getOrDefault&lt;Default&gt;
+                (Object key, Default default)
+                =&gt; outer.getOrDefault(key, default) 
+                    else default;
+        
+        iterator()
+                =&gt; { for (entry in outer) 
+                     if (exists it=entry.item) 
+                            entry.key-&gt;it }
+                        .iterator();
+        
+        clone() =&gt; outer.clone().coalescedMap;
+        
+    };
+    
+}
+
+&quot;Create a new immutable [[Map]] containing every [[Entry]] 
+ produced by the given [[stream]], resolving items with
+ duplicate keys according to the given [[function|choosing]].
+ 
+ For example:
+ 
+     map { 1-&gt;\&quot;hello\&quot;, 2-&gt;\&quot;goodbye\&quot; }
+ 
+ produces the map `{ 1-&gt;\&quot;hello\&quot;, 2-&gt;\&quot;goodbye\&quot; }`.
+ 
+ This is an eager operation and the resulting map does not 
+ reflect changes to the given [[stream]].&quot;
+shared Map&lt;Key,Item&gt; map&lt;Key,Item&gt;(
+    &quot;The stream of entries.&quot;
+    {&lt;Key-&gt;Item&gt;*} stream,
+    &quot;A function that chooses between items with duplicate 
+     keys. By default, the item that occurs _earlier_ in the 
+     stream is chosen.&quot;
+    Item choosing(Item earlier, Item later) =&gt; earlier)
+        given Key satisfies Object
+        =&gt; stream.summarize(Entry.key, 
+                (Item? item, entry) 
+                        =&gt; if (exists item) 
+                        then choosing(item, entry.item)
+                        else entry.item);
+
+&quot;An immutable [[Map]] with no entries.&quot;
+tagged(&quot;Collections&quot;)
+shared object emptyMap 
+        extends Object() 
+        satisfies Map&lt;Nothing, Nothing&gt; {
+    
+    get(Object key) =&gt; null;
+    
+    shared actual Default getOrDefault&lt;Default&gt;
+            (Object key, Default default) =&gt; default;
+    
+    keys =&gt; emptySet;
+    items =&gt; emptySet;
+    
+    clone() =&gt; this;
+    iterator() =&gt; emptyIterator;
+    size =&gt; 0;
+    empty =&gt; true;
+    
+    defines(Object index) =&gt; false;
+    
+    contains(Object element) =&gt; false;
+    containsAny({Object*} elements) =&gt; false;
+    containsEvery({Object*} elements) =&gt; false;
+    
+    shared actual 
+    Map&lt;Nothing, Nothing&gt; mapItems&lt;Result&gt;
+            (Result mapping(Nothing key, Nothing item))
+            given Result satisfies Object 
+            =&gt; emptyMap;
+    
+    count(Boolean selecting(Nothing-&gt;Nothing element)) =&gt; 0;
+    any(Boolean selecting(Nothing-&gt;Nothing element)) =&gt; false;
+    every(Boolean selecting(Nothing-&gt;Nothing element)) =&gt; true;
+    
+    shared actual 
+    Null find(Boolean selecting(Nothing-&gt;Nothing element)) 
+            =&gt; null;
+    
+    shared actual 
+    Null findLast(Boolean selecting(Nothing-&gt;Nothing element)) 
+            =&gt; null;
+        
+    skip(Integer skipping) =&gt; this;
+    take(Integer taking) =&gt; this;
+    by(Integer step) =&gt; this;
+    
+    shared actual 
+    void each(void step(Nothing-&gt;Nothing element)) {}
+    
+}
+
+class Missing of instance {
+    shared new instance {}
+}
+</pre></body></html>
