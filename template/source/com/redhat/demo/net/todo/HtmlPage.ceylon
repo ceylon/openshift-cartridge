@@ -2,52 +2,39 @@ import ceylon.html { ... }
 
 by("Matej Lazar")
 
-//class ElementI(String onClick, CssClass classNames)
-//        extends BaseElement("", classNames)
-//        satisfies TextNode & InlineElement & ParentNode<InlineElement> {
-//    
-//    shared actual Tag tag = Tag("i");
-//    
-//    attributes = ["onclick"->onClick];
-//    shared actual {<InlineElement|{InlineElement*}|Snippet<InlineElement>|Null>*} children = nothing;
-//    shared actual String text = nothing;
-//}
 
-Html wireFrame(String path, {BlockOrInline+} innerElements) 
+Html wireFrame(String path, {Content<FlowCategory>*} innerElements) 
     => Html { 
-        html5;
         Head {
-            title = "Ceylon Demo"; 
             id = "head";
-            headChildren = {
-                CharsetMeta(),
-                Link {
-                    rel = stylesheet;
-                    type = css; 
-                    href = "``path``/css/bootstrap.min.css";
-                    id = "bootstrap";
-                },
-                Link {
-                    rel = stylesheet;
-                    type = css; 
-                    href = "``path``/css/style.css";
-                    id = "bootstrap";
-                },
-                Script {
-                    src = "``path``/js/bootstrap.min.js";
-                    javascript;
-                }
-            };
-        };
+            Title {"Ceylon Demo"},
+            Meta { charset="utf-8"; },
+            Link {
+                rel = "stylesheet";
+                type = MimeType.textCss; 
+                href = "``path``/css/bootstrap.min.css";
+                id = "bootstrap";
+            },
+            Link {
+                rel = "stylesheet";
+                type = MimeType.textCss; 
+                href = "``path``/css/style.css";
+                id = "bootstrap";
+            },
+            Script {
+                src = "``path``/js/bootstrap.min.js";
+                type = MimeType.textJavascript;
+            }
+        },
         Body {
             Div {
-                classNames = "container";
+                clazz = "container";
                 children => {
                     H1("Ceylon In Session ToDo List"),
                     *innerElements 
                 };
             }
-        };
+        }
     };
 
 Form inputForm(String q) 
@@ -57,38 +44,38 @@ Form inputForm(String q)
         children = {
             Div("New Task"),
             Div {
-                classNames = "input-append";
+                clazz = "input-append";
                 children = {
                     Input {
-                        type = text;
+                        type = InputType.text;
                         name = "message";
                         placeholder = "Enter new task ...";
                     },
                     Button {
-                        type = submit;
-                        classNames = "btn";
-                        text = "Add";
+                        type = ButtonType.submit;
+                        clazz = "btn";
+                        "Add"
                     }
                 };
             },
             Div {
-                classNames = "input-append";
+                clazz = "input-append";
                 children = {
                     Input {
-                        type = text;
+                        type = InputType.text;
                         name = "q";
-                        valueOf = q;
+                        val = q;
                     },
                     Button {
-                        type = submit;
-                        classNames = "btn";
-                        text = "Apply";
+                        type = ButtonType.submit;
+                        clazz = "btn";
+                        "Apply"
                     },
                     Button {
-                        type = submit;
-                        classNames = "btn";
-                        text = "Remove";
-                        nonstandardAttributes = ["onclick"->"this.form.q.value='';this.form.sumit();"];
+                        type = ButtonType.submit;
+                        clazz = "btn";
+                        attributes = ["onclick"->"this.form.q.value='';this.form.sumit();"];
+                        "Remove"
                     }
                 };
             }
@@ -104,13 +91,13 @@ Table taskList(Collection<Task> tasks, String q) {
                 Div {
                     children = {
                         Input {
-                            type = checkbox;
+                            type = InputType.checkbox;
                             checked = task.done;
-                            nonstandardAttributes = ["onclick" -> onClickDone];
+                            attributes = ["onclick" -> onClickDone];
                         },
                         Span {
-                            classNames = task.done then "taskDone" else "taskNotDone";
-                            text = task.message;
+                            clazz = task.done then "taskDone" else "taskNotDone";
+                            task.message
                         }
                     };
                 }
@@ -122,13 +109,13 @@ Table taskList(Collection<Task> tasks, String q) {
         String onClickRemove="document.location='?q=" + q + "&remove=" + task.id + "'";
         
         return Td {
-            nonstandardAttributes = ["width"->"20px"];
+            attributes = ["width"->"20px"];
             children = {
                 Div {
                     children = {
                         Span { 
-                            classNames = "icon icon-remove";
-                            nonstandardAttributes = ["onclick" -> onClickRemove];
+                            clazz = "icon icon-remove";
+                            attributes = ["onclick" -> onClickRemove];
                         }
                     };
                 }
@@ -146,7 +133,7 @@ Table taskList(Collection<Task> tasks, String q) {
     ];
        
     return Table {
-        classNames = "table table-hover";
-        rows = rows;
+        clazz = "table table-hover";
+        rows
     };
 }

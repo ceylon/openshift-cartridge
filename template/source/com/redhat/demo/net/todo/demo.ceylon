@@ -5,14 +5,12 @@ import ceylon.net.http.server {
     Response,
     Request
 }
-import ceylon.io.charset {
+import ceylon.buffer.charset {
     utf8
 }
 import ceylon.html {
-    Html
-}
-import ceylon.html.serializer {
-    NodeSerializer
+    Html,
+    renderTemplate
 }
 
 by ("Matej Lazar")
@@ -52,6 +50,6 @@ shared void demo(Request request, Response response) {
                 inputForm(q),
                 taskList(manager.tasks(q), q)
             };
-    
-    NodeSerializer(response.writeString).serialize(html);
+            
+    renderTemplate(html,response.writeString);
 }
