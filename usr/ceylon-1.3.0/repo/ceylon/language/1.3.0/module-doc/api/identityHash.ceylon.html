@@ -1,0 +1,35 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>identityHash.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='//fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>import java.lang { System }
+
+&quot;Return the system-defined identity hash value of the given 
+ [[value|identifiable]]. This hash value is consistent with 
+ [[identity equality|Identifiable.equals]].&quot;
+see (`function identical`)
+shared native Integer identityHash(Identifiable identifiable);
+
+shared native(&quot;jvm&quot;) 
+Integer identityHash(Identifiable identifiable)
+        =&gt; System.identityHashCode(identifiable);
+
+native(&quot;js&quot;)
+variable Integer _BasicId = 0;
+
+shared native(&quot;js&quot;) 
+Integer identityHash(Identifiable identifiable) {
+    dynamic {
+        dynamic x = identifiable;
+        if (exists hash = x._BasicId) {
+            return hash;
+        }
+        else {
+            Integer hash = _BasicId++;
+            x._BasicId = hash;
+            return hash;
+        }
+    }
+}
+</pre></body></html>

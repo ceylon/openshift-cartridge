@@ -1,0 +1,43 @@
+'\" -*- coding: us-ascii -*-
+.if \n(.g .ds T< \\FC
+.if \n(.g .ds T> \\F[\n[.fam]]
+.de URL
+\\$2 \(la\\$1\(ra\\$3
+..
+.if \n(.g .mso www.tmac
+.TH "ceylon bootstrap" 1 "15 September 2016" "" ""
+.SH NAME
+ceylon bootstrap \- Generates a Ceylon bootstrap script in the current directory
+.SH SYNOPSIS
+'nh
+.fi
+.ad l
+\fBceylon bootstrap\fR \kx
+.if (\nx>(\n(.l/2)) .nr x (\n(.l/5)
+'in \n(.iu+\nxu
+[--cwd=\fIdir\fR] [--force] [--installation=\fIpath\fR] [--sha-sum=\fIsum\fR] [--verbose[=\fIflags\fR]] [--] [distribution]
+'in \n(.iu-\nxu
+.ad b
+'hy
+.SH DESCRIPTION
+This tool generates a \*(T<ceylonb\*(T> bootstrap shell script (and a \*(T<ceylonb.bat\*(T> batch file for Windows) that functions exactly like the normal \*(T<ceylon\*(T> command, except that it is not necessary to install Ceylon yourself. On first execution the scripts will check if the required Ceylon distribution is already available locally and if not they will download and install it.
+.PP
+A bootstrap script can be used to make it very easy for authors of Ceylon projects to distribute their code to users without them having to install Ceylon. It is also useful for making sure that users use the exact same version of Ceylon the code was tested with without forcing them to install that exact same version themselves.
+.PP
+The \*(T<distribution\*(T> argument determines which distribution the bootstrap script will install. It can either be a version string, which will then be combined with the URL to the official Ceylon download site, or it can be a URL pointing directly to the desired Ceylon distribution download. If this option is not specified the current version will be used (default: 1.3.0)
+.SH OPTIONS
+.TP 
+--cwd=\fIdir\fR
+Specifies the current working directory for this tool. (default: the directory where the tool is run from)
+.TP 
+--force
+Create the bootstrap files even if they already exist
+.TP 
+--installation=\fIpath\fR
+Determines where the bootstrap script will install the distribution. This can either be a path that starts with \*(T<~\*(T> or \*(T<${user.home}\*(T> to indicate a location in the user's home directory or it can start with \*(T<${ceylon.user.dir}\*(T> to indicate a location in the user's Ceylon directory. (default: ${ceylon.user.dir}/dists/)
+.TP 
+--sha-sum=\fIsum\fR
+The SHA-256 sum to be included for the bootstrap script (default: no sum)
+.TP 
+--verbose[=\fIflags\fR], -d
+Produce verbose output. If no \*(T<flags\*(T> are given then be verbose about everything, otherwise just be verbose about the flags which are present. Allowed flags include: \*(T<all\*(T>, \*(T<loader\*(T>.

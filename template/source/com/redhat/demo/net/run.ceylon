@@ -1,11 +1,11 @@
-import ceylon.net.http.server {
+import ceylon.http.server {
     newServer,
     AsynchronousEndpoint,
     startsWith,
     Endpoint,
     isRoot
 }
-import ceylon.net.http.server.endpoints {
+import ceylon.http.server.endpoints {
     serveStaticFile,
     redirect,
     RepositoryEndpoint

@@ -1,0 +1,88 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>ClassModel.ceylon</title><link href='../../.resources/favicon.ico' rel='shortcut icon'/>
+<link href='../../.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='../../.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='//fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '../../.resources/'</script><script src='../../.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='../../.resources/rainbow.min.js' type='text/javascript'></script><script src='../../.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='../../.resources/ceylon.js' type='text/javascript'></script><script src='../../.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>import ceylon.language.meta.declaration {
+    ClassDeclaration
+}
+import ceylon.language.meta.model {
+    ClosedType = Type
+}
+
+&quot;A class model represents the model of a Ceylon class that you can inspect.
+ 
+ A class model can be either a toplevel [[Class]] or a member [[MemberClass]].
+ &quot;
+shared sealed interface ClassModel&lt;out Type=Anything, in Arguments=Nothing&gt;
+    satisfies ClassOrInterface&lt;Type&gt; 
+    given Arguments satisfies Anything[] {
+    
+    &quot;The declaration model of this class, 
+     which is necessarily a [[ClassDeclaration]].&quot;
+    shared formal actual ClassDeclaration declaration;
+    
+    &quot;A function model for this class&apos;s initializer or default constructor,
+     or null if this class has constructors but lacks a default constructor.&quot;
+    since(&quot;1.2.0&quot;)
+    shared formal FunctionModel&lt;Type, Arguments&gt;? defaultConstructor;
+    
+    &quot;Looks up a constructor by name, 
+     Returns `null` if no such constructor matches. 
+     This excludes unshared constructors.&quot;
+    throws(`class IncompatibleTypeException`, 
+        &quot;If the specified type arguments are not 
+         compatible with the actual result.&quot;)
+    since(&quot;1.2.0&quot;)
+    shared formal FunctionModel&lt;Type, Arguments&gt;|ValueModel&lt;Type&gt;? getConstructor
+            &lt;Arguments&gt;
+            (String name)
+                given Arguments satisfies Anything[];
+    
+    &quot;Looks up a constructor by name, 
+     Returns `null` if no such constructor matches. 
+     This includes unshared constructors.&quot;
+    throws(`class IncompatibleTypeException`, 
+        &quot;If the specified type arguments are not 
+         compatible with the actual result.&quot;)
+    since(&quot;1.2.0&quot;)
+    shared formal FunctionModel&lt;Type, Arguments&gt;|ValueModel&lt;Type&gt;? getDeclaredConstructor
+            &lt;Arguments&gt;
+            (String name)
+                given Arguments satisfies Anything[];
+    
+    &quot;Returns the list of callable constructors directly declared on this class 
+     and annotated with all the specified annotations.
+     This includes unshared callable constructors.&quot;
+    since(&quot;1.2.0&quot;)
+    shared formal FunctionModel&lt;Type, Arguments&gt;[] getDeclaredCallableConstructors
+            &lt;Arguments=Nothing&gt;
+            (ClosedType&lt;Annotation&gt;* annotationTypes)
+                given Arguments satisfies Anything[];
+    
+    &quot;Returns the list of shared callable constructors on this class
+     and annotated with all the specified annotations. 
+     This does not include unshared callable constructors.&quot;
+    since(&quot;1.2.0&quot;)
+    shared formal FunctionModel&lt;Type, Arguments&gt;[] getCallableConstructors
+            &lt;Arguments=Nothing&gt;
+            (ClosedType&lt;Annotation&gt;* annotationTypes)
+                given Arguments satisfies Anything[];
+    
+    &quot;Returns the list of value constructors directly declared on this class 
+     and annotated with all the specified annotations.
+     This includes unshared constructors.&quot;
+    since(&quot;1.2.0&quot;)
+    shared formal ValueModel&lt;Type&gt;[] getDeclaredValueConstructors
+            (ClosedType&lt;Annotation&gt;* annotationTypes);
+    
+    &quot;Returns the list of shared value constructors on this class
+     and annotated with all the specified annotations. 
+     This does not include unshared value constructors.&quot;
+    since(&quot;1.2.0&quot;)
+    shared formal ValueModel&lt;Type&gt;[] getValueConstructors
+            (ClosedType&lt;Annotation&gt;* annotationTypes);
+
+
+}
+</pre></body></html>

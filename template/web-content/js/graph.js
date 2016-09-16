@@ -4,7 +4,7 @@ require.config({
     waitSeconds: 15
 });
 
-require(['com/redhat/demo/graph/1.2.2/com.redhat.demo.graph-1.2.2'], function(graph) {
+require(['com/redhat/demo/graph/1.3.0/com.redhat.demo.graph-1.3.0'], function(graph) {
     graph.run();
 });
 

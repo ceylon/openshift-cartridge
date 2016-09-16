@@ -1,0 +1,44 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>package.ceylon</title><link href='../../.resources/favicon.ico' rel='shortcut icon'/>
+<link href='../../.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='../../.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='//fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '../../.resources/'</script><script src='../../.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='../../.resources/rainbow.min.js' type='text/javascript'></script><script src='../../.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='../../.resources/ceylon.js' type='text/javascript'></script><script src='../../.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;&quot;&quot;The Ceylon metamodel open type and declaration package.
+   
+   As described in the [ceylon.language.meta](../index.html) documentation, this package contains all
+   the types that represent Ceylon declarations and open types.
+   
+   ### Usage example
+   
+   The following code will list all the classes in the `ceylon.language` package and print their
+   extended type:
+   
+       for(decl in `package ceylon.language`.members&lt;ClassDeclaration&gt;()){
+           if(exists extendedType = decl.extendedType){
+               print(&quot;Class ``decl.name`` extends: ``extendedType``&quot;);
+           }else{
+               print(&quot;Class ``decl.name`` does not extend anything&quot;);
+           }
+       }
+
+   The following code will iterate all the class declarations in the `ceylon.language` package that
+   are not abstract, anonymous or annotations, and that have no type parameters nor initialiser
+   parameters. For each matching class, we will apply it to get a class model which we can then
+   use to instantiate the class and display its instance:
+   
+       for(decl in `package ceylon.language`.members&lt;ClassDeclaration&gt;()){
+           if(!decl.abstract 
+                   &amp;&amp; !decl.anonymous 
+                   &amp;&amp; !decl.annotation
+                   &amp;&amp; decl.parameterDeclarations.empty
+                   &amp;&amp; decl.typeParameterDeclarations.empty){
+               Class&lt;Object,[]&gt; classModel = decl.classApply&lt;Object,[]&gt;();
+               Object instance = classModel();
+               print(&quot;Instance of ``decl.name`` is: ``instance``&quot;);
+           }
+       }
+   &quot;&quot;&quot;
+by (&quot;Gavin King&quot;, &quot;Stephane Epardaud&quot;, &quot;Tom Bentley&quot;)
+tagged(&quot;Metamodel&quot;)
+shared package ceylon.language.meta.declaration;
+</pre></body></html>

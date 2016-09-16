@@ -1,0 +1,144 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>package.ceylon</title><link href='../.resources/favicon.ico' rel='shortcut icon'/>
+<link href='../.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='../.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='//fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '../.resources/'</script><script src='../.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='../.resources/rainbow.min.js' type='text/javascript'></script><script src='../.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='../.resources/ceylon.js' type='text/javascript'></script><script src='../.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;&quot;&quot;The Ceylon metamodel base package.
+   
+   The Ceylon metamodel allows you to: 
+   
+   * dynamically inspect modules, packages, functions, values and types, 
+   * invoke functions, constructors and class initialisers, 
+   * read and write values, and
+   * inspect the annotations on program elements.
+   
+   ### A little bit of terminology
+   
+   There are a few concepts and terms in the Ceylon metamodel API that you should be familiar with:
+   
+   - A _declaration_ is the definition of a Ceylon construct, such as a module, package, value, function
+     or class. Declarations are singletons: there is only a single instance of a given class declaration,
+     for example. You can inspect declarations to get information about how they were defined by their
+     author. You cannot directly invoke function or class declarations, but you can _apply_ them to get
+     a _model_ that you can invoke.
+   - A _model_ is a Ceylon definition that represents a declaration where all the type variables have
+     been bound to _closed type_ values. You can query models for their member models and you can directly
+     invoke models.
+   - A _closed type_ is a type which does not contain any unbound type variables.
+   - An _open type_ is a type which may contain unbound type variables.
+   
+   For example, given the following Ceylon program:
+   
+       shared abstract class MyList&lt;T&gt;() satisfies List&lt;T&gt;{}
+   
+   The declaration of `MyList` represents the class declaration and contains the information that it is
+   `abstract` and that it satisfies the `List&lt;T&gt;` open type. That type is open because it contains an
+   unbound type variable `T`, which is not bound when we inspect the `MyList` class declaration.
+   
+   Given an particular instance of `MyList`, we can query its (closed) type with the [[type]] function,
+   and we obtain a closed type representing (for example) `MyList&lt;Integer&gt;`. Object instances necessarily
+   have a closed type at runtime, since in order to instantiate an object, all type arguments must be
+   provided and known during instantiation, so the type of an object instance at runtime is necessarily
+   a closed type: they cannot contain unbound type variables.
+   
+   Closed types that represent class or interfaces are also models. For example, the closed type of our
+   `MyList&lt;Integer&gt;` instance is both a closed type and a class model: you can query its satisfied types
+   and find that it satisfies `List&lt;Integer&gt;` closed type and model (as opposed to the class declaration
+   of `MyList` which satisfies the `List&lt;T&gt;` open type). You can also invoke that model to obtain a new
+   instance of `MyList&lt;Integer&gt;`.
+   
+   ### Model and declaration literals
+   
+   Ceylon supports getting declaration values using either the declaration API or using declaration
+   literals:
+   
+   - &lt;code&gt;\`module ceylon.file\`&lt;/code&gt; returns the [[Module|ceylon.language.meta.declaration::Module]] 
+     declaration which corresponds to the `ceylon.file` module you imported in your module descriptor, or
+     to the current module if it is `ceylon.file`. You can also obtain a reference to the current module
+     with &lt;code&gt;\`module\`&lt;/code&gt;.
+   - &lt;code&gt;\`package ceylon.language.meta\`&lt;/code&gt; returns the [[Package|ceylon.language.meta.declaration::Package]]
+     declaration from your current module or its imports. You can also obtain a reference to the current package
+     with &lt;code&gt;\`package\`&lt;/code&gt;.
+   - &lt;code&gt;\`interface List\`&lt;/code&gt; returns the [[InterfaceDeclaration|ceylon.language.meta.declaration::InterfaceDeclaration]] 
+     for the [[List|ceylon.language::List]] type. You can also obtain a reference to the current interface
+     with &lt;code&gt;\`interface\`&lt;/code&gt;.
+   - &lt;code&gt;\`class Integer\`&lt;/code&gt; returns the [[ClassDeclaration|ceylon.language.meta.declaration::ClassDeclaration]] 
+     for the [[Integer|ceylon.language::Integer]] type. You can also obtain a reference to the current class
+     with &lt;code&gt;\`class\`&lt;/code&gt;.
+   - &lt;code&gt;\`new Array.ofSize\`&lt;/code&gt; returns the 
+     [[CallableConstructorDeclaration|ceylon.language.meta.declaration::CallableConstructorDeclaration]] 
+     for the [[Array.ofSize]] constructor. Similarly &lt;code&gt;\`new Color.black\`&lt;/code&gt; for 
+     [[value constructors|ceylon.language.meta.declaration::ValueConstructorDeclaration]].
+   - &lt;code&gt;\`function type\`&lt;/code&gt; returns the [[FunctionDeclaration|ceylon.language.meta.declaration::FunctionDeclaration]] 
+     for the [[type]] function. Similarly &lt;code&gt;\`function List.shorterThan\`&lt;/code&gt; for methods.
+   - &lt;code&gt;\`value modules\`&lt;/code&gt; returns the [[ValueDeclaration|ceylon.language.meta.declaration::ValueDeclaration]] 
+     for the [[modules]] value. Similarly &lt;code&gt;\`function List.size\`&lt;/code&gt; for attributes.
+   - &lt;code&gt;\`alias AliasName\`&lt;/code&gt; returns the [[AliasDeclaration|ceylon.language.meta.declaration::AliasDeclaration]]
+     for the `AliasName` type alias. 
+   - &lt;code&gt;\`given T\`&lt;/code&gt; returns the [[TypeParameter|ceylon.language.meta.declaration::TypeParameter]] 
+     for the `T` type parameter.
+   
+   Note that declaration literals cannot have type arguments specified on types or methods, as declarations are not types.
+   
+   You can also get access to closed types and model using either the model API or using literals: 
+   
+   - &lt;code&gt;\`List&amp;lt;Integer&gt;\`&lt;/code&gt; returns the [[Interface|ceylon.language.meta.model::Interface]] model and 
+     closed type for the [[List|ceylon.language::List]] type applied with the [[Integer|ceylon.language::Integer]] type argument.
+   - &lt;code&gt;\`Integer\`&lt;/code&gt; returns the [[Class|ceylon.language.meta.model::Class]] model and closed type 
+     for the [[Integer|ceylon.language::Integer]] type.
+   - &lt;code&gt;\`Array&lt;Integer&gt;.ofSize\`&lt;/code&gt; returns the 
+     [[CallableConstructor|ceylon.language.meta.model::CallableConstructor]] model 
+     for the [[Array&lt;Integer&gt;.ofSize|Array.ofSize]] constructor.
+     Similarly &lt;code&gt;\`Color.black\`&lt;/code&gt; for 
+     [[value constructor models|ceylon.language.meta.model::ValueConstructor]].
+   - &lt;code&gt;\`type&amp;lt;Integer&gt;\`&lt;/code&gt; returns the [[Function|ceylon.language.meta.model::Function]] model 
+     for the [[type]] function applied with the [[Integer|ceylon.language::Integer]] type argument.
+     Similarly &lt;code&gt;\`List&amp;lt;Integer&gt;.shorterThan\`&lt;/code&gt; for 
+     [[method models|ceylon.language.meta.model::Method]].
+   - &lt;code&gt;\`modules\`&lt;/code&gt; returns the [[Value|ceylon.language.meta.model::Value]] model 
+     for the [[modules]] value. Similarly &lt;code&gt;\`List&amp;lt;Integer&gt;.size\`&lt;/code&gt; for 
+     [[attribute models|ceylon.language.meta.model::Attribute]].
+   - &lt;code&gt;\`A &amp; B\`&lt;/code&gt; returns a [[IntersectionType|ceylon.language.meta.model::IntersectionType]]
+     for the `A &amp; B` intersection type.
+   - &lt;code&gt;\`A | B\`&lt;/code&gt; returns a [[UnionType|ceylon.language.meta.model::UnionType]]
+     for the `A | B` union type.
+   - &lt;code&gt;\`T\`&lt;/code&gt; returns a [[Type|ceylon.language.meta.model::Type]] representing the runtime type 
+     argument value for the `T` type parameter.
+   
+   Notice that all model and close type literals must be applied with all required type arguments.
+   
+   ### Accessing the metamodel using the API
+   
+   Aside from declaration and model literals there are several ways you can start using the metamodel API:
+   
+   - The [[modules]] object contains a list of all currently loaded [[Module|ceylon.language.meta.declaration::Module]]
+     declarations. Note that these contain even modules you did not import as it contains all transitive
+     dependencies, and may contain multiple different versions of the same module.
+   - The [[classDeclaration]] function will return the 
+     [[ceylon.language.meta.declaration::ClassDeclaration]] of the given instance.
+   - The [[type]] function will return the closed type of the given instance, which can only be a
+     [[ClassModel|ceylon.language.meta.model::ClassModel]] since only classes can be instantiated.
+   - The [[typeLiteral]] function is the functional equivalent to closed type literals: it turns a type argument
+     value into a metamodel closed type.
+   - The [declaration](declaration/index.html) package contains all the declaration and open types.
+   - The [model](model/index.html) package contains all the model and closed types.
+   
+   ### Inspecting annotations
+   
+   Constrained annotations can be inspected using the [[annotations]] 
+   function, like this:
+   
+       // Does the process declaration have the Shared annotation?
+       value isShared = annotations(`SharedAnnotation`, `value process`) exists;
+   
+   or the related [[optionalAnnotation]] and [[sequencedAnnotations]] functions.
+   
+   Note that annotations are queried for via their 
+   [[ceylon.language::Annotation]] type, 
+   not by the annotation constructor which was used to annotate 
+   the program element.
+   &quot;&quot;&quot;
+by (&quot;Gavin King&quot;, &quot;Stephane Epardaud&quot;, &quot;Tom Bentley&quot;)
+tagged(&quot;Metamodel&quot;)
+shared package ceylon.language.meta;
+</pre></body></html>

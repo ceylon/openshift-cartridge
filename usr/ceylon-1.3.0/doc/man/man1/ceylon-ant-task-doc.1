@@ -1,0 +1,31 @@
+'\" -*- coding: us-ascii -*-
+.if \n(.g .ds T< \\FC
+.if \n(.g .ds T> \\F[\n[.fam]]
+.de URL
+\\$2 \(la\\$1\(ra\\$3
+..
+.if \n(.g .mso www.tmac
+.TH "ceylon ant-task-doc" 1 "15 September 2016" "" ""
+.SH NAME
+ceylon ant-task-doc \- A tool generates documentation about the Ceylon ant tasks
+.SH SYNOPSIS
+'nh
+.fi
+.ad l
+\fBceylon ant-task-doc\fR \kx
+.if (\nx>(\n(.l/2)) .nr x (\n(.l/5)
+'in \n(.iu+\nxu
+[--cwd=\fIdir\fR] [--tools-url=\fIvalue\fR] [--verbose[=\fIflags\fR]]
+'in \n(.iu-\nxu
+.ad b
+'hy
+.SH OPTIONS
+.TP 
+--cwd=\fIdir\fR
+Specifies the current working directory for this tool. (default: the directory where the tool is run from)
+.TP 
+--tools-url=\fIvalue\fR
+URL at which the ceylon tool documentation is available (default: ../ceylon/subcommands)
+.TP 
+--verbose[=\fIflags\fR], -d
+Produce verbose output. If no \*(T<flags\*(T> are given then be verbose about everything, otherwise just be verbose about the flags which are present. Allowed flags include: \*(T<all\*(T>, \*(T<loader\*(T>.

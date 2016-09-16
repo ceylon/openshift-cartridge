@@ -1,0 +1,28 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>MemberClassCallableConstructor.ceylon</title><link href='../../.resources/favicon.ico' rel='shortcut icon'/>
+<link href='../../.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='../../.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='//fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '../../.resources/'</script><script src='../../.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='../../.resources/rainbow.min.js' type='text/javascript'></script><script src='../../.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='../../.resources/ceylon.js' type='text/javascript'></script><script src='../../.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>import ceylon.language.meta.declaration{CallableConstructorDeclaration}
+
+
+&quot;A model for a callable constructor of a member class.&quot;
+see(`interface MemberClassValueConstructor`)
+since(&quot;1.2.0&quot;)
+shared sealed interface MemberClassCallableConstructor&lt;in Container=Nothing, out Type=Object, in Arguments=Nothing&gt;
+        satisfies FunctionModel&lt;Type, Arguments&gt; &amp; Qualified&lt;CallableConstructor&lt;Type, Arguments&gt;, Container&gt;
+        given Arguments satisfies Anything[] {
+    
+    
+    &quot;This constructor&apos;s declaration.&quot;
+    shared formal actual CallableConstructorDeclaration declaration;
+    
+    shared formal actual MemberClass&lt;Container, Type&gt; type;
+    
+    &quot;The class containing this constructor; the type of instances produced 
+     by this constructor.&quot;
+    shared actual formal ClassModel&lt;Type&gt; container;
+    
+    shared actual formal CallableConstructor&lt;Type, Arguments&gt; bind(Object container);
+}
+</pre></body></html>

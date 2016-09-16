@@ -1,0 +1,33 @@
+'\" -*- coding: us-ascii -*-
+.if \n(.g .ds T< \\FC
+.if \n(.g .ds T> \\F[\n[.fam]]
+.de URL
+\\$2 \(la\\$1\(ra\\$3
+..
+.if \n(.g .mso www.tmac
+.TH "ceylon help" 1 "15 September 2016" "" ""
+.SH NAME
+ceylon help \- Displays help information about other Ceylon tools
+.SH SYNOPSIS
+'nh
+.fi
+.ad l
+\fBceylon help\fR \kx
+.if (\nx>(\n(.l/2)) .nr x (\n(.l/5)
+'in \n(.iu+\nxu
+[--include-hidden] [--] [tool]
+'in \n(.iu-\nxu
+.ad b
+'hy
+.SH DESCRIPTION
+If a \*(T<<tool>\*(T> is given, displays help about that ceylon tool on the standard output.
+.PP
+If no \*(T<<tool>\*(T> is given, displays the synopsis of the top level \*(T<ceylon\*(T> command.
+.SH OPTIONS
+.TP 
+--include-hidden
+This option is not documented.
+.SH "SEE ALSO"
+.TP 0.2i
+\(bu
+\*(T<ceylon doc\-tool\*(T> for generating documentation about ceylon tools

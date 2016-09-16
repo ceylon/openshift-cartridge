@@ -1,7 +1,7 @@
-import ceylon.net.http {
+import ceylon.http.common {
     contentType
 }
-import ceylon.net.http.server {
+import ceylon.http.server {
     Response,
     Request
 }

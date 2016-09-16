@@ -1,0 +1,5 @@
+; Plugin definition for the "ceylon config" tool
+summary=Manages Ceylon configuration files
+module=com.redhat.ceylon.common/1.3.0
+class=com.redhat.ceylon.common.tools.config.CeylonConfigTool
+
