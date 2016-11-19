@@ -25,7 +25,7 @@ Set up your environment:
     $ cd test
     $ export OPENSHIFT_CEYLON_DIR=`pwd`/ # last slash is important
     $ export OPENSHIFT_CEYLON_IP=127.0.0.1
-    $ export OPENSHIFT_CEYLON_VERSION=1.3.0
+    $ export OPENSHIFT_CEYLON_VERSION=1.3.1
     $ export OPENSHIFT_CEYLON_HTTP_PORT=8080
     $ export OPENSHIFT_REPO_DIR=${OPENSHIFT_CEYLON_DIR}template/ # last slash is important
     $ bin/setup
