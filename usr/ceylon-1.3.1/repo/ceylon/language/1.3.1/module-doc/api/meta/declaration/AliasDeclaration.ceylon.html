@@ -1,0 +1,21 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>AliasDeclaration.ceylon</title><link href='../../.resources/favicon.ico' rel='shortcut icon'/>
+<link href='../../.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='../../.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='//fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '../../.resources/'</script><script src='../../.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='../../.resources/rainbow.min.js' type='text/javascript'></script><script src='../../.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='../../.resources/ceylon.js' type='text/javascript'></script><script src='../../.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;Type alias declaration. While type aliases are erased (substituted for what they alias is a better term) from every 
+ declaration that uses them during compile-time, the declaration of the type alias is still visible at run-time.&quot;
+shared sealed interface AliasDeclaration 
+    satisfies NestableDeclaration &amp; GenericDeclaration {
+
+    &quot;The open type that is substituted by this type alias.&quot;
+    shared formal OpenType extendedType;
+
+    /*
+    FIXME: this is too shaky WRT member types, we&apos;ll figure it out later    
+    shared formal AppliedType&lt;Type&gt; apply&lt;Type=Anything&gt;(AppliedType&lt;Anything&gt;* typeArguments);
+    
+    shared formal AppliedType&lt;Type&gt; &amp; Member&lt;Container, AppliedType&lt;Type&gt; &amp; Model&gt; memberApply&lt;Container=Nothing, Type=Anything&gt;(AppliedType&lt;Container&gt; containerType, AppliedType&lt;Anything&gt;* typeArguments);
+*/
+}
+</pre></body></html>

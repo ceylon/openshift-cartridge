@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html><head><meta charset='UTF-8'/>
+<title>ceylon new</title>
+<link rel='stylesheet' type='text/css' href='bootstrap.min.css'/>
+<link rel='stylesheet' type='text/css' href='doc-tool.css'/>
+</head>
+<body>
+<div class='navbar navbar-inverse navbar-static-top'>
+<div class='navbar-inner'>
+<a class='tool-header' href='index.html'>
+<i class='tool-logo'></i>
+<span class='tool-label'>The Ceylon Toolset</span>
+<span><code class='tool-name'>ceylon new</code></span>
+<span class='tool-version'>1.3.1 357da31 (Now We Try It My Way)</span>
+</a>
+<ul class='nav pull-right'><li class='divider-vertical'/><li id='infoDropdown' class='dropdown'><a href='#' title='Show keyboard shortcuts [Shortcut: ?]' role='button' class='dropdown-toggle' data-toggle='dropdown'><i class='icon-info'></i></a><ul id='info-dropdown-panel' class='dropdown-menu'><h4>Keyboard Shortcuts</h4><li class='divider'></li><div id='info-common-shortcuts'><div id='?'><span class='key badge'>?</span><span class='info muted'>Open this information panel</span></div><div id='i'><span class='key badge'>i</span><span class='info muted'>Jump to tool index</span></div><div id='s'><span class='key badge'>s</span><span class='info muted'>Jump to synopsis</span></div><div id='d'><span class='key badge'>d</span><span class='info muted'>Jump to description</span></div><div id='o'><span class='key badge'>o</span><span class='info muted'>Jump to options</span></div></div></ul></li></ul></div>
+</div>
+<div class='sub-navbar'>
+<div class='sub-navbar-inner'><div><code class='sub-navbar-tool'>ceylon new</code></div>
+<div class='sub-navbar-summary'><p>Generates a new Ceylon project</p>
+</div>
+</div><div class='sub-navbar-menu'>
+<a href='index.html'><span title='Jump to tool index [Shortcut: I]'><span class='accesskey'>I</span>ndex</span></a><a href='#section-synopsis'><span title='Jump to tool synopsis [Shortcut: S]'><span class='accesskey'>S</span>ynopsis</span></a><a href='#section-description'><span title='Jump to tool description [Shortcut: D]'><span class='accesskey'>D</span>escription</span></a><a href='#section-options'><span title='Jump to tool options [Shortcut: O]'><span class='accesskey'>O</span>ptions</span></a></div></div>
+<div class='container-fluid'>
+<div class='section section-synopsis'>
+<table class='table table-condensed table-bordered'>
+<thead>
+<tr class='table-header' title='Click for expand/collapse'><td colspan='1' id='section-synopsis'><i class='icon-expand'></i><h2>Synopsis</h2>
+</td></tr>
+</thead>
+<tbody>
+<tr><td><div class='synopsis'><code>ceylon new  [<a href='#option--cwd'>--cwd</a>=&lt;dir&gt;] [<a href='#option--verbose'>--verbose</a>[=&lt;flags&gt;]] <a href='#subtool-hello-world'>hello-world</a> [<a href='#option--ant'>--ant</a>=&lt;value&gt;] [<a href='#option--eclipse'>--eclipse</a>=&lt;value&gt;] [<a href='#option--eclipse-project-name'>--eclipse-project-name</a>=&lt;value&gt;] [<a href='#option--module-name'>--module-name</a>=&lt;value&gt;] [<a href='#option--module-version'>--module-version</a>=&lt;value&gt;] [--] [&lt;dir&gt;]</code></div>
+</td></tr><tr><td><div class='synopsis'><code>ceylon new  [<a href='#option--cwd'>--cwd</a>=&lt;dir&gt;] [<a href='#option--verbose'>--verbose</a>[=&lt;flags&gt;]] <a href='#subtool-java-interop'>java-interop</a> [<a href='#option--ant'>--ant</a>=&lt;value&gt;] [<a href='#option--eclipse'>--eclipse</a>=&lt;value&gt;] [<a href='#option--eclipse-project-name'>--eclipse-project-name</a>=&lt;value&gt;] [<a href='#option--module-name'>--module-name</a>=&lt;value&gt;] [<a href='#option--module-version'>--module-version</a>=&lt;value&gt;] [--] [&lt;dir&gt;]</code></div>
+</td></tr><tr><td><div class='synopsis'><code>ceylon new  [<a href='#option--cwd'>--cwd</a>=&lt;dir&gt;] [<a href='#option--verbose'>--verbose</a>[=&lt;flags&gt;]] <a href='#subtool-module'>module</a> [--] &lt;module&gt; [&lt;version&gt;]</code></div>
+</td></tr><tr><td><div class='synopsis'><code>ceylon new  [<a href='#option--cwd'>--cwd</a>=&lt;dir&gt;] [<a href='#option--verbose'>--verbose</a>[=&lt;flags&gt;]] <a href='#subtool-simple'>simple</a> [<a href='#option--ant'>--ant</a>=&lt;value&gt;] [<a href='#option--eclipse'>--eclipse</a>=&lt;value&gt;] [<a href='#option--eclipse-project-name'>--eclipse-project-name</a>=&lt;value&gt;] [<a href='#option--module-name'>--module-name</a>=&lt;value&gt;] [<a href='#option--module-version'>--module-version</a>=&lt;value&gt;] [--] [&lt;dir&gt;]</code></div>
+</td></tr></tbody></table></div>
+
+<div class='section section-description'>
+<table class='table table-condensed table-bordered'>
+<thead>
+<tr class='table-header' title='Click for expand/collapse'><td colspan='1' id='section-description'><i class='icon-expand'></i><h2> Description</h2>
+</td></tr>
+</thead>
+<tbody>
+<tr><td><p>Generates a new project, prompting for information as necessary</p>
+<div id='subtool-hello-world'><h3>The <code>hello-world</code> subcommand</h3>
+<p>Generates a 'Hello World' style project.</p>
+
+<p>Takes a <code>dir</code> argument to indicate in which directory the new project should be created.</p>
+</div><div id='subtool-java-interop'><h3>The <code>java-interop</code> subcommand</h3>
+<p>Generates a project that is able to use Java legacy code</p>
+
+<p>Takes a <code>dir</code> argument to indicate in which directory the new project should be created.</p>
+</div><div id='subtool-module'><h3>The <code>module</code> subcommand</h3>
+</div><div id='subtool-simple'><h3>The <code>simple</code> subcommand</h3>
+<p>Generates a very simple empty project</p>
+
+<p>Takes a <code>dir</code> argument to indicate in which directory the new project should be created.</p>
+</div></td></tr></tbody></table></div>
+<div class='section section-options'>
+<table class='table table-condensed table-bordered'>
+<thead>
+<tr class='table-header' title='Click for expand/collapse'><td colspan='2' id='section-options'><i class='icon-expand'></i><h2>Options</h2>
+</td></tr>
+</thead>
+<tbody>
+<tr><td class='span3' id='option--cwd'><code>--cwd=dir</code></td>
+<td class='option-description'><p>Specifies the current working directory for this tool. (default: the directory where the tool is run from)</p>
+</td>
+</tr><tr><td class='span3' id='option--verbose'><code>--verbose[=flags]</code>, <code id='option-d'>-d</code></td>
+<td class='option-description'><p>Produce verbose output. If no <code>flags</code> are given then be verbose about everything, otherwise just be verbose about the flags which are present. Allowed flags include: <code>all</code>, <code>loader</code>.</p>
+</td>
+</tr><tr class='table-header'><td colspan='2'><h3>Options for <code>hello-world</code> subcommand</h3>
+</td></tr><tr><td class='span3' id='option--ant'><code>--ant=value</code></td>
+<td class='option-description'><p>Indicates if an Ant build file should be generated or not.</p>
+</td>
+</tr><tr><td class='span3' id='option--eclipse'><code>--eclipse=value</code></td>
+<td class='option-description'><p>Indicates if an Eclipse project should be generated or not.</p>
+</td>
+</tr><tr><td class='span3' id='option--eclipse-project-name'><code>--eclipse-project-name=value</code></td>
+<td class='option-description'><p>Specifies the name for the Eclipse project.</p>
+</td>
+</tr><tr><td class='span3' id='option--module-name'><code>--module-name=value</code></td>
+<td class='option-description'><p>Specifies the name for the new module.</p>
+</td>
+</tr><tr><td class='span3' id='option--module-version'><code>--module-version=value</code></td>
+<td class='option-description'><p>Specifies the version for the new module.</p>
+</td>
+</tr><tr class='table-header'><td colspan='2'><h3>Options for <code>java-interop</code> subcommand</h3>
+</td></tr><tr><td class='span3' id='option--ant'><code>--ant=value</code></td>
+<td class='option-description'><p>Indicates if an Ant build file should be generated or not.</p>
+</td>
+</tr><tr><td class='span3' id='option--eclipse'><code>--eclipse=value</code></td>
+<td class='option-description'><p>Indicates if an Eclipse project should be generated or not.</p>
+</td>
+</tr><tr><td class='span3' id='option--eclipse-project-name'><code>--eclipse-project-name=value</code></td>
+<td class='option-description'><p>Specifies the name for the Eclipse project.</p>
+</td>
+</tr><tr><td class='span3' id='option--module-name'><code>--module-name=value</code></td>
+<td class='option-description'><p>Specifies the name for the new module.</p>
+</td>
+</tr><tr><td class='span3' id='option--module-version'><code>--module-version=value</code></td>
+<td class='option-description'><p>Specifies the version for the new module.</p>
+</td>
+</tr><tr class='table-header'><td colspan='2'><h3>Options for <code>simple</code> subcommand</h3>
+</td></tr><tr><td class='span3' id='option--ant'><code>--ant=value</code></td>
+<td class='option-description'><p>Indicates if an Ant build file should be generated or not.</p>
+</td>
+</tr><tr><td class='span3' id='option--eclipse'><code>--eclipse=value</code></td>
+<td class='option-description'><p>Indicates if an Eclipse project should be generated or not.</p>
+</td>
+</tr><tr><td class='span3' id='option--eclipse-project-name'><code>--eclipse-project-name=value</code></td>
+<td class='option-description'><p>Specifies the name for the Eclipse project.</p>
+</td>
+</tr><tr><td class='span3' id='option--module-name'><code>--module-name=value</code></td>
+<td class='option-description'><p>Specifies the name for the new module.</p>
+</td>
+</tr><tr><td class='span3' id='option--module-version'><code>--module-version=value</code></td>
+<td class='option-description'><p>Specifies the version for the new module.</p>
+</td>
+</tr></tbody></table></div></div><script type='text/javascript' src='jquery-1.8.2.min.js'></script><script type='text/javascript' src='bootstrap.min.js'></script><script type='text/javascript' src='doc-tool.js'></script><script type='text/javascript'>init();</script></body></html>

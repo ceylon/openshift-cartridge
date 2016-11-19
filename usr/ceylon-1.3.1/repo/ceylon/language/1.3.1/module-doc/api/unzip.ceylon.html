@@ -1,0 +1,60 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>unzip.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='//fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;Given a stream of tuples, return two streams. The
+ first stream produces the first elements of the
+ given tuples, and the second stream produces the
+ remaining elements of the given tuples.
+ 
+ Thus:
+ 
+     tuples[i] == [unzip(tuples)[0][i], 
+                  *unzip(tuples)[1][i]]&quot;
+tagged(&quot;Streams&quot;)
+shared [Iterable&lt;Head,Absent&gt;, Iterable&lt;Tail,Absent&gt;] 
+unzip&lt;Element,Head,Tail,Absent&gt;
+        (Iterable&lt;Tuple&lt;Element|Head,Head,Tail&gt;,Absent&gt; tuples)
+        given Tail satisfies Element[]
+        given Absent satisfies Null
+        =&gt; [tuples.map((Tuple&lt;Element|Head,Head,Tail&gt; tuple) 
+                        =&gt; tuple.first),
+            tuples.map((Tuple&lt;Element|Head,Head,Tail&gt; tuple) 
+                        =&gt; tuple.rest)];
+
+&quot;Given a stream of pairs, return two streams. The
+ first stream produces the first elements of the
+ given pairs, and the second stream produces the
+ second elements of the given pairs.
+ 
+ Thus:
+ 
+     pairs[i] == [unzipPairs(pairs)[0][i], 
+                  unzipPairs(pairs)[1][i]]&quot;
+tagged(&quot;Streams&quot;)
+shared [Iterable&lt;First,Absent&gt;, Iterable&lt;Second,Absent&gt;] 
+unzipPairs&lt;First,Second,Absent&gt;
+        (Iterable&lt;[First,Second],Absent&gt; pairs)
+        given Absent satisfies Null
+        =&gt; [pairs.map(([First,Second] pair) =&gt; pair[0]),
+            pairs.map(([First,Second] pair) =&gt; pair[1])];
+
+&quot;Given a stream of entries, return two streams. The
+ first stream produces the keys of the given entries, 
+ and the second stream produces the items of the given 
+ entries.
+ 
+ Thus:
+ 
+     entries[i] == unzipEntries(entries)[0][i] 
+                -&gt; unzipEntries(entries)[1][i]&quot;
+tagged(&quot;Streams&quot;)
+shared [Iterable&lt;Key,Absent&gt;, Iterable&lt;Item,Absent&gt;] 
+unzipEntries&lt;Key,Item,Absent&gt;
+        (Iterable&lt;&lt;Key-&gt;Item&gt;,Absent&gt; entries)
+        given Key satisfies Object
+        given Absent satisfies Null
+        =&gt; [entries.map(Entry&lt;Key,Item&gt;.key),
+            entries.map(Entry&lt;Key,Item&gt;.item)];
+</pre></body></html>

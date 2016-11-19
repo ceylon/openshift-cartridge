@@ -1,0 +1,127 @@
+'\" -*- coding: us-ascii -*-
+.if \n(.g .ds T< \\FC
+.if \n(.g .ds T> \\F[\n[.fam]]
+.de URL
+\\$2 \(la\\$1\(ra\\$3
+..
+.if \n(.g .mso www.tmac
+.TH "ceylon new" 1 "18 November 2016" "" ""
+.SH NAME
+ceylon new \- Generates a new Ceylon project
+.SH SYNOPSIS
+'nh
+.fi
+.ad l
+\fBceylon new\fR \kx
+.if (\nx>(\n(.l/2)) .nr x (\n(.l/5)
+'in \n(.iu+\nxu
+[--cwd=\fIdir\fR] [--verbose[=\fIflags\fR]] hello-world [--ant=\fIvalue\fR] [--eclipse=\fIvalue\fR] [--eclipse-project-name=\fIvalue\fR] [--module-name=\fIvalue\fR] [--module-version=\fIvalue\fR] [--] [dir]
+'in \n(.iu-\nxu
+.ad b
+'hy
+'nh
+.fi
+.ad l
+\fBceylon new\fR \kx
+.if (\nx>(\n(.l/2)) .nr x (\n(.l/5)
+'in \n(.iu+\nxu
+[--cwd=\fIdir\fR] [--verbose[=\fIflags\fR]] java-interop [--ant=\fIvalue\fR] [--eclipse=\fIvalue\fR] [--eclipse-project-name=\fIvalue\fR] [--module-name=\fIvalue\fR] [--module-version=\fIvalue\fR] [--] [dir]
+'in \n(.iu-\nxu
+.ad b
+'hy
+'nh
+.fi
+.ad l
+\fBceylon new\fR \kx
+.if (\nx>(\n(.l/2)) .nr x (\n(.l/5)
+'in \n(.iu+\nxu
+[--cwd=\fIdir\fR] [--verbose[=\fIflags\fR]] module [--] {module} [version]
+'in \n(.iu-\nxu
+.ad b
+'hy
+'nh
+.fi
+.ad l
+\fBceylon new\fR \kx
+.if (\nx>(\n(.l/2)) .nr x (\n(.l/5)
+'in \n(.iu+\nxu
+[--cwd=\fIdir\fR] [--verbose[=\fIflags\fR]] simple [--ant=\fIvalue\fR] [--eclipse=\fIvalue\fR] [--eclipse-project-name=\fIvalue\fR] [--module-name=\fIvalue\fR] [--module-version=\fIvalue\fR] [--] [dir]
+'in \n(.iu-\nxu
+.ad b
+'hy
+.SH DESCRIPTION
+Generates a new project, prompting for information as necessary
+.SS "THE hello-world SUBCOMMAND"
+Generates a 'Hello World' style project.
+.PP
+Takes a \*(T<dir\*(T> argument to indicate in which directory the new project should be created.
+.SS "THE java-interop SUBCOMMAND"
+Generates a project that is able to use Java legacy code
+.PP
+Takes a \*(T<dir\*(T> argument to indicate in which directory the new project should be created.
+.SS "THE module SUBCOMMAND"
+.SS "THE simple SUBCOMMAND"
+Generates a very simple empty project
+.PP
+Takes a \*(T<dir\*(T> argument to indicate in which directory the new project should be created.
+.SH OPTIONS
+.TP 
+--cwd=\fIdir\fR
+Specifies the current working directory for this tool. (default: the directory where the tool is run from)
+.TP 
+--verbose[=\fIflags\fR], -d
+Produce verbose output. If no \*(T<flags\*(T> are given then be verbose about everything, otherwise just be verbose about the flags which are present. Allowed flags include: \*(T<all\*(T>, \*(T<loader\*(T>.
+.SS "OPTIONS FOR hello-world SUBCOMMAND"
+.RS 
+.TP 
+--ant=\fIvalue\fR
+Indicates if an Ant build file should be generated or not.
+.TP 
+--eclipse=\fIvalue\fR
+Indicates if an Eclipse project should be generated or not.
+.TP 
+--eclipse-project-name=\fIvalue\fR
+Specifies the name for the Eclipse project.
+.TP 
+--module-name=\fIvalue\fR
+Specifies the name for the new module.
+.TP 
+--module-version=\fIvalue\fR
+Specifies the version for the new module.
+.RE
+.SS "OPTIONS FOR java-interop SUBCOMMAND"
+.RS 
+.TP 
+--ant=\fIvalue\fR
+Indicates if an Ant build file should be generated or not.
+.TP 
+--eclipse=\fIvalue\fR
+Indicates if an Eclipse project should be generated or not.
+.TP 
+--eclipse-project-name=\fIvalue\fR
+Specifies the name for the Eclipse project.
+.TP 
+--module-name=\fIvalue\fR
+Specifies the name for the new module.
+.TP 
+--module-version=\fIvalue\fR
+Specifies the version for the new module.
+.RE
+.SS "OPTIONS FOR simple SUBCOMMAND"
+.RS 
+.TP 
+--ant=\fIvalue\fR
+Indicates if an Ant build file should be generated or not.
+.TP 
+--eclipse=\fIvalue\fR
+Indicates if an Eclipse project should be generated or not.
+.TP 
+--eclipse-project-name=\fIvalue\fR
+Specifies the name for the Eclipse project.
+.TP 
+--module-name=\fIvalue\fR
+Specifies the name for the new module.
+.TP 
+--module-version=\fIvalue\fR
+Specifies the version for the new module.
+.RE

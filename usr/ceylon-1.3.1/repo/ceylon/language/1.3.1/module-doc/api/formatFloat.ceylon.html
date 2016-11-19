@@ -1,0 +1,267 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>formatFloat.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='//fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;The string decimal representation of the given 
+ [[floating point number|float]]. If the given number is 
+ [[negative|Float.negative]], the string representation will 
+ begin with `-`. The [[whole part|Float.wholePart]] and 
+ [[fractional parts|Float.fractionalPart]] of the number are
+ separated by a `.` decimal point. Digits consist of decimal 
+ digits `0` to `9`. 
+ 
+ The number of decimal places following the decimal point is 
+ controlled by the parameters [[minDecimalPlaces]] and 
+ [[maxDecimalPlaces]], which default to `1` and `9` 
+ respectively, so that by default the string representation
+ always contains a decimal point, and never contains more 
+ than nine decimal places. The decimal representation is 
+ rounded so that the number of decimal places never
+ exceeds the specified maximum.
+ 
+ For example:
+ 
+ - `formatFloat(1234.1234)` is `\&quot;1234.1234\&quot;`
+ - `formatFloat(0.1234)` is `\&quot;0.1234\&quot;`
+ - `formatFloat(1234.0)` is `\&quot;1234.0\&quot;`
+ - `formatFloat(1234.0,0)` is `\&quot;1234\&quot;`
+ - `formatFloat(1234.1234,6)` is `\&quot;1234.123400\&quot;`
+ - `formatFloat(1234.1234,0,2)` is `\&quot;1234.12\&quot;`
+ - `formatFloat(1234.123456,0,5)` is `\&quot;1234.12346\&quot;`
+ - `formatFloat(0.0001,2,2)` is `\&quot;0.00\&quot;`
+ - `formatFloat(0.0001,0,2)` is `\&quot;0\&quot;`
+ 
+ Finally:
+ 
+ - `formatFloat(-0.0)` is `\&quot;0.0\&quot;`,
+ - `formatFloat(0.0/0)` is `\&quot;NaN\&quot;`,
+ - `formatFloat(1.0/0)` is `\&quot;Infinity\&quot;`, and
+ - `formatFloat(-1.0/0)` is `\&quot;-Infinity\&quot;.`
+ 
+ This function never produces a representation involving 
+ scientific notation.&quot;
+tagged(&quot;Numbers&quot;)
+see (`function Float.format`)
+since(&quot;1.2.0&quot;)
+deprecated(&quot;Use [[Float.format]]&quot;)
+shared String formatFloat(
+        &quot;The floating point value to format.&quot;
+        Float float,
+        &quot;The minimum number of allowed decimal places.
+
+         If `minDecimalPlaces&lt;=0`, the result may have no
+         decimal point.&quot;
+        variable Integer minDecimalPlaces=1,
+        &quot;The maximum number of allowed decimal places.
+
+         If `maxDecimalPlaces&lt;=0`, the result always has no
+         decimal point.&quot;
+        variable Integer maxDecimalPlaces=9,
+        &quot;The character to use as the decimal separator.
+
+         `decimalSeparator` may not be &apos;-&apos; or a digit as
+         defined by the Unicode general category *Nd*.&quot;
+        Character decimalSeparator = &apos;.&apos;,
+        &quot;If not `null`, `thousandsSeparator` will be used to
+         separate each group of three digits, starting
+         immediately to the left of the decimal separator.
+
+         `thousandsSeparator` may not be equal to the
+         decimalSeparator and may not be &apos;-&apos; or a digit as
+         defined by the Unicode general category *Nd*.&quot;
+        Character? thousandsSeparator = null) {
+
+    if (exists thousandsSeparator) {
+        &quot;thousandsSeparator may not be &apos;-&apos; or a numeric digit.&quot;
+        assert (!thousandsSeparator.digit
+                &amp;&amp; !thousandsSeparator == &apos;-&apos;);
+
+        &quot;The same character may not be used for both
+         thousandsSeparator and decimalSeparator.&quot;
+        assert (thousandsSeparator != decimalSeparator);
+    }
+
+    &quot;The decimalSeparator may not be &apos;-&apos; or a numeric digit.&quot;
+    assert (!decimalSeparator.digit
+            &amp;&amp; !decimalSeparator == &apos;-&apos;);
+
+    // let&apos;s not be rude and throw
+    if (maxDecimalPlaces &lt; 0) {
+        maxDecimalPlaces = 0;
+    }
+    if (minDecimalPlaces &lt; 0) {
+        minDecimalPlaces = 0;
+    }
+    if (maxDecimalPlaces &lt; minDecimalPlaces) {
+        maxDecimalPlaces = minDecimalPlaces;
+    }
+
+    // handle 0, undefined, and infinities
+    if (float == 0) {
+        if (minDecimalPlaces &gt; 0) {
+            return &quot;0``decimalSeparator````&quot;0&quot;.repeat(minDecimalPlaces)``&quot;;
+        }
+        return &quot;0&quot;;
+    }
+    else if (float.undefined || float.infinite) {
+        return float.string;
+    }
+
+    variable value wholeDigitNumber = 0;
+    value thousands = thousandsSeparator?.string else &quot;&quot;;
+
+    value result = StringBuilder();
+    value magnitude = float.magnitude;
+    value decimalMoveRight = smallest {
+        // Don&apos;t include more fractional digits than
+        // necessary. See rounding (halfEven) below.
+        maxDecimalPlaces;
+        14 - exponent(magnitude);
+    };
+
+    &quot;The float, but with all meaningful digits shifted to the
+     first ~15 positions of the whole part&quot;
+    value normalized = scaleByPowerOfTen(magnitude, decimalMoveRight);
+
+    &quot;The usable digits: [[normalized]] as an [[Integer]] after rounding&quot;
+    variable value integer = halfEven(normalized).integer;
+
+    &quot;The number of digits of [[integer]] that are to the right of
+     the decimal point in [[float]]. May be negative.&quot;
+    variable value fractionalPartDigits = decimalMoveRight;
+
+    &quot;Have any digits to the right of the &apos;.&apos; been emitted?&quot;
+    variable value emittedFractional = false;
+
+    if (minDecimalPlaces &gt; fractionalPartDigits) {
+        // we have fewer fractional digits than we need
+        if (fractionalPartDigits &gt; 0) {
+            result.append(&quot;0&quot;.repeat(
+                minDecimalPlaces - fractionalPartDigits));
+        } else {
+            result.append(&quot;0&quot;.repeat(minDecimalPlaces));
+        }
+        emittedFractional = true;
+    }
+    while (fractionalPartDigits &gt; maxDecimalPlaces) {
+        // we have more fractional digits than we need
+        integer /= 10;
+        fractionalPartDigits--;
+    }
+    while (fractionalPartDigits &gt; 0) {
+        // emit fractional part of &apos;integer&apos;
+        value digit = integer % 10;
+        integer /= 10;
+        if (digit != 0 || emittedFractional
+                || fractionalPartDigits &lt;= minDecimalPlaces) {
+            result.appendCharacter(&apos;0&apos;.neighbour(digit));
+            emittedFractional = true;
+        }
+        fractionalPartDigits--;
+    }
+    if (emittedFractional) {
+        result.appendCharacter(decimalSeparator);
+    }
+    if (integer == 0) {
+        result.appendCharacter(&apos;0&apos;);
+    }
+    else {
+        while (fractionalPartDigits++ &lt; 0) {
+            // we have fewer whole part digits than we need
+            if (3.divides(wholeDigitNumber++)
+                    &amp;&amp; wholeDigitNumber != 1) {
+                result.append(thousands);
+            }
+            result.appendCharacter(&apos;0&apos;);
+        }
+        while (integer != 0) {
+            // emit whole part
+            if (3.divides(wholeDigitNumber++)
+                    &amp;&amp; wholeDigitNumber != 1) {
+                result.append(thousands);
+            }
+            value digit = integer % 10;
+            integer /= 10;
+            result.appendCharacter(&apos;0&apos;.neighbour(digit));
+        }
+    }
+    if (float &lt; 0.0 &amp;&amp; result.containsAny(&apos;1&apos;..&apos;9&apos;)) {
+        result.appendCharacter(&apos;-&apos;);
+    }
+    return(result.string.reversed);
+}
+
+Integer exponent(variable Float f)
+    =&gt;  let (l10 = log10(f.magnitude))
+        // now, compute the floor
+        if (l10.fractionalPart == 0.0 || l10 &gt; 0.0)
+        then l10.wholePart.integer
+        else l10.wholePart.integer - 1;
+
+Float scaleByPowerOfTen(Float float, variable Integer power) {
+    function doScale(Float float, Integer power) {
+        value scale =
+                let (magnitude = power.magnitude)
+                if (magnitude &lt;= 15)
+                    then (10^magnitude).nearestFloat     //fast
+                    else 10.0.powerOfInteger(magnitude); //slow
+        return if (power &lt; 0)
+                then float / scale
+                else float * scale;
+    }
+    // don&apos;t attempt to create a float larger than 1.0e308.
+    variable value result = float;
+    while (power &gt; 0) {
+        value amount = smallest(308, power);
+        result = doScale(result, amount);
+        power -= amount;
+    }
+    while (power &lt; 0) {
+        value amount = largest(-308, power);
+        result = doScale(result, amount);
+        power -= amount;
+    }
+    return result;
+}
+
+Float twoFiftyTwo = (2^52).float;
+
+Float halfEven(Float num) {
+    if (num.infinite ||
+            num.undefined ||
+            num.fractionalPart == 0.0) {
+        return num;
+    }
+
+    variable value result = num.magnitude;
+    if (result &gt;= twoFiftyTwo) {
+        return num;
+    }
+
+    // else, round
+    result = (twoFiftyTwo + result) - twoFiftyTwo;
+    return result * num.sign.float;
+}
+
+native
+Float log10(Float num);
+
+native(&quot;jvm&quot;)
+Float log10(Float num) {
+    import java.lang {
+        Math
+    }
+    
+    return Math.log10(num);
+}
+
+native(&quot;js&quot;)
+Float log10(Float num) {
+    dynamic {
+        Float n = Math.log(num);
+        Float d = Math.\iLN10;
+        return n / d;
+    }
+}
+</pre></body></html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>Binary.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='//fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;Abstraction of types that are conceptually a sequence of 
+ bits, and may be the subject of bitwise operations. A bit 
+ is a [[Boolean]] value. Bits are indexed from right to 
+ left, where `0` is the index of the least significant bit.&quot;
+see (`class Integer`)
+by (&quot;Stef&quot;)
+shared interface Binary&lt;Other&gt; of Other 
+    given Other satisfies Binary&lt;Other&gt; {
+
+    &quot;The binary complement of this sequence of bits.&quot;
+    shared formal Other not;
+
+    &quot;Shift the sequence of bits to the left, by the given 
+     [[number of places|shift]], filling the least
+     significant bits with zeroes (zero extension).&quot;
+    shared formal Other leftLogicalShift(Integer shift);
+
+    &quot;Shift the sequence of bits to the right, by the given 
+     [[number of places|shift]], filling the most
+     significant bits with zeroes (zero extension).
+     
+     If the sequence of bits represents a signed integer, 
+     the sign is not preserved.&quot;
+    shared formal Other rightLogicalShift(Integer shift);
+
+    &quot;Shift the sequence of bits to the right, by the given 
+     [[number of places|shift]], preserving the values of 
+     the most significant bits (sign extension).
+     
+     If the sequence of bits represents a signed integer, 
+     the sign is preserved.&quot;
+    shared formal Other rightArithmeticShift(Integer shift);
+
+    &quot;Performs a logical AND operation.&quot;
+    shared formal Other and(Other other);
+
+    &quot;Performs a logical inclusive OR operation.&quot;
+    shared formal Other or(Other other);
+
+    &quot;Performs a logical exclusive OR operation.&quot;
+    shared formal Other xor(Other other);
+
+    &quot;Retrieves a given bit from this bit sequence if 
+     `0 &lt;= index &lt; size`, otherwise returns false.&quot;
+    shared formal Boolean get(Integer index);
+
+    &quot;Returns an instance with the given bit set to the given 
+     value if `0 &lt;= index &lt; size`, otherwise returns a value 
+     with the same bits as this value.&quot;
+    shared formal Other set(Integer index, Boolean bit = true);
+
+    &quot;Returns an instance with the given bit set to 0 if 
+     `0 &lt;= index &lt; size`, otherwise returns a value with the 
+     same bits as this value.&quot;
+    shared default Other clear(Integer index) 
+            =&gt; set(index, false);
+
+    &quot;Returns an instance with the given bit flipped to its 
+     opposite value if `0 &lt;= index &lt; size`, otherwise 
+     returns a value with the same bits as this value.&quot;
+    shared formal Other flip(Integer index);
+}
+
+</pre></body></html>

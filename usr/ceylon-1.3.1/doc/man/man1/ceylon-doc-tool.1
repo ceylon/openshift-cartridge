@@ -1,0 +1,58 @@
+'\" -*- coding: us-ascii -*-
+.if \n(.g .ds T< \\FC
+.if \n(.g .ds T> \\F[\n[.fam]]
+.de URL
+\\$2 \(la\\$1\(ra\\$3
+..
+.if \n(.g .mso www.tmac
+.TH "ceylon doc-tool" 1 "18 November 2016" "" ""
+.SH NAME
+ceylon doc-tool \- Generates documentation about a tool
+.SH SYNOPSIS
+'nh
+.fi
+.ad l
+\fBceylon doc-tool\fR \kx
+.if (\nx>(\n(.l/2)) .nr x (\n(.l/5)
+'in \n(.iu+\nxu
+[--all-plumbing] [--all-porcelain] [--cwd=\fIdir\fR] [--format=\fIformat\fR] [--index] [--omit-doctype] [--output=\fIdir\fR] [--verbose[=\fIflags\fR]] [--width=\fIcols\fR] [--] [tool]\&...
+'in \n(.iu-\nxu
+.ad b
+'hy
+.SH DESCRIPTION
+Generates documentation about the named \*(T<<tool>\*(T>s in the directory named by the \*(T<\-\-output\*(T> option.
+.SH OPTIONS
+.TP 
+--all-plumbing
+Generate documentation about all low level tools, in addition to the tools named by the \*(T<<tool>\*(T> argument
+.TP 
+--all-porcelain
+Generate documentation about all high level tools, in addition to the tools named by the \*(T<<tool>\*(T> argument
+.TP 
+--cwd=\fIdir\fR
+Specifies the current working directory for this tool. (default: the directory where the tool is run from)
+.TP 
+--format=\fIformat\fR
+The format to generate the documentation in (allowable values: \*(T<html\*(T>, \*(T<docbook\*(T> or \*(T<txt\*(T>, default: \*(T<html\*(T>)
+.TP 
+--index
+Generate an \*(T<index.html\*(T> file when \*(T<\-\-format=html\*(T>
+.TP 
+--omit-doctype
+Omit the doctype when outputting XML-based formats
+.TP 
+--output=\fIdir\fR, -o \fIdir\fR
+Directory to generate the output files in (default: The current directory)
+.TP 
+--verbose[=\fIflags\fR], -d
+Produce verbose output. If no \*(T<flags\*(T> are given then be verbose about everything, otherwise just be verbose about the flags which are present. Allowed flags include: \*(T<all\*(T>, \*(T<loader\*(T>.
+.TP 
+--width=\fIcols\fR
+The line length to use for word wrapping when \*(T<\-\-format=txt\*(T> (default: 80)
+.SH "SEE ALSO"
+.TP 0.2i
+\(bu
+\*(T<ceylon help\*(T> For generating help about ceylon tools at the command line
+.TP 0.2i
+\(bu
+\*(T<ceylon doc\*(T> For generating API documentation about ceylon modules

@@ -1,0 +1,43 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>Exponentiable.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='//fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;Abstraction of [[numeric types|Numeric]] that may be raised 
+ to a power using the _exponentiation_ operator `x ^ n` 
+ which accepts an instance of `Exponentiable` as its first
+ operand, and an exponent as its second operand.
+ 
+     function exp(Float x) =&gt; e^x;
+ 
+ The exponentiation operation should obey the usual index
+ laws, including:
+ 
+ - `x^0 == 1`
+ - `x^1 == x`
+ - `x^(-1) == 1/x`
+ - `x^(m+n) == x^m * x^n`
+ - `x^(m-n) == x^m / x^n`
+ - `x^(m*n) == (x^m)^n`
+ - `(x*y)^n == x^n * y^n`
+ 
+ where `0` is the additive identity, and `1` is the 
+ multiplicative identity.
+ 
+ Note that in general, the type of the exponent may be 
+ different to the numeric type which is exponentiated. For
+ example, a `Rational` number class might be a subtype of
+ `Exponentiable&lt;Rational,Integer&gt;`, thus accepting only
+ whole-number exponents.&quot;
+see (`class Integer`, `class Float`)
+tagged(&quot;Numbers&quot;)
+shared interface Exponentiable&lt;This,Other&gt; of This
+        satisfies Numeric&lt;This&gt;
+        given This satisfies Exponentiable&lt;This,Other&gt; 
+        given Other satisfies Numeric&lt;Other&gt; {
+
+    &quot;The result of raising this number to the given power.&quot;
+    shared formal This power(Other other);
+    
+} 
+</pre></body></html>

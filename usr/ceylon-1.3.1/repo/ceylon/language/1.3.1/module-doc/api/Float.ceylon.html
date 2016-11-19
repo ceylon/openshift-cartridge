@@ -1,0 +1,388 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>Float.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='//fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;An IEEE 754 64-bit [floating point number][]. A `Float` is 
+ capable of approximately representing numeric values 
+ between:
+ 
+ - 2&lt;sup&gt;-1022&lt;/sup&gt;, approximately 
+   1.79769\{#00D7}10&lt;sup&gt;308&lt;/sup&gt;, and 
+ - (2-2&lt;sup&gt;-52&lt;/sup&gt;)\{#00D7}2&lt;sup&gt;1023&lt;/sup&gt;, 
+   approximately 5\{#00D7}10&lt;sup&gt;-324&lt;/sup&gt;.
+ 
+ Zero is represented by distinct instances `+0.0`, `-0.0`, 
+ but these instances are equal. `-0.0` can be distinguished
+ from `+0.0` using `f == 0.0 &amp;&amp; f.strictlyNegative`.
+ 
+ In addition, the following special values exist:
+ 
+ - [[infinity]] and `-infinity`, and
+ - [[undefined values|undefined]], denoted [NaN][] by the
+   IEEE standard.
+ 
+ As required by the IEEE standard no undefined value is 
+ equal to any other value, nor even to itself. Thus, the 
+ definition of [[equals]] for `Float` violates the general 
+ contract defined by [[Object.equals]].
+ 
+ A floating point value with a zero [[fractionalPart]] is
+ considered equal to its [[integer]] part.
+ 
+ Literal floating point values are written with a decimal
+ point and, optionally, a magnitude or exponent:
+ 
+     1.0
+     1.0E6
+     1.0M
+     1.0E-6
+     1.0u
+ 
+ In the case of a fractional magnitude, the decimal point is
+ optional. Underscores may be used to group digits into 
+ groups of three.
+ 
+ [floating point number]: http://www.validlab.com/goldberg/paper.pdf
+ [NaN]: http://en.wikipedia.org/wiki/NaN&quot;
+tagged(&quot;Basic types&quot;, &quot;Numbers&quot;)
+shared native final class Float
+        extends Object
+        satisfies Number&lt;Float&gt; &amp; 
+                  Exponentiable&lt;Float,Float&gt; {
+    
+    &quot;The [[Float]] value of the given 
+     [[string representation|string]] of a decimal floating 
+     point number, or `null` if the string does not 
+     represent a decimal floating point number.
+     
+     If the given string representation contains more digits
+     than can be represented by a `Float`, then the least 
+     significant digits are ignored.
+     
+     The syntax accepted by this method is the same as the 
+     syntax for a `Float` literal in the Ceylon language 
+     except that it may optionally begin with a sign 
+     character (`+` or `-`) and may not contain grouping 
+     underscore characters. That is, an optional sign 
+     character, followed by a string of decimal digits, 
+     followed by an optional decimal point and string of 
+     decimal digits, followed by an optional decimal 
+     exponent, for example, `e+10` or `E-5`, or SI magnitude, 
+     `k`, `M`, `G`, `T`, `P`, `m`, `u`, `n`, `p`, or `f`.
+     
+     Float: Sign? Digits (&apos;.&apos; Digits)? (Magnitude|Exponent)
+     Sign: &apos;+&apos; | &apos;-&apos;
+     Magnitude: &apos;k&apos; | &apos;M&apos; | &apos;G&apos; | &apos;T&apos; | &apos;P&apos; | &apos;m&apos; | &apos;u&apos; | &apos;n&apos; | &apos;p&apos; | &apos;f&apos;
+     Exponent: (&apos;e&apos;|&apos;E&apos;) Sign? Digits
+     Digits: (&apos;0&apos;..&apos;9&apos;)+&quot;
+    see (`function format`, `function Integer.parse`)
+    tagged(&quot;Numbers&quot;, &quot;Basic types&quot;)
+    since(&quot;1.3.1&quot;)
+    shared static Float|ParseException parse(String string)
+            =&gt; package.parseFloat(string)
+            else ParseException(&quot;illegal format for Float&quot;);
+    
+    &quot;The string decimal representation of the given 
+     [[floating point number|float]]. If the given number is 
+     [[negative|Float.negative]], the string representation 
+     will begin with `-`. The [[whole part|Float.wholePart]] 
+     and [[fractional parts|Float.fractionalPart]] of the 
+     number are separated by a `.` decimal point. Digits 
+     consist of decimal digits `0` to `9`. 
+     
+     The number of decimal places following the decimal 
+     point is controlled by the parameters 
+     [[minDecimalPlaces]] and [[maxDecimalPlaces]], which 
+     default to `1` and `9` respectively, so that by default 
+     the string representation always contains a decimal 
+     point, and never contains more than nine decimal places. 
+     The decimal representation is rounded so that the 
+     number of decimal places never exceeds the specified 
+     maximum.
+     
+     For example:
+     
+     - `formatFloat(1234.1234)` is `\&quot;1234.1234\&quot;`
+     - `formatFloat(0.1234)` is `\&quot;0.1234\&quot;`
+     - `formatFloat(1234.0)` is `\&quot;1234.0\&quot;`
+     - `formatFloat(1234.0,0)` is `\&quot;1234\&quot;`
+     - `formatFloat(1234.1234,6)` is `\&quot;1234.123400\&quot;`
+     - `formatFloat(1234.1234,0,2)` is `\&quot;1234.12\&quot;`
+     - `formatFloat(1234.123456,0,5)` is `\&quot;1234.12346\&quot;`
+     - `formatFloat(0.0001,2,2)` is `\&quot;0.00\&quot;`
+     - `formatFloat(0.0001,0,2)` is `\&quot;0\&quot;`
+     
+     Finally:
+     
+     - `formatFloat(-0.0)` is `\&quot;0.0\&quot;`,
+     - `formatFloat(0.0/0)` is `\&quot;NaN\&quot;`,
+     - `formatFloat(1.0/0)` is `\&quot;Infinity\&quot;`, and
+     - `formatFloat(-1.0/0)` is `\&quot;-Infinity\&quot;.`
+     
+     This function never produces a representation involving 
+     scientific notation.&quot;
+    tagged(&quot;Numbers&quot;)
+    see (`function parse`, `function Integer.format`)
+    since(&quot;1.3.1&quot;)
+    shared static String format(
+        &quot;The floating point value to format.&quot;
+        Float float,
+        &quot;The minimum number of allowed decimal places.
+         
+         If `minDecimalPlaces&lt;=0`, the result may have no
+         decimal point.&quot;
+        Integer minDecimalPlaces=1,
+        &quot;The maximum number of allowed decimal places.
+         
+         If `maxDecimalPlaces&lt;=0`, the result always has no
+         decimal point.&quot;
+        Integer maxDecimalPlaces=9,
+        &quot;The character to use as the decimal separator.
+         
+         `decimalSeparator` may not be &apos;-&apos; or a digit as
+         defined by the Unicode general category *Nd*.&quot;
+        Character decimalSeparator = &apos;.&apos;,
+        &quot;If not `null`, `thousandsSeparator` will be used to
+         separate each group of three digits, starting
+         immediately to the left of the decimal separator.
+         
+         `thousandsSeparator` may not be equal to the
+         decimalSeparator and may not be &apos;-&apos; or a digit as
+         defined by the Unicode general category *Nd*.&quot;
+        Character? thousandsSeparator = null)
+            =&gt; package.formatFloat(float, 
+                minDecimalPlaces, maxDecimalPlaces, 
+                decimalSeparator, thousandsSeparator);
+    
+    shared new(Float float) extends Object() {}
+    
+    &quot;Determines whether this value is undefined. The IEEE
+     standard denotes undefined values [NaN][] (an 
+     abbreviation of Not a Number). Undefined values include:
+     
+     - _indeterminate forms_ including `0.0/0.0`, 
+       `infinity/infinity`, `0.0*infinity`, and
+       `infinity-infinity`, along with
+     - _complex numbers_ like `sqrt(-1.0)` and `log(-1.0)`.
+     
+     An undefined value has the property that it is not 
+     [[equal|Object.equals]] (`==`) to itself, and as a 
+     consequence the undefined value cannot sensibly be used 
+     in most collections.
+     
+     If `x` is an undefined `Float`, then:
+     
+     - `x==x` evaluates to `false`
+     - `x!=x` evaluates to `true`, and
+     - `x&gt;x`, `x&lt;x`, `x&gt;=x`, `x&lt;=x` all evaluate to `false`.
+     
+     [NaN]: http://en.wikipedia.org/wiki/NaN&quot;
+    see (`function compare`)
+    aliased(&quot;notANumber&quot;)
+    shared Boolean undefined =&gt; this!=this;
+    
+    &quot;Determines whether this value is infinite in magnitude. 
+     Produces `true` for `infinity` and `-infinity`. 
+     Produces `false` for a finite number, `+0.0`, `-0.0`, 
+     or undefined.&quot;
+    see (`value infinity`, `value finite`)
+    shared Boolean infinite 
+            =&gt; this==infinity || this==-infinity;
+    
+    &quot;Determines whether this value is finite. Produces
+     `false` for `infinity`, `-infinity`, and undefined.&quot;
+    see (`value infinite`, `value infinity`)
+    shared Boolean finite 
+            =&gt; this!=infinity &amp;&amp; this!=-infinity 
+                    &amp;&amp; !this.undefined;
+    
+    &quot;The sign of this value. Produces `1` for a positive 
+     number or `infinity`. Produces `-1` for a negative
+     number or `-infinity`. Produces `0.0` for `+0.0`, 
+     `-0.0`, or undefined.&quot;
+    shared actual native Integer sign
+            =&gt;   if (this &lt; 0.0) then -1
+            else if (this &gt; 0.0) then 1
+            else 0;
+    
+    &quot;Determines if this value is a positive number or
+     `infinity`. Produces `false` for a negative number, 
+     `+0.0`, `-0.0`, or undefined.&quot;
+    shared actual native Boolean positive =&gt; this &gt; 0.0;
+    
+    &quot;Determines if this value is a negative number or
+     `-infinity`. Produces `false` for a positive number, 
+     `+0.0`, `-0.0`, or undefined.&quot;
+    shared actual native Boolean negative =&gt; this &lt; 0.0;
+    
+    &quot;Determines if this value is a positive number, `+0.0`, 
+     or `infinity`. Produces `false` for a negative number, 
+     `-0.0`, or undefined.&quot;
+    shared native Boolean strictlyPositive 
+            =&gt; this &gt; 0.0 || 1.0/this &gt; 0.0;
+    
+    &quot;Determines if this value is a negative number, `-0.0`, 
+     or `-infinity`. Produces `false` for a positive number, 
+     `+0.0`, or undefined.&quot;
+    shared native Boolean strictlyNegative 
+            =&gt; this &lt; 0.0 || 1.0/this &lt; 0.0;
+    
+    &quot;Determines if the given object is equal to this `Float`,
+     that is, if:
+     
+     - the given object is also a `Float`,
+     - neither this value nor the given value is 
+       [[undefined]], and either
+     - both values are [[infinite]] and have the same 
+       [[sign]], or both represent the same finite floating 
+       point value as defined by the IEEE specification.
+     
+     Or if:
+     
+     - the given object is an [[Integer]],
+     - this value is neither [[undefined]], nor [[infinite]],
+     - the [[fractionalPart]] of this value equals `0.0`, 
+     - the [[integer]] part of this value equals the given 
+       integer, and
+     - the given integer is between -2&lt;sup&gt;53&lt;/sup&gt; and 
+       2&lt;sup&gt;53&lt;/sup&gt; (exclusive).&quot;
+    shared actual native Boolean equals(Object that);
+    
+    &quot;A platform-dependent hash code for this `Float`.&quot;
+    shared actual native Integer hash;
+    
+    &quot;Compare this value to the given value, where 
+     [[infinity]] is considered greater than every defined, 
+     finite value, and `-infinity` is considered smaller 
+     than every defined, finite value, and [[undefined]] 
+     values are considered incomparable.
+     
+     Note that if `x` is an undefined `Float` and `y` is any 
+     `Float` that is not undefined, then:
+     
+     - `x&lt;=&gt;y` produces an exception when evaluated, but
+     - `x&gt;y`, `x&lt;y`, `x&gt;=y`, `x&lt;=y`, and `x==y` all evaluate 
+       to `false`.&quot;
+    throws (`class Exception`, 
+            &quot;if either this value, the given value, or both 
+             are [[undefined]]&quot;)
+    shared actual native Comparison compare(Float other)
+            =&gt;   if (this &lt; other) then smaller
+            else if (this &gt; other) then larger
+            else equal;
+    
+    shared actual native Float negated;
+    
+    shared actual native Float plus(Float other);
+    shared actual native Float minus(Float other);
+    shared actual native Float times(Float other);
+    shared actual native Float divided(Float other);
+    
+    &quot;The result of raising this number to the given floating
+     point power, where, following the definition of the
+     IEEE `pow()` function, the following indeterminate 
+     forms all evaluate to `1.0`:
+     
+     - `0.0^0.0`,
+     - `infinity^0.0` and `(-infinity)^0.0`, 
+     - `1.0^infinity` and `(-1.0)^infinity`.
+     
+     Furthermore:
+     
+      - `0.0^infinity` evaluates to `0.0`, and
+      - `0.0^(-infinity)` evaluates to `infinity`.
+     
+     If this is a [[negative]] number, and the given 
+     [[power|other]] has a nonzero [[fractionalPart]], the 
+     result is [[undefined]].
+     
+     For any negative power `y&lt;0.0`:
+     
+     - `0.0^y` evaluates to `infinity`,
+     - `(-0.0)^y` evaluates to `-infinity`, and
+     - for any nonzero floating point number `x`, `x^y` 
+       evaluates to `1.0/x^(-y)`.&quot;
+    shared actual native Float power(Float other);
+    
+    shared actual native Float wholePart;
+    shared actual native Float fractionalPart;
+    
+    aliased(&quot;absolute&quot;)
+    shared actual native Float magnitude 
+            =&gt; this &lt;= 0.0 then 0.0-this else this;
+    
+    &quot;This value, represented as an [[Integer]], after 
+     truncation of its fractional part, if such a 
+     representation is possible.&quot;
+    throws (`class OverflowException`,
+        &quot;if the the [[wholePart]] of this value is too large 
+         or too small to be represented as an `Integer`&quot;)
+    since(&quot;1.1.0&quot;)
+    shared native Integer integer;
+    
+    shared actual native Float timesInteger(Integer integer)
+            =&gt; times(integer.nearestFloat);
+    
+    shared actual native Float plusInteger(Integer integer)
+            =&gt; plus(integer.nearestFloat);
+    
+    &quot;The result of raising this number to the given integer
+     power, where the following indeterminate forms evaluate 
+     to `1.0`:
+     
+     - `0.0^0`,
+     - `infinity^0` and `(-infinity)^0`.
+     
+     For any negative integer power `n&lt;0`:
+     
+     - `0.0^n` evaluates to `infinity`,
+     - `(-0.0)^n` evaluates to `-infinity`, and
+     - for any nonzero floating point number `x`, `x^n` 
+       evaluates to `1.0/x^(-n)`.&quot;
+    shared actual native Float powerOfInteger(Integer integer);
+    
+    &quot;A string representing this floating point number.
+     
+     - `\&quot;NaN\&quot;`, for any [[undefined value|undefined]]
+     - `\&quot;Infinity\&quot;`, for [[infinity]], 
+     - `\&quot;-Infinity\&quot;`, for [[-infinity]], or,
+     - a Ceylon floating point literal that evaluates to 
+       this floating point number, for example, `\&quot;1.0\&quot;`, 
+       `\&quot;-0.0\&quot;`, or `\&quot;1.5E10\&quot;`.&quot;
+    see (`function formatFloat`)
+    shared actual native String string;
+    
+    &quot;Determines if this value is strictly larger than the 
+     given value, where [[infinity]] is considered greater 
+     than every defined, finite value, and `-infinity` is 
+     considered smaller than every defined, finite value. 
+     Evaluates to `false` if this value, the given value, or 
+     both are [[undefined]].&quot;
+    shared actual native Boolean largerThan(Float other);
+    
+    &quot;Determines if this value is strictly smaller than the 
+     given value, where [[infinity]] is considered greater 
+     than every defined, finite value, and `-infinity` is 
+     considered smaller than every defined, finite value. 
+     Evaluates to `false` if this value, the given value, or 
+     both are [[undefined]].&quot; 
+    shared actual native Boolean smallerThan(Float other); 
+    
+    &quot;Determines if this value is larger than or equal to the 
+     given value, where [[infinity]] is considered greater 
+     than every defined, finite value, and `-infinity` is 
+     considered smaller than every defined, finite value. 
+     Evaluates to `false` if this value, the given value, or 
+     both are [[undefined]].&quot;
+    shared actual native Boolean notSmallerThan(Float other);
+    
+    &quot;Determines if this value is smaller than or equal to the 
+     given value, where [[infinity]] is considered greater 
+     than every defined, finite value, and `-infinity` is 
+     considered smaller than every defined, finite value. 
+     Evaluates to `false` if this value, the given value, or 
+     both are [[undefined]].&quot; 
+    shared actual native Boolean notLargerThan(Float other); 
+}
+</pre></body></html>

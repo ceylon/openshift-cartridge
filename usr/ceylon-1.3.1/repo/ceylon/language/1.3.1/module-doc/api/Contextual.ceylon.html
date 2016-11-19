@@ -1,0 +1,140 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>Contextual.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='//fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;&quot;&quot;Stores values local to the current thread of execution
+   meaning that each thread or process that accesses these
+   values get to see their own copy. If the underlying
+   platform does not support threading the practical effect
+   of this class is no different than using a local value.
+   
+   Setting a value is done by creating an instance of
+   `Contextual.Using`, passing it the required value, or a
+   function that will return the needed value when necessary,
+   and passing it to a try-resource statement.
+   
+   If a function is used to set the value then that value will
+   be retrieved the moment the try-resource block is entered.
+   If the same `Using` is re-used then the value will be
+   refreshed by calling the function again.
+   
+   When entering a try-resource block any previous value is
+   stored and then restored at the end of the block so nested
+   try-resource blocks are possible.
+   
+   Retrieving the value is done using `get()`. Doing so when
+   no try-resource statement is active will result in an
+   assertion exception.
+   
+   An example:
+   
+       Contextual&lt;String&gt; stringValue = Contextual&lt;String&gt;();
+       Contextual&lt;Integer&gt; intValue = Contextual&lt;Integer&gt;();
+       try (stringValue.Using(&quot;foo&quot;),
+               intValue.Using(system.milliseconds)) {
+           print(stringValue.get()); // prints &quot;foo&quot;
+           print(intValue.get());    // prints the current time in ms
+           try (stringValue.Using(&quot;bar&quot;)) {
+               print(stringValue.get()); // prints &quot;bar&quot;
+               print(intValue.get());    // prints same number as before
+           }
+       }
+       
+   NB: This example only shows how to *use* `Contextual` and
+   does not show anything thread-related.
+   &quot;&quot;&quot;
+by(&quot;Tako Schotanus&quot;)
+since(&quot;1.2.0&quot;)
+native
+shared class Contextual&lt;Element&gt;() {
+    
+    &quot;Retrieves the value previously set. Will throw an assertion
+     exception if called when not within a try-resource block&quot;
+    native shared Element get();
+    
+    &quot;Used to set a value for this `Contextual`&quot;
+    native shared class Using(Element|Element() newValue)
+            satisfies Obtainable {
+        native shared actual void obtain() {}
+        native shared actual void release(Throwable? error) {}
+    }
+}
+
+native(&quot;jvm&quot;)
+shared class Contextual&lt;Element&gt;() {
+    
+    import java.lang {
+        ThreadLocal
+    }
+
+    value threadLocal = ThreadLocal&lt;Element&gt;();
+    
+    native(&quot;jvm&quot;) shared Element get() {
+        if (exists result = threadLocal.get()) {
+            return result;
+        }
+        else {
+            &quot;not properly initialized&quot;
+            assert (is Element null);
+            return null;
+        }
+    }
+    
+    native(&quot;jvm&quot;) shared class Using(Element|Element() newValue)
+            satisfies Obtainable {
+        variable Element? previous = null; 
+        
+        native(&quot;jvm&quot;) shared actual void obtain() {
+            previous = threadLocal.get();
+            if (is Element() newValue) {
+                threadLocal.set(newValue());    
+            } else {
+                threadLocal.set(newValue);
+            }
+        }
+        
+        native(&quot;jvm&quot;) shared actual void release(Throwable? error) {
+            if (exists prev = previous) {
+                threadLocal.set(prev);
+            } else {
+                threadLocal.remove();
+            }
+        }
+    }
+}
+
+native(&quot;js&quot;)
+shared class Contextual&lt;Element&gt;() {
+    variable Element? val = null;
+    
+    native(&quot;js&quot;) shared Element get() {
+        if (exists result = val) {
+            return result;
+        }
+        else {
+            &quot;not properly initialized&quot;
+            assert (is Element null);
+            return null;
+        }
+    }
+    
+    native(&quot;js&quot;) shared class Using(Element|Element() newValue)
+            satisfies Obtainable {
+        variable Element? previous = null; 
+        
+        native(&quot;js&quot;) shared actual void obtain() {
+            previous = val;
+            if (is Element() newValue) {
+                val = newValue();    
+            } else {
+                val = newValue;
+            }
+        }
+        
+        native(&quot;js&quot;) shared actual void release(Throwable? error) {
+            val = previous;
+        }
+    }
+}
+</pre></body></html>
