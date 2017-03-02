@@ -1,0 +1,193 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>ClassDeclaration.ceylon</title><link href='../../.resources/favicon.ico' rel='shortcut icon'/>
+<link href='../../.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='../../.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='//fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '../../.resources/'</script><script src='../../.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='../../.resources/rainbow.min.js' type='text/javascript'></script><script src='../../.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='../../.resources/ceylon.js' type='text/javascript'></script><script src='../../.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>import ceylon.language { AnnotationType = Annotation }
+import ceylon.language.meta.model {
+    Class,
+    MemberClass,
+    AppliedType = Type,
+    IncompatibleTypeException,
+    TypeApplicationException
+}
+
+&quot;&quot;&quot;Class declaration.
+   
+   ### Callable classes
+   
+   Since Ceylon 1.2 classes are not always directly invokable
+   (if the class has constructors, but not a default constructor). Thus
+   members of `ClassDeclaration` which depend on the class parameter 
+   list typically have optional type, but are refined on 
+   [[ClassWithInitializerDeclaration]] to be non-optional. The exceptions to 
+   this are [[instantiate]] and [[memberInstantiate]], 
+   which throw exceptions.
+   
+   &lt;a name=&quot;toplevel-sample&quot;&gt;&lt;/a&gt;
+   ### Usage sample for toplevel classes
+   
+   Because some classes have type parameters, getting a model requires applying type arguments to the
+   class declaration with [[classApply]] in order to be able to instantiate that class. For example, here is how you would
+   obtain a class model that you can instantiate from a toplevel class declaration:
+   
+       class Foo&lt;T&gt;(){
+           string =&gt; &quot;Hello, our T is: ``typeLiteral&lt;T&gt;()``&quot;;
+       }
+       
+       void test(){
+           // We need to apply the Integer closed type to the Foo declaration in order to get the Foo&lt;Integer&gt; closed type
+           Class&lt;Foo&lt;Integer&gt;,[]&gt; classModel = `class Foo`.classApply&lt;Foo&lt;Integer&gt;,[]&gt;(`Integer`);
+           // This will print: Hello, our T is: ceylon.language::Integer
+           print(classModel());
+       }
+   
+   &lt;a name=&quot;member-sample&quot;&gt;&lt;/a&gt;
+   ### Usage sample for member classes
+
+   For member classes it is a bit longer, because member classes need to be applied not only their type arguments but also
+   the containing type, so you should use [[memberClassApply]] and start by giving the containing closed type:
+   
+       class Outer(){
+           shared class Inner(){
+               string =&gt; &quot;Hello&quot;;
+           }
+       }
+
+       void test(){
+           // apply the containing closed type `Outer` to the member class declaration `Outer.Inner`
+           MemberClass&lt;Outer,Outer.Inner,[]&gt; memberClassModel = `class Outer.Inner`.memberClassApply&lt;Outer,Outer.Inner,[]&gt;(`Outer`);
+           // We now have a MemberClass, which needs to be applied to a containing instance in order to become an
+           // invokable class model:
+           Class&lt;Outer.Inner,[]&gt; boundMemberClassModel = memberClassModel(Outer());
+           // This will print: Hello
+           print(boundMemberClassModel());
+       }
+   &quot;&quot;&quot;
+shared sealed interface ClassDeclaration 
+        of ClassWithInitializerDeclaration | ClassWithConstructorsDeclaration
+        satisfies ClassOrInterfaceDeclaration {
+    
+    &quot;A constructor declaration representing the class initializer 
+     (for a class with a parameter list) or
+     the default constructor, or null if the class lacks 
+     both a parameter list and a default constructor.&quot;
+    since(&quot;1.2.0&quot;)
+    shared formal CallableConstructorDeclaration? defaultConstructor;
+    
+    &quot;The list of parameter declarations for this class. 
+     Returns `null` if the class lacks both a parameter list and a 
+     default constructor.&quot;
+    since(&quot;1.2.0&quot;)
+    shared formal FunctionOrValueDeclaration[]? parameterDeclarations;
+    
+    &quot;Gets a parameter declaration by name. 
+     Returns `null` if this class lacks both a parameter list and a 
+     default constructor, 
+     or if no such parameter exists in the parameter list.&quot;
+    since(&quot;1.2.0&quot;)
+    shared formal FunctionOrValueDeclaration? getParameterDeclaration(String name);
+    
+    &quot;True if the current declaration is an annotation class or function.&quot;
+    since(&quot;1.2.0&quot;)
+    shared formal Boolean annotation;
+    
+    &quot;True if the class has an [[abstract|ceylon.language::abstract]] annotation.&quot;
+    shared formal Boolean abstract;
+
+    &quot;True if the class is serializable class.&quot;
+    since(&quot;1.2.0&quot;)
+    shared formal Boolean serializable;
+
+    &quot;True if the class is an anonymous class, as is the case for the class of object value declarations.&quot;
+    shared formal Boolean anonymous;
+
+    &quot;This anonymous class&apos; object value declaration if this class is an anonymous class. `null` otherwise.&quot;
+    since(&quot;1.1.0&quot;)
+    shared formal ValueDeclaration? objectValue;
+
+    &quot;True if the class has a [[final|ceylon.language::final]] annotation.&quot;
+    shared formal Boolean final;
+
+    &quot;Applies the given closed type arguments to this toplevel class declaration in order to obtain a class model. 
+     See [this code sample](#toplevel-sample) for an example on how to use this.&quot;
+    throws(`class IncompatibleTypeException`, 
+        &quot;If the specified `Type` or `Arguments` type arguments are not 
+         compatible with the actual result.&quot;)
+    throws(`class TypeApplicationException`, 
+            &quot;If the specified closed type argument values are not compatible 
+             with the actual result&apos;s type parameters.&quot;)
+    shared formal Class&lt;Type, Arguments&gt; classApply
+            &lt;Type=Anything, Arguments=Nothing&gt;
+            (AppliedType&lt;&gt;* typeArguments)
+                given Arguments satisfies Anything[];
+
+    &quot;Applies the given closed type arguments to this `static` member class declaration 
+     in order to obtain a class model.&quot;
+    throws(`class IncompatibleTypeException`, 
+        &quot;If the specified `Type` or `Arguments` type arguments are not 
+         compatible with the actual result.&quot;)
+    throws(`class TypeApplicationException`, 
+            &quot;If the specified closed type argument values are not compatible 
+             with the actual result&apos;s type parameters.&quot;)
+    shared formal Class&lt;Type, Arguments&gt; staticClassApply&lt;Type=Anything, Arguments=Nothing&gt;
+            (AppliedType&lt;Object&gt; containerType, AppliedType&lt;&gt;* typeArguments)
+            given Arguments satisfies Anything[];
+
+    &quot;Applies the given closed container type and type arguments to this member class declaration in order to obtain a member class model. 
+     See [this code sample](#member-sample) for an example on how to use this.&quot;
+    throws(`class IncompatibleTypeException`, 
+        &quot;If the specified `Container`, `Type` or `Arguments` type arguments 
+         are not compatible with the actual result.&quot;)
+    throws(`class TypeApplicationException`, 
+            &quot;If the specified closed container type or type argument values 
+             are not compatible with the actual result&apos;s container type or 
+             type parameters.&quot;)
+    shared formal MemberClass&lt;Container, Type, Arguments&gt; memberClassApply
+            &lt;Container=Nothing, Type=Anything, Arguments=Nothing&gt;
+            (AppliedType&lt;Object&gt; containerType, AppliedType&lt;&gt;* typeArguments)
+                given Arguments satisfies Anything[];
+
+    &quot;Creates a new instance of this toplevel class, 
+     by applying the specified type arguments and value arguments.&quot;
+    throws(`class IncompatibleTypeException`, 
+        &quot;If the specified type or value arguments are not compatible with 
+         this toplevel class, or if the class lacks both a parameter list
+         and a default constructor.&quot;)
+    shared default Object instantiate(AppliedType&lt;&gt;[] typeArguments = [], Anything* arguments)
+        =&gt; classApply&lt;Object, Nothing&gt;(*typeArguments).apply(*arguments);
+    
+    &quot;Creates a new instance of this `static` member class, 
+     by applying the specified type arguments and value arguments.&quot;
+    shared default Object staticInstantiate(AppliedType&lt;Object&gt; containerType, AppliedType&lt;&gt;[] typeArguments = [], Anything* arguments)
+            =&gt; staticClassApply&lt;Object, Nothing&gt;(containerType, *typeArguments).apply(*arguments);
+    
+    &quot;Creates a new instance of this member class, by applying the specified 
+     type arguments and value arguments.&quot;
+    throws(`class IncompatibleTypeException`, 
+        &quot;If the specified container, type or value arguments are not 
+         compatible with this method, or if the class lacks both a parameter list
+         and a default constructor.&quot;)
+    shared default Object memberInstantiate
+            (Object container, AppliedType&lt;&gt;[] typeArguments = [], Anything* arguments)
+                =&gt; memberClassApply&lt;Nothing, Object, Nothing&gt;(`Nothing`, *typeArguments).bind(container).apply(*arguments);
+    
+    &quot;Looks up a constructor declaration directly declared on this class, by name. 
+     Returns `null` if no such constructor matches. 
+     This includes unshared constructors but not inherited constructors 
+     (since constructors are not members).&quot;
+    since(&quot;1.2.0&quot;)
+    shared formal &lt;CallableConstructorDeclaration|ValueConstructorDeclaration&gt;? getConstructorDeclaration(String name);
+    
+    &quot;Returns the list of constructors declared on this class. This includes unshared constructors.&quot;
+    since(&quot;1.2.0&quot;)
+    shared formal ConstructorDeclaration[] constructorDeclarations();
+    
+    &quot;Returns the list of constructors declared on this class that are annotated with the 
+     given `Annotation` type argument. This includes unshared constructors.&quot;
+    since(&quot;1.2.0&quot;)
+    shared formal ConstructorDeclaration[] annotatedConstructorDeclarations&lt;Annotation&gt;()
+            given Annotation satisfies AnnotationType;
+}
+
+</pre></body></html>

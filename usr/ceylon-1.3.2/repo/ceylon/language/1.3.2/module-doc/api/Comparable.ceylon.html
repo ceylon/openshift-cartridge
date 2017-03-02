@@ -1,0 +1,115 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>Comparable.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='//fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;&quot;&quot;The general contract for values whose magnitude can be 
+   compared. `Comparable` imposes a total ordering upon
+   instances of any type that satisfies the interface.
+   
+   If a type `T` satisfies `Comparable&lt;T&gt;`, then instances 
+   of `T` may be compared using the comparison operators
+   `&lt;`, `&gt;`, `&lt;=`, `&gt;=`.
+   
+       assert (x&gt;=0.0);
+   
+   A _ternary comparison_ is useful for asserting lower and 
+   upper bounds.
+   
+       assert (0.0&lt;=x&lt;1.0);
+   
+   Finally, the _compare_ operator `&lt;=&gt;` may be used to 
+   produce an instance of [[Comparison]].
+   
+       switch (x&lt;=&gt;y)
+       case (equal) {
+           print(&quot;same same&quot;);
+       }
+       case (smaller) {
+           print(&quot;x smaller&quot;);
+       }
+       case (larger) {
+           print(&quot;y smaller&quot;);
+       }
+   
+   The total order of a type must be consistent with the 
+   definition of equality for the type. That is, there are 
+   three mutually exclusive possibilities:
+   
+   - `x&lt;y`,
+   - `x&gt;y`, or
+   - `x==y`
+   
+   (These possibilities are expressed by the enumerated
+   instances [[smaller]], [[larger]], and [[equal]] of
+   `Comparison`.)
+   
+   The order imposed by `Comparable` is sometimes called the
+   _natural order_ of a type, to reflect the fact that any
+   function of type `Comparison(T,T)` might determine a 
+   different order. Thus, some order-related operations come 
+   in two flavors: a flavor that depends upon the natural 
+   order, and a flavor which accepts an arbitrary comparator 
+   function. Examples are:
+   
+   - [[sort]] vs [[Iterable.sort]] and
+   - [[max]] vs [[Iterable.max]].&quot;&quot;&quot;
+see (`class Comparison`,
+     `function sort`, 
+     `function max`, `function min`,
+     `function largest`, `function smallest`)
+by (&quot;Gavin&quot;)
+tagged(&quot;Comparisons&quot;)
+shared interface Comparable&lt;in Other&gt; of Other 
+        given Other satisfies Comparable&lt;Other&gt; {
+    
+    &quot;Compares this value with the given value, returning:
+     
+     - [[larger]], if this value is strictly larger than the 
+       given value,
+     - [[smaller]], if this value is strictly smaller than 
+       the given value, or
+     - [[equal]], if this value is [[equal|equals]] to the 
+       given value.
+     
+     For any two values `x` and `y` such that the expression
+     `x.compare(y)` is well-typed, the expression may be
+     written:
+     
+         x &lt;=&gt; y 
+     
+     Implementations must respect the constraints that: 
+     
+     - `x==y` if and only if `x&lt;=&gt;y == equal` 
+        (consistency with `equals()`), 
+     - if `x&gt;y` then `y&lt;x` (symmetry), and 
+     - if `x&gt;y` and `y&gt;z` then `x&gt;z` (transitivity).&quot;
+    see (`function equals`)
+    shared formal Comparison compare(Other other);
+    
+    &quot;Determines if this value is strictly larger than the 
+     given value.&quot;
+    since(&quot;1.1.0&quot;)
+    shared default Boolean largerThan(Other other)
+            =&gt; compare(other)===larger; 
+    
+    &quot;Determines if this value is strictly smaller than the 
+     given value.&quot;
+    since(&quot;1.1.0&quot;)
+    shared default Boolean smallerThan(Other other)
+            =&gt; compare(other)===smaller; 
+    
+    &quot;Determines if this value is larger than or equal to the 
+     given value.&quot;
+    since(&quot;1.1.0&quot;)
+    shared default Boolean notSmallerThan(Other other)
+            =&gt; !compare(other)===smaller; 
+    
+    &quot;Determines if this value is smaller than or equal to 
+     the given value.&quot;
+    since(&quot;1.1.0&quot;)
+    shared default Boolean notLargerThan(Other other)
+            =&gt; !compare(other)===larger; 
+    
+}
+</pre></body></html>

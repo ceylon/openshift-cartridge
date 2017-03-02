@@ -1,0 +1,26 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>smallest.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='//fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;Given two [[Comparable]] values, return smallest of the two.
+ 
+ If exactly one of the given values violates the reflexivity 
+ requirement of [[Object.equals]] such that `x!=x`, then the 
+ other value is returned. In particular, if exactly one is 
+ an [[undefined `Float`|Float.undefined]], it is not 
+ returned.
+ 
+ _On the JVM platform, for arguments of type `Integer` or 
+ `Float`, prefer [[Integer.smallest]] or [[Float.smallest]]
+ in performance-sensitive code._&quot;
+see (`interface Comparable`, 
+     `function largest`, 
+     `function min`, 
+     `function Integer.smallest`,
+     `function Float.smallest`)
+tagged(&quot;Comparisons&quot;)
+shared Element smallest&lt;Element&gt;(Element x, Element y) 
+        given Element satisfies Comparable&lt;Element&gt; 
+        =&gt; if (x!=x || y&lt;x) then y else x;
+</pre></body></html>

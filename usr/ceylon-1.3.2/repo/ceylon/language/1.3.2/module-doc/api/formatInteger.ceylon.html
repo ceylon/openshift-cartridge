@@ -1,0 +1,100 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>formatInteger.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='//fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;The string representation of the given [[integer]] in the 
+ base given by [[radix]]. If the given integer is 
+ [[negative|Integer.negative]], the string representation 
+ will begin with `-`. Digits consist of decimal digits `0` 
+ to `9`, together with and lowercase letters `a` to `z` for 
+ bases greater than 10.
+ 
+ For example:
+ 
+ - `formatInteger(-46)` is `\&quot;-46\&quot;`
+ - `formatInteger(9,2)` is `\&quot;1001\&quot;`
+ - `formatInteger(10,8)` is `\&quot;12\&quot;`
+ - `formatInteger(511,16)` is `\&quot;1ff\&quot;`
+ - `formatInteger(512,32)` is `\&quot;g0\&quot;`&quot;
+throws (`class AssertionError`, 
+        &quot;if [[radix]] is not between [[minRadix]] and 
+         [[maxRadix]]&quot;)
+see (`function Integer.format`)
+tagged(&quot;Numbers&quot;)
+deprecated(&quot;Use [[Integer.format]]&quot;)
+shared String formatInteger(
+        &quot;The integer value to format.&quot;
+        Integer integer,
+        &quot;The base, between [[minRadix]] and [[maxRadix]] 
+         inclusive.&quot;
+        Integer radix = 10,
+        &quot;If not `null`, `groupingSeparator` will be used to
+         separate each group of three digits if `radix` is 10,
+         or each group of four digits if `radix` is 2 or 16.
+
+         `groupingSeparator` may not be &apos;-&apos;, a digit as
+         defined by the Unicode general category *Nd*, or a
+         letter as defined by the Unicode general categories
+         *Lu, Ll, Lt, Lm, and Lo*.&quot;
+        Character? groupingSeparator = null) {
+
+    assert (minRadix &lt;= radix &lt;= maxRadix);
+
+    if (exists groupingSeparator) {
+        &quot;groupingSeparator may not be &apos;-&apos;, a digit, or a letter.&quot;
+        assert (!groupingSeparator.digit
+                &amp;&amp; !groupingSeparator.letter
+                &amp;&amp; !groupingSeparator == &apos;-&apos;);
+    }
+
+    if (integer == 0) {
+        return &quot;0&quot;;
+    }
+
+    value groupingSize =
+            if (!groupingSeparator exists)
+                then 0
+            else if (radix == 10)
+                then 3
+            else if (radix == 2 || radix == 16)
+                then 4
+            else 0;
+
+    value groupingChar =
+            if (exists groupingSeparator,
+                groupingSize != 0)
+            then groupingSeparator
+            else &apos;X&apos;;
+
+    variable value digitNumber = 0;
+    variable {Character*} digits = {};
+    variable Integer i = integer &lt; 0 
+                         then integer 
+                         else -integer;
+    while (i != 0) {
+        Integer d = -(i % radix);
+        Character c;
+        if (0&lt;=d&lt;10) {
+            c = (d+zeroInt).character;
+        }
+        else if (10&lt;=d&lt;36) {
+            c = (d-10+aIntLower).character;
+        }
+        else {
+            assert (false);
+        }
+        if (groupingSize != 0
+                &amp;&amp; groupingSize.divides(digitNumber++)
+                &amp;&amp; digitNumber != 1) {
+            digits = digits.follow(groupingChar);
+        }
+        digits = digits.follow(c);
+        i = (i + d) / radix;
+    }
+    if (integer &lt; 0) {
+        digits = digits.follow(&apos;-&apos;);
+    }
+    return String(digits);
+}
+</pre></body></html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html><head><meta charset='UTF-8'/>
+<title>ceylon test</title>
+<link rel='stylesheet' type='text/css' href='bootstrap.min.css'/>
+<link rel='stylesheet' type='text/css' href='doc-tool.css'/>
+</head>
+<body>
+<div class='navbar navbar-inverse navbar-static-top'>
+<div class='navbar-inner'>
+<a class='tool-header' href='index.html'>
+<i class='tool-logo'></i>
+<span class='tool-label'>The Ceylon Toolset</span>
+<span><code class='tool-name'>ceylon test</code></span>
+<span class='tool-version'>1.3.2 754a09a (Smile Tolerantly)</span>
+</a>
+<ul class='nav pull-right'><li class='divider-vertical'/><li id='infoDropdown' class='dropdown'><a href='#' title='Show keyboard shortcuts [Shortcut: ?]' role='button' class='dropdown-toggle' data-toggle='dropdown'><i class='icon-info'></i></a><ul id='info-dropdown-panel' class='dropdown-menu'><h4>Keyboard Shortcuts</h4><li class='divider'></li><div id='info-common-shortcuts'><div id='?'><span class='key badge'>?</span><span class='info muted'>Open this information panel</span></div><div id='i'><span class='key badge'>i</span><span class='info muted'>Jump to tool index</span></div><div id='s'><span class='key badge'>s</span><span class='info muted'>Jump to synopsis</span></div><div id='d'><span class='key badge'>d</span><span class='info muted'>Jump to description</span></div><div id='o'><span class='key badge'>o</span><span class='info muted'>Jump to options</span></div></div></ul></li></ul></div>
+</div>
+<div class='sub-navbar'>
+<div class='sub-navbar-inner'><div><code class='sub-navbar-tool'>ceylon test</code></div>
+<div class='sub-navbar-summary'><p>Executes tests on the JVM</p>
+</div>
+</div><div class='sub-navbar-menu'>
+<a href='index.html'><span title='Jump to tool index [Shortcut: I]'><span class='accesskey'>I</span>ndex</span></a><a href='#section-synopsis'><span title='Jump to tool synopsis [Shortcut: S]'><span class='accesskey'>S</span>ynopsis</span></a><a href='#section-description'><span title='Jump to tool description [Shortcut: D]'><span class='accesskey'>D</span>escription</span></a><a href='#section-options'><span title='Jump to tool options [Shortcut: O]'><span class='accesskey'>O</span>ptions</span></a></div></div>
+<div class='container-fluid'>
+<div class='section section-synopsis'>
+<table class='table table-condensed table-bordered'>
+<thead>
+<tr class='table-header' title='Click for expand/collapse'><td colspan='1' id='section-synopsis'><i class='icon-expand'></i><h2>Synopsis</h2>
+</td></tr>
+</thead>
+<tbody>
+<tr><td><div class='synopsis'><code>ceylon test  [<a href='#option--auto-export-maven-dependencies'>--auto-export-maven-dependencies</a>] [<a href='#option--cacherep'>--cacherep</a>=&lt;url&gt;] [<a href='#option--compile'>--compile</a>[=&lt;flags&gt;]] [<a href='#option--cwd'>--cwd</a>=&lt;dir&gt;] [<a href='#option--flat-classpath'>--flat-classpath</a>] [<a href='#option--link-with-current-distribution'>--link-with-current-distribution</a>] [<a href='#option--maven-overrides'>--maven-overrides</a>=&lt;file&gt;] [<a href='#option--no-default-repositories'>--no-default-repositories</a>] [<a href='#option--offline'>--offline</a>] [<a href='#option--out'>--out</a>=&lt;file&gt;] [<a href='#option--overrides'>--overrides</a>=&lt;file&gt;] [<a href='#option--rep'>--rep</a>=&lt;url&gt;...] [<a href='#option--report'>--report</a>] [<a href='#option--sysrep'>--sysrep</a>=&lt;url&gt;] [<a href='#option--tag'>--tag</a>=&lt;tag&gt;...] [<a href='#option--tap'>--tap</a>[=&lt;file&gt;]] [<a href='#option--test'>--test</a>=&lt;test&gt;...] [<a href='#option--timeout'>--timeout</a>=&lt;seconds&gt;] [<a href='#option--verbose'>--verbose</a>[=&lt;flags&gt;]] [<a href='#option--version'>--version</a>=&lt;version&gt;] [<a href='#option--xml-junit-report'>--xml-junit-report</a>] [--] &lt;modules...&gt;</code></div>
+</td></tr></tbody></table></div>
+
+<div class='section section-description'>
+<table class='table table-condensed table-bordered'>
+<thead>
+<tr class='table-header' title='Click for expand/collapse'><td colspan='1' id='section-description'><i class='icon-expand'></i><h2> Description</h2>
+</td></tr>
+</thead>
+<tbody>
+<tr><td><p>Executes tests in specified <code>&lt;modules&gt;</code>. The <code>&lt;modules&gt;</code> arguments are the names of the modules to test with an optional version.</p>
+</td></tr></tbody></table></div>
+<div class='section section-options'>
+<table class='table table-condensed table-bordered'>
+<thead>
+<tr class='table-header' title='Click for expand/collapse'><td colspan='2' id='section-options'><i class='icon-expand'></i><h2>Options</h2>
+</td></tr>
+</thead>
+<tbody>
+<tr><td class='span3' id='option--auto-export-maven-dependencies'><code>--auto-export-maven-dependencies</code></td>
+<td class='option-description'><p>When using JBoss Modules (the default), treats all module dependencies between Maven modules as shared.</p>
+</td>
+</tr><tr><td class='span3' id='option--cacherep'><code>--cacherep=url</code></td>
+<td class='option-description'><p>Specifies the folder to use for caching downloaded modules. (default: <code>~/.ceylon/cache</code>)</p>
+</td>
+</tr><tr><td class='span3' id='option--compile'><code>--compile[=flags]</code></td>
+<td class='option-description'><p>Determines if and how compilation should be handled. Allowed flags include: <code>never</code>, <code>once</code>, <code>force</code>, <code>check</code>.</p>
+</td>
+</tr><tr><td class='span3' id='option--cwd'><code>--cwd=dir</code></td>
+<td class='option-description'><p>Specifies the current working directory for this tool. (default: the directory where the tool is run from)</p>
+</td>
+</tr><tr><td class='span3' id='option--flat-classpath'><code>--flat-classpath</code></td>
+<td class='option-description'><p>Launches the Ceylon module using a flat classpath.</p>
+</td>
+</tr><tr><td class='span3' id='option--link-with-current-distribution'><code>--link-with-current-distribution</code></td>
+<td class='option-description'><p>Link modules which were compiled with a more recent version of the distribution to the version of that module present in this distribution (1.3.2). This might fail with a linker error at runtime. For example if the module depended on an API present in the more recent version, but absent from 1.3.2. Allowed arguments are upgrade, downgrade or abort. Default: upgrade</p>
+</td>
+</tr><tr><td class='span3' id='option--maven-overrides'><code>--maven-overrides=file</code></td>
+<td class='option-description'><p>Specifies the XML file to use to load Maven artifact overrides. See http://ceylon-lang.org/documentation/current/reference/repository/maven/ for information. Deprecated: use --overrides.</p>
+</td>
+</tr><tr><td class='span3' id='option--no-default-repositories'><code>--no-default-repositories</code></td>
+<td class='option-description'><p>Indicates that the default repositories should not be used.</p>
+</td>
+</tr><tr><td class='span3' id='option--offline'><code>--offline</code>, <code id='option-L'>-L</code></td>
+<td class='option-description'><p>Enables offline mode that will prevent connections to remote repositories.</p>
+</td>
+</tr><tr><td class='span3' id='option--out'><code>--out=file</code></td>
+<td class='option-description'><p>Sets the folder to use for reports. Defalts to <code>reports/{test|test-js}</code>.</p>
+</td>
+</tr><tr><td class='span3' id='option--overrides'><code>--overrides=file</code></td>
+<td class='option-description'><p>Specifies the XML file to use to load module overrides. See http://ceylon-lang.org/documentation/current/reference/repository/maven/ for information. <em>Experimental</em>.</p>
+</td>
+</tr><tr><td class='span3' id='option--rep'><code>--rep=url</code></td>
+<td class='option-description'><p>Specifies a module repository containing dependencies. Can be specified multiple times. (default: <code>modules</code>, <code>~/.ceylon/repo</code>, <code>https://modules.ceylon-lang.org/repo/1</code>)</p>
+</td>
+</tr><tr><td class='span3' id='option--report'><code>--report</code></td>
+<td class='option-description'><p>Generates the test results report into HTML format, output directory is set with <code>--out</code> (experimental).</p>
+</td>
+</tr><tr><td class='span3' id='option--sysrep'><code>--sysrep=url</code></td>
+<td class='option-description'><p>Specifies the system repository containing essential modules. (default: <code>$CEYLON_HOME/repo</code>)</p>
+</td>
+</tr><tr><td class='span3' id='option--tag'><code>--tag=tag</code></td>
+<td class='option-description'><p>Specifies which tests will be run according to their tags. It can be used as include filter, so only tests with specified tag will be executed. But it can be used also as exclude filter, if tag name is prefixed with !, so only tests without specified tag will be executed..</p>
+</td>
+</tr><tr><td class='span3' id='option--tap'><code>--tap[=file]</code></td>
+<td class='option-description'><p>Enables the Test Anything Protocol v13 and writes the results to the specified file. If the file name is empty or <code>-</code>, print to standard output.</p>
+</td>
+</tr><tr><td class='span3' id='option--test'><code>--test=test</code></td>
+<td class='option-description'><p>Specifies which tests will be run.</p>
+</td>
+</tr><tr><td class='span3' id='option--timeout'><code>--timeout=seconds</code>, <code id='option-T'>-T seconds</code></td>
+<td class='option-description'><p>Sets the timeout for connections to remote repositories, use 0 for no timeout (default: 20).</p>
+</td>
+</tr><tr><td class='span3' id='option--verbose'><code>--verbose[=flags]</code>, <code id='option-d'>-d</code></td>
+<td class='option-description'><p>Produce verbose output. If no <code>flags</code> are given then be verbose about everything, otherwise just be verbose about the flags which are present. Allowed flags include: <code>all</code>, <code>loader</code>.</p>
+</td>
+</tr><tr><td class='span3' id='option--version'><code>--version=version</code></td>
+<td class='option-description'><p>Specifies which version of the test module to use.</p>
+</td>
+</tr><tr><td class='span3' id='option--xml-junit-report'><code>--xml-junit-report</code></td>
+<td class='option-description'><p>Generates the test results report into JUnit XML format, output directory is set with <code>--out</code> (experimental).</p>
+</td>
+</tr></tbody></table></div><div class='section'>
+<table class='table table-condensed table-bordered'>
+<thead>
+<tr class='table-header' title='Click for expand/collapse'><td colspan='1'><i class='icon-expand'></i><h2> Compile flags</h2>
+</td></tr>
+</thead>
+<tbody>
+<tr><td><p>The <code>--compile</code> option can take the following flags: </p>
+
+<ul>
+<li><strong>never</strong> - Never perform any compilation</li>
+<li><strong>once</strong> - Only compile when the compiled module is not available</li>
+<li><strong>check</strong> - Compile when the sources are newer than the compiled module</li>
+<li><strong>force</strong> - Always compile</li>
+</ul>
+
+<p>If the flag is given without an argument it's the same as specifying <code>check</code>. If no flag is given at all it's the same as specifying <code>never</code>.</p>
+</td></tr></tbody></table></div>
+<div class='section'>
+<table class='table table-condensed table-bordered'>
+<thead>
+<tr class='table-header' title='Click for expand/collapse'><td colspan='1'><i class='icon-expand'></i><h2> Configuration file</h2>
+</td></tr>
+</thead>
+<tbody>
+<tr><td><p>The test tool accepts the following option from the Ceylon configuration file: <code>testtool.compile</code> (the equivalent option on the command line always has precedence).</p>
+</td></tr></tbody></table></div>
+<div class='section'>
+<table class='table table-condensed table-bordered'>
+<thead>
+<tr class='table-header' title='Click for expand/collapse'><td colspan='1'><i class='icon-expand'></i><h2> EXAMPLE</h2>
+</td></tr>
+</thead>
+<tbody>
+<tr><td><p>The following would execute tests in the <code>com.example.foobar</code> module:</p>
+
+<pre><code>ceylon test com.example.foobar/1.0.0</code></pre>
+</td></tr></tbody></table></div>
+</div><script type='text/javascript' src='jquery-1.8.2.min.js'></script><script type='text/javascript' src='bootstrap.min.js'></script><script type='text/javascript' src='doc-tool.js'></script><script type='text/javascript'>init();</script></body></html>

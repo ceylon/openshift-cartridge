@@ -1,0 +1,38 @@
+'\" -*- coding: us-ascii -*-
+.if \n(.g .ds T< \\FC
+.if \n(.g .ds T> \\F[\n[.fam]]
+.de URL
+\\$2 \(la\\$1\(ra\\$3
+..
+.if \n(.g .mso www.tmac
+.TH "ceylon bash-completion" 1 "1 March 2017" "" ""
+.SH NAME
+ceylon bash-completion \- A tool which provides completion suggestions for the Bash shell.
+.SH SYNOPSIS
+'nh
+.fi
+.ad l
+\fBceylon bash-completion\fR \kx
+.if (\nx>(\n(.l/2)) .nr x (\n(.l/5)
+'in \n(.iu+\nxu
+[--cword=\fIvalue\fR] [--] [arguments]\&...
+'in \n(.iu-\nxu
+.ad b
+'hy
+.SH DESCRIPTION
+The \*(T<<arguments>\*(T> are the elements of the \*(T<${COMP_WORDS}\*(T> bash array variable.
+.PP
+The tool inspects the \*(T<<arguments>\*(T> and writes its completions to standard output.Currently the tool can complete
+.TP 0.2i
+\(bu
+tool names (except tools names which are arguments to another tool),
+.TP 0.2i
+\(bu
+long option names,
+.TP 0.2i
+\(bu
+long option values \fBif\fR the setter type is a \*(T<java.lang.File\*(T> or a subclass of \*(T<java.lang.Enum\*(T>.
+.SH OPTIONS
+.TP 
+--cword=\fIvalue\fR
+The index in the \*(T<<arguments>\*(T> of the argument being completed, i.e. The value of \*(T<${COMP_CWORD}\*(T>.

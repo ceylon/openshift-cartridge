@@ -1,0 +1,102 @@
+'\" -*- coding: us-ascii -*-
+.if \n(.g .ds T< \\FC
+.if \n(.g .ds T> \\F[\n[.fam]]
+.de URL
+\\$2 \(la\\$1\(ra\\$3
+..
+.if \n(.g .mso www.tmac
+.TH "ceylon run" 1 "1 March 2017" "" ""
+.SH NAME
+ceylon run \- Executes a Ceylon program on the JVM
+.SH SYNOPSIS
+'nh
+.fi
+.ad l
+\fBceylon run\fR \kx
+.if (\nx>(\n(.l/2)) .nr x (\n(.l/5)
+'in \n(.iu+\nxu
+[--assembly=\fIvalue\fR] [--auto-export-maven-dependencies] [--cacherep=\fIurl\fR] [--compile[=\fIflags\fR]] [--cwd=\fIdir\fR] [--flat-classpath] [--link-with-current-distribution] [--maven-overrides=\fIfile\fR] [--no-default-repositories] [--offline] [--overrides=\fIfile\fR] [--rep=\fIurl\fR...] [--run=\fItoplevel\fR] [--sysrep=\fIurl\fR] [--timeout=\fIseconds\fR] [--verbose[=\fIflags\fR]] [--] [module]
+'in \n(.iu-\nxu
+.ad b
+'hy
+.SH DESCRIPTION
+Executes the Ceylon program specified as the \*(T<module\*(T> argument. The \*(T<module\*(T> may optionally include a version.
+.SH OPTIONS
+.TP 
+--assembly=\fIvalue\fR
+Specifies the path to a Ceylon Assembly file that should be executed
+.TP 
+--auto-export-maven-dependencies
+When using JBoss Modules (the default), treats all module dependencies between Maven modules as shared.
+.TP 
+--cacherep=\fIurl\fR
+Specifies the folder to use for caching downloaded modules. (default: \*(T<~/.ceylon/cache\*(T>)
+.TP 
+--compile[=\fIflags\fR]
+Determines if and how compilation should be handled. Allowed flags include: \*(T<never\*(T>, \*(T<once\*(T>, \*(T<force\*(T>, \*(T<check\*(T>.
+.TP 
+--cwd=\fIdir\fR
+Specifies the current working directory for this tool. (default: the directory where the tool is run from)
+.TP 
+--flat-classpath
+Launches the Ceylon module using a flat classpath.
+.TP 
+--link-with-current-distribution
+Link modules which were compiled with a more recent version of the distribution to the version of that module present in this distribution (1.3.2). This might fail with a linker error at runtime. For example if the module depended on an API present in the more recent version, but absent from 1.3.2. Allowed arguments are upgrade, downgrade or abort. Default: upgrade
+.TP 
+--maven-overrides=\fIfile\fR
+Specifies the XML file to use to load Maven artifact overrides. See http://ceylon-lang.org/documentation/current/reference/repository/maven/ for information. Deprecated: use --overrides.
+.TP 
+--no-default-repositories
+Indicates that the default repositories should not be used.
+.TP 
+--offline, -L
+Enables offline mode that will prevent connections to remote repositories.
+.TP 
+--overrides=\fIfile\fR
+Specifies the XML file to use to load module overrides. See http://ceylon-lang.org/documentation/current/reference/repository/maven/ for information. \fIExperimental\fR.
+.TP 
+--rep=\fIurl\fR
+Specifies a module repository containing dependencies. Can be specified multiple times. (default: \*(T<modules\*(T>, \*(T<~/.ceylon/repo\*(T>, \*(T<https://modules.ceylon\-lang.org/repo/1\*(T>)
+.TP 
+--run=\fItoplevel\fR
+Specifies the fully qualified name of a toplevel method or class to run. The indicated declaration must be shared by the \*(T<module\*(T> and have no parameters. The format is: \*(T<qualified.package.name::classOrMethodName\*(T> with \*(T<::\*(T> acting as separator between the package name and the toplevel class or method name. (default: \*(T<module.name::run\*(T>)
+.TP 
+--sysrep=\fIurl\fR
+Specifies the system repository containing essential modules. (default: \*(T<$CEYLON_HOME/repo\*(T>)
+.TP 
+--timeout=\fIseconds\fR, -T \fIseconds\fR
+Sets the timeout for connections to remote repositories, use 0 for no timeout (default: 20).
+.TP 
+--verbose[=\fIflags\fR], -d
+Produce verbose output. If no \*(T<flags\*(T> are given then be verbose about everything, otherwise just be verbose about the flags which are present. Allowed flags include: \*(T<all\*(T>, \*(T<loader\*(T>, \*(T<cmr\*(T>.
+.SH "COMPILE FLAGS"
+The \*(T<\-\-compile\*(T> option can take the following flags: 
+.TP 0.2i
+\(bu
+\fBnever\fR - Never perform any compilation
+.TP 0.2i
+\(bu
+\fBonce\fR - Only compile when the compiled module is not available
+.TP 0.2i
+\(bu
+\fBcheck\fR - Compile when the sources are newer than the compiled module
+.TP 0.2i
+\(bu
+\fBforce\fR - Always compile
+.PP
+If the flag is given without an argument it's the same as specifying \*(T<check\*(T>. If no flag is given at all it's the same as specifying \*(T<never\*(T>.
+.SH "CONFIGURATION FILE"
+The run tool accepts the following option from the Ceylon configuration file: \*(T<runtool.compile\*(T>, \*(T<runtool.run\*(T>, \*(T<runtool.module\*(T> and multiple \*(T<runtool.arg\*(T> (the equivalent option on the command line always has precedence).
+.SH EXAMPLE
+The following would execute the \*(T<com.example.foobar\*(T> module:
+.PP
+.nf
+\*(T<ceylon run com.example.foobar/1.0.0
+\*(T>.fi
+.PP
+The following would execute the \*(T<bob\*(T> function in the \*(T<com.example.foobar.gee\*(T> package of the same previous module:
+.PP
+.nf
+\*(T<ceylon run \-\-run com.example.foobar.gee::bob com.example.foobar/1.0.0\*(T>
+.fi

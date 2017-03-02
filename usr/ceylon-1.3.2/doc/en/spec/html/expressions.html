@@ -1,0 +1,887 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Chapter&nbsp;6.&nbsp;Expressions</title><link rel="stylesheet" href="../shared/css/html.css" type="text/css">
+<link type='text/css' href='../shared/css/ceylon.css' rel='stylesheet'/>
+<link type='text/css' href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet'/>
+<script src='../shared/css/rainbow.min.js' type='text/javascript'></script>
+<script src='../shared/css/ceylon.js' type='text/javascript'></script>
+<script src='../shared/css/bnf.js' type='text/javascript'></script><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="The Ceylon Language"><link rel="up" href="index.html" title="The Ceylon Language"><link rel="previous" href="statementblocks.html" title="Chapter&nbsp;5.&nbsp;Statements, blocks, and control structures"><link rel="next" href="annotations.html" title="Chapter&nbsp;7.&nbsp;Annotations"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">The Ceylon Language &mdash; 6.&nbsp;Expressions</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="statementblocks.html">Prev</a>&nbsp;</td><th width="60%" align="center">&nbsp;</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="annotations.html">Next</a></td></tr></table><hr></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="expressions"></a>Chapter&nbsp;6.&nbsp;Expressions</h2></div></div><div></div></div><p>An <span class="emphasis"><em>expression</em></span> produces a value when executed. An 
+    algorithm expressed using functions and expressions, rather than sequences 
+    of statements is often easier to understand and refactor. Therefore, Ceylon
+    has a highly flexible expressions syntax. Expressions are formed from:</p><div class="itemizedlist"><ul type="disc"><li><p>literal values, string templates, and self references,</p></li><li><p>evaluation and assignment of values,</p></li><li><p>invocation of functions and instantiation of classes,</p></li><li><p>callable references, static references, and anonymous functions,</p></li><li><p>comprehensions,</p></li><li><p>metamodel references,</p></li><li><p>enumeration of iterables and tuples, and</p></li><li><p>operators.</p></li></ul></div><p>Ceylon expressions are validated for typesafety at compile time. To 
+    determine whether an expression is assignable to a program element such as 
+    a value or parameter, Ceylon considers the <span class="emphasis"><em>type</em></span> of the 
+    expression (the type of the objects that are produced when the expression 
+    is evaluated). An expression is assignable to a program element if the type 
+    of the expression is assignable to the declared type of the program 
+    element.</p><p>Within a <tt class="literal">dynamic</tt> block, an expression may have no 
+    type, in the sense that its type can not be determined using static analysis
+    of the code.</p><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="literalvalues"></a>6.1.&nbsp;Literal values</h2></div></div><div></div></div><p>Ceylon supports literal values of the following types:</p><div class="itemizedlist"><ul type="disc"><li><p><tt class="literal">Integer</tt> and <tt class="literal">Float</tt>,</p></li><li><p><tt class="literal">Character</tt>, and</p></li><li><p><tt class="literal">String</tt>.</p></li></ul></div><p>The types <tt class="literal">Integer</tt>, <tt class="literal">Float</tt>, 
+        <tt class="literal">Character</tt>, and <tt class="literal">String</tt> are defined in the 
+        module <tt class="literal">ceylon.language</tt>.</p><i><span class="comment"><p>Note: Ceylon does not need a special syntax for <tt class="literal">Boolean</tt> 
+        literal values, since <tt class="literal">Boolean</tt> is just a class with the cases 
+        <tt class="literal">true</tt> and <tt class="literal">false</tt>. Likewise, <tt class="literal">null</tt> 
+        is just the singleton value of an anonymous class.</p></span></i><pre data-language="bnf">Literal: IntegerLiteral | FloatLiteral | CharacterLiteral | StringLiteral | VerbatimStringLiteral</pre><p>All literal values are instances of immutable types. The value of a literal 
+        expression is an instance of the type. How this instance is produced is not specified 
+        here.</p><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="naturalnumber"></a>6.1.1.&nbsp;Integer number literals</h3></div></div><div></div></div><p>An integer literal, as defined in 
+            <a href="lexical.html#numericliterals" title="2.4.1.&nbsp;Numeric literals">&sect;2.4.1 Numeric literals</a>, is an expression of type 
+            <tt class="literal">Integer</tt>, representing a numeric integer.</p><pre data-language="ceylon">Integer five = 5;</pre><pre data-language="ceylon">Integer mask = $1111_0000;</pre><pre data-language="ceylon">Integer white = #FFFF;</pre></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="floatnumber"></a>6.1.2.&nbsp;Floating point number literals</h3></div></div><div></div></div><p>A floating point literal, as defined in 
+            <a href="lexical.html#numericliterals" title="2.4.1.&nbsp;Numeric literals">&sect;2.4.1 Numeric literals</a>, is an expression of type 
+            <tt class="literal">Float</tt>, a floating-point representation of 
+            a numeric value.</p><pre data-language="ceylon">shared Float pi = 3.14159;</pre></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="character"></a>6.1.3.&nbsp;Character literals</h3></div></div><div></div></div><p>A single character literal, as defined in 
+            <a href="lexical.html#characterliterals" title="2.4.2.&nbsp;Character literals">&sect;2.4.2 Character literals</a>, is an expression of type 
+            <tt class="literal">Character</tt>, representing a single 32-bit
+            Unicode character.</p><pre data-language="ceylon">if (exists ch=string[i], ch == '+') { ... }</pre></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="string"></a>6.1.4.&nbsp;Character string literals</h3></div></div><div></div></div><p>A character string literal or verbatim string, as defined 
+            in <a href="lexical.html#stringliterals" title="2.4.3.&nbsp;String literals">&sect;2.4.3 String literals</a>, is an expression of type
+            <tt class="literal">String</tt>, representing a sequence of Unicode
+            characters.</p><pre data-language="ceylon">person.name = "Gavin King";</pre><pre data-language="ceylon">print("Melbourne\tVic\tAustralia\nAtlanta\tGA\tUSA\nGuanajuato\tGto\tMexico\n");</pre><pre data-language="ceylon">String verbatim = """A verbatim string can have \ or a " in it."""";</pre></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="stringtemplates"></a>6.2.&nbsp;String templates</h2></div></div><div></div></div><p>A character <span class="emphasis"><em>string template</em></span> contains interpolated 
+        expressions, surrounded by character string fragments.</p><pre data-language="bnf">StringTemplate: StringStart Expression (StringMid Expression)* StringEnd</pre><p>Each interpolated expression contained in the string template must have 
+        a type assignable to <tt class="literal">Object</tt> defined in 
+        <tt class="literal">ceylon.language</tt>.</p><pre data-language="ceylon">print("Hello, ``person.firstName`` ``person.lastName``, the time is ``Time()``.");</pre><pre data-language="ceylon">print("1 + 1 = ``1 + 1``");</pre><p>A string template is an expression of type <tt class="literal">String</tt>.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="selfreferences"></a>6.3.&nbsp;Self references</h2></div></div><div></div></div><p>The type of the following expressions depends upon the context in which 
+        they appear.</p><pre data-language="bnf">SelfReference: "this" | "super" | "outer"</pre><p>A self reference expression may not occur outside of a class or 
+        interface body.</p><p>The <span class="emphasis"><em>immediately containing class or interface</em></span> for
+        a program element is the class or interface in which the program element 
+        occurs, and which contains no other class or interface in which the program 
+        element occurs. If there is no such class or interface, the program element
+        has no immediately containing class or interface.</p><p>A <tt class="literal">this</tt>, <tt class="literal">outer</tt>, or 
+        <tt class="literal">super</tt> self reference must have an immediately containing 
+        class or interface. An <tt class="literal">outer</tt> self reference must have
+        an immediately containing class or interface for its immediately containing 
+        class or interface.</p><i><span class="comment">
+        <p>Note: the keyword <tt class="literal">package</tt> is not an expression, and 
+        thus does not have a well-defined type. However, it may be used to qualify 
+        and disambiguate a value reference or callable reference. A value reference or 
+        callable reference qualified by the keyword <tt class="literal">package</tt> always 
+        refers to a toplevel member of the containing package, never to an imported 
+        declaration or nested declaration, as defined by 
+        <a href="statementblocks.html#unqualifiedreferenceresolution" title="5.1.7.&nbsp;Unqualified reference resolution">&sect;5.1.7 Unqualified reference resolution</a>.</p>
+        </span></i><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="this"></a>6.3.1.&nbsp;<tt class="literal">this</tt></h3></div></div><div></div></div><p>The keyword <tt class="literal">this</tt> refers to the current instance,
+            as defined in <a href="execution.html#currentinstanceofaclassorinterface" title="8.2.3.&nbsp;Current instance of a class or interface">&sect;8.2.3 Current instance of a class or interface</a>, of the 
+            immediately containing class or interface (the class or interface in which 
+            the expression appears). Its type is the applied type formed by the 
+            immediately containing class or interface with its own type parameters as
+            type arguments.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="outer"></a>6.3.2.&nbsp;<tt class="literal">outer</tt></h3></div></div><div></div></div><p>The keyword <tt class="literal">outer</tt> refers to the current instance,
+            as defined in <a href="execution.html#currentinstanceofaclassorinterface" title="8.2.3.&nbsp;Current instance of a class or interface">&sect;8.2.3 Current instance of a class or interface</a>, of the 
+            class or interface which immediately contains the immediately containing 
+            class or interface. Its type is the applied type formed by this class or 
+            interface with its own type parameters as type arguments.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="super"></a>6.3.3.&nbsp;<tt class="literal">super</tt></h3></div></div><div></div></div><p>The keyword <tt class="literal">super</tt> refers to the current instance 
+            of the immediately containing class or interface. Its type is the 
+            intersection of the principal instantiation of the immediate superclass 
+            for the immediately containing class or interface, as defined in
+            <a href="typesystem.html#principalinstantiationofasupertype" title="3.7.4.&nbsp;Principal instantiation of a supertype">&sect;3.7.4 Principal instantiation of a supertype</a>, with all principal 
+            instantiations of immediate superinterfaces of the immediately containing 
+            class or interface. A member reference such as <tt class="literal">super.x</tt> 
+            may not resolve to a <tt class="literal">formal</tt> declaration, nor to any 
+            member inherited from more than one supertype of the intersection type.</p><p>As an exception to this, when the keyword <tt class="literal">super</tt> 
+            occurs in an <tt class="literal">extends</tt> clause, as specified in 
+            <a href="typesystem.html#extendedclass" title="3.3.2.&nbsp;Extension">&sect;3.3.2 Extension</a>, it refers to the current instance of
+            the class or interface which immediately contains the declaration to which
+            the <tt class="literal">extends</tt> clause belongs. Its type is the 
+            intersection of the principal instantiation of the immediate superclass 
+            of this containing class or interface, with all principal instantiations 
+            of immediate superinterfaces of this containing class or interface.</p><p>The keyword <tt class="literal">super</tt> may occur as the first operand
+            of an <tt class="literal">of</tt> operator, in which case the second operand is
+            the principal instantiation of some supertype of the class for the 
+            immediately containing class or interface. The expression 
+            <tt class="literal">(super of Type)</tt> has type <tt class="literal">Type</tt>. A 
+            member reference such as <tt class="literal">(super of Type).x</tt> may not 
+            resolve to a <tt class="literal">formal</tt> member, nor to any member inherited 
+            from more than one supertype of <tt class="literal">Type</tt>, nor to any member 
+            that is refined by the class or any intermediate supertype of the class.</p></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="anonymousfunctions"></a>6.4.&nbsp;Anonymous functions</h2></div></div><div></div></div><p>An anonymous function is a function, as specified in 
+        <a href="declarations.html#functions" title="4.7.&nbsp;Functions">&sect;4.7 Functions</a>, with no name, defined within an 
+        expression. It comprises one or more parameter lists, followed by 
+        an expression or a block of code.</p><pre data-language="bnf">FunctionExpression: ("function" | "void")? Parameters+ (LazySpecifier | Block)</pre><p>The parameters are the parameters of the function. The lazy 
+        specifier or block of code is the implementation of the function.</p><p>An anonymous function may be considered <tt class="literal">void</tt>:</p><div class="itemizedlist"><ul type="disc"><li><p>if the <tt class="literal">void</tt> keyword is specified, 
+                the function is a <tt class="literal">void</tt> function, or</p></li><li><p>if the <tt class="literal">function</tt> keyword is specified,
+                the function is not a <tt class="literal">void</tt> function, or,
+                </p></li><li><p>otherwise, the function is <tt class="literal">void</tt> if 
+                and only if it is defined using a block in which no 
+                <tt class="literal">return</tt> statement with an expression occurs 
+                sequentially, as defined in <a href="statementblocks.html#blockstructure" title="5.1.&nbsp;Block structure and references">&sect;5.1 Block structure and references</a>.</p></li></ul></div><p>If the function is not considered <tt class="literal">void</tt>, 
+        then its return type is inferred.</p><p>The type of an anonymous function expression is the callable 
+        type of the function, as specified in 
+        <a href="declarations.html#callabletypeoffunction" title="4.7.1.&nbsp;Callable type of a function">&sect;4.7.1 Callable type of a function</a>.</p><pre data-language="ceylon">(Value x, Value y) =&gt; x&lt;=&gt;y</pre><pre data-language="ceylon">void (String name) =&gt; print(name)</pre><pre data-language="ceylon">(String string) {
+    value mid = string.size / 2;
+    return [string[...mid],string[mid+1...]];
+}</pre><p>An anonymous function occurring in an <tt class="literal">extends</tt>
+        clause may not contain a reference to a variable value.</p><i><span class="comment"><p>Note: evaluation of an anonymous function expression,
+        as defined in <a href="execution.html#anonymousfunctionevaluation" title="8.4.5.&nbsp;Evaluation of anonymous functions">&sect;8.4.5 Evaluation of anonymous functions</a> results
+        in instantiation of an object of type <tt class="literal">Callable</tt>.
+        However, the members of this object are never in scope, do not hide
+        other declarations, and are not referenceable from within the 
+        anonymous function.</p></span></i><i><span class="comment"><p>Note: there is almost no semantic difference between the
+        following function declarations:</p>
+        <pre data-language="ceylon">Float f(Float x)(Float y) =&gt; x*y;</pre>
+        <pre data-language="ceylon">Float(Float) f(Float x) =&gt; (Float y) =&gt; x*y;</pre>
+        <p>The first form is strongly preferred.</p></span></i><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="parametertypeinference"></a>6.4.1.&nbsp;Anonymous function parameter type inference</h3></div></div><div></div></div><p>If the type of a parameter of an anonymous function is 
+            not declared explicitly, then the type of the parameter may in 
+            certain cases be inferred if the anonymous function occurs:</p><div class="itemizedlist"><ul type="disc"><li><p>as a listed argument, as defined in 
+                    <a href="expressions.html#listedarguments" title="6.6.4.&nbsp;Listed arguments">&sect;6.6.4 Listed arguments</a>, in a positional 
+                    argument list, or</p></li><li><p>as a specified argument, anonymous argument, or
+                    listed argument, as defined in 
+                    <a href="expressions.html#namedarguments" title="6.6.8.&nbsp;Named argument lists">&sect;6.6.8 Named argument lists</a>, in a named argument 
+                    list.</p></li></ul></div><p>Suppose the type of the <tt class="literal">i</tt>th parameter 
+            <tt class="literal">p</tt> of an anonymous function is not declared 
+            explicitly, and further suppose that the anonymous function
+            occurs as the argument to a parameter <tt class="literal">x</tt> of
+            some function or class in a direct invocation expression, as 
+            defined in <a href="expressions.html#directinvocations" title="6.6.1.&nbsp;Direct invocations">&sect;6.6.1 Direct invocations</a>.</p><p>Then the type of <tt class="literal">p</tt> may be inferred if 
+            either:</p><div class="itemizedlist"><ul type="disc"><li><p>the function or class has no type parameters, or 
+                    the invocation has an explicit type argument list, and 
+                    <tt class="literal">x</tt> is a callable parameter with the 
+                    same number of parameters as the anonymous function, and 
+                    with <tt class="literal">i</tt>th parameter <tt class="literal">q</tt>,
+                    </p></li><li><p>the function or class has at least one type parameter, 
+                    and the invocation has no explicit type argument list, and 
+                    <tt class="literal">x</tt> is a callable parameter with the same 
+                    number of parameters as the anonymous function, and the type 
+                    of the <tt class="literal">i</tt>th parameter <tt class="literal">q</tt>
+                    of <tt class="literal">x</tt> does not involve any of the type 
+                    parameters of the generic function or class, or</p></li><li><p><tt class="literal">x</tt> is a value parameter whose type 
+                    does not involve any of the type parameters of the generic 
+                    function or class and represents a function with the same 
+                    number of parameters as the anonymous function, and with 
+                    <tt class="literal">i</tt>th parameter <tt class="literal">q</tt>, 
+                    according to <a href="declarations.html#callabletypeoffunction" title="4.7.1.&nbsp;Callable type of a function">&sect;4.7.1 Callable type of a function</a>.</p></li></ul></div><p>Then the type of <tt class="literal">p</tt> is inferred to be the 
+            type of <tt class="literal">q</tt> in the realization of the function or 
+            class, as defined in <a href="typesystem.html#realizations" title="3.7.7.&nbsp;Realizations">&sect;3.7.7 Realizations</a>.</p><p>Otherwise, suppose the type of the <tt class="literal">i</tt>th
+            parameter <tt class="literal">p</tt> of an anonymous function is not
+            declared explicitly, and further suppose that the anonymous function
+            occurs as the <tt class="literal">n</tt>th argument in the positional
+            argument list of an indirect invocation expression.</p><p>Then if the callable type of the invoked expression represents
+            a function whose <tt class="literal">n</tt>th parameter is a callable
+            parameter with the same number of parameters as the anonymous
+            function, according to <a href="declarations.html#callabletypeoffunction" title="4.7.1.&nbsp;Callable type of a function">&sect;4.7.1 Callable type of a function</a>,
+            then the type of <tt class="literal">p</tt> is inferred to be the type of 
+            the corresponding <tt class="literal">i</tt>th parameter of this callable 
+            parameter.</p><p>That is, if the type of the invoked expression is 
+            <tt class="literal">R(*T)</tt> where <tt class="literal">T</tt>
+            is a tuple type whose <tt class="literal">n</tt>th element type is 
+            <tt class="literal">P(*S)</tt> and <tt class="literal">S</tt> is 
+            in turn a tuple type whose <tt class="literal">i</tt>th element type is 
+            <tt class="literal">Q</tt>, then <tt class="literal">Q</tt> is the inferred type 
+            of <tt class="literal">p</tt>.</p></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="compoundexpressions"></a>6.5.&nbsp;Compound expressions</h2></div></div><div></div></div><p>An <span class="emphasis"><em>atom</em></span> is a literal or self reference, a
+        string template, a base expression, an iterable or tuple enumeration, 
+        an anonymous class expression, a metamodel or reference expression, or 
+        a parenthesized expression.</p><pre data-language="bnf">Atom: LiteralExpression | BaseExpression | DelimitedExpression | MetaExpression | SelfReference</pre><pre data-language="bnf">LiteralExpression: Literal | StringTemplate</pre><pre data-language="bnf">DelimitedExpression: GroupedExpression | Enumeration | ObjectExpression</pre><pre data-language="bnf">MetaExpression: Meta | Dec</pre><p>A <span class="emphasis"><em>primary</em></span> is formed by recursively forming 
+        member expressions, static expressions, invocation expressions, and 
+        index expressions from an initial atom, using the operators in the
+        first row of the table of operator precedence and associativity in
+        <a href="expressions.html#operatorprecedence" title="6.8.1.&nbsp;Operator precedence">&sect;6.8.1 Operator precedence</a>.</p><pre data-language="bnf">Primary: Atom | QualifiedExpression | Invocation | IndexedExpression</pre><pre data-language="bnf">QualifiedExpression: MemberExpression | ConstructorExpression | StaticExpression</pre><p>More complex expressions are formed by combining expressions using 
+        operators, including assignment operators, as defined in <a href="expressions.html#operators" title="6.8.&nbsp;Operators">&sect;6.8 Operators</a>, 
+        and using inline conditional expressions and anonymous functions.</p><pre data-language="bnf">ValueExpression: Primary | OperatorExpression</pre><pre data-language="bnf">Expression: ValueExpression | FunctionExpression | LetExpression | ConditionalExpression</pre><i><span class="comment"><p>Note: the grammar of operator expressions is defined by
+        the table of operator precedence and associativity in 
+        <a href="expressions.html#operatorprecedence" title="6.8.1.&nbsp;Operator precedence">&sect;6.8.1 Operator precedence</a>. Thus, the rules
+        <tt class="literal">OperatorExpression</tt> and <tt class="literal">IndexedExpression</tt>
+        are not defined in BNF.</p></span></i><p>Parentheses are used for grouping:</p><pre data-language="bnf">GroupedExpression: "(" Expression ")"</pre><p>A compound expression occurring in a <tt class="literal">dynamic</tt> 
+        block, and involving a qualified or unqualified reference with no type,
+        or a reference to a declaration with no type, may also have no type.</p><p>In particular, if an operand expression has no type, and the type 
+        of the operator expression depends upon the type of the operand, and the 
+        operator expression occurs within a <tt class="literal">dynamic</tt> block, 
+        then the whole operator expression has no type.</p><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="baseexpressions"></a>6.5.1.&nbsp;Base expressions</h3></div></div><div></div></div><p>A <span class="emphasis"><em>base expression</em></span> is an identifier,
+            optionally qualified by the keyword <tt class="literal">package</tt>, 
+            with an optional list of type arguments:</p><pre data-language="bnf">BaseExpression: PackageQualifier? (MemberName | TypeName) TypeArguments?</pre><p>A base expression is either:</p><div class="itemizedlist"><ul type="disc"><li><p>a reference to a toplevel function, toplevel value, or 
+                    toplevel class,</p></li><li><p>a reference within the lexical scope of the referenced 
+                    function, value, constructor, or class, or</p></li><li><p>a reference within the body of the referenced function,
+                    value, constructor, or class.</p></li></ul></div><p>The referenced declaration is determined by resolving the unqualified 
+            reference as defined by <a href="statementblocks.html#unqualifiedreferenceresolution" title="5.1.7.&nbsp;Unqualified reference resolution">&sect;5.1.7 Unqualified reference resolution</a>.
+            The unqualified realization for the unqualified reference is determined
+            according to <a href="typesystem.html#realizations" title="3.7.7.&nbsp;Realizations">&sect;3.7.7 Realizations</a>.</p><p>The type argument list, if any, must conform, as defined by
+            <a href="typesystem.html#typeargumentsandconstraints" title="3.6.3.&nbsp;Type arguments and type constraints">&sect;3.6.3 Type arguments and type constraints</a>, to the type parameter list
+            of the unqualified realization.</p><p>If a base expression is a reference to an attribute, method, member 
+            class, or member class constructor of a class, the receiving instance is the 
+            current instance of that class, as defined by 
+            <a href="execution.html#currentinstanceofaclassorinterface" title="8.2.3.&nbsp;Current instance of a class or interface">&sect;8.2.3 Current instance of a class or interface</a>. Otherwise, there is no 
+            receiving instance.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="memberexpressions"></a>6.5.2.&nbsp;Member expressions</h3></div></div><div></div></div><p>A <span class="emphasis"><em>member expression</em></span> is a <span class="emphasis"><em>receiver
+            expression</em></span>, followed by an identifier, with an optional list
+            of type arguments.</p><pre data-language="bnf">MemberExpression: (Primary ".") (MemberName | TypeName) TypeArguments?</pre><p>A member expression is a reference to a member of a type: an
+            attribute, method, or member class.</p><p>The referenced member is determined by resolving the qualified 
+            reference as defined by <a href="statementblocks.html#qualifiedreferenceresolution" title="5.1.8.&nbsp;Qualified reference resolution">&sect;5.1.8 Qualified reference resolution</a>.
+            The qualified realization for the qualified reference is determined
+            according to <a href="typesystem.html#realizations" title="3.7.7.&nbsp;Realizations">&sect;3.7.7 Realizations</a>.</p><p>The type argument list, if any, must conform, as defined by
+            <a href="typesystem.html#typeargumentsandconstraints" title="3.6.3.&nbsp;Type arguments and type constraints">&sect;3.6.3 Type arguments and type constraints</a>, to the type parameter list
+            of the qualified realization.</p><p>The receiver expression produces the instance upon which the member 
+            is invoked or evaluated. When a member expression is executed, the receiver 
+            expression is evaluated to produce the receiving instance which is held 
+            until the member is invoked or evaluated, as defined in 
+            <a href="execution.html#evaluationinvocationandassignment" title="8.4.&nbsp;Evaluation, invocation, and assignment">&sect;8.4 Evaluation, invocation, and assignment</a>.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="constructorexpressions"></a>6.5.3.&nbsp;Constructor expressions</h3></div></div><div></div></div><p>A <span class="emphasis"><em>constructor expression</em></span> is a base or member
+            expression that references a class with constructors, followed by an
+            identifier, with an optional list of type arguments.</p><pre data-language="bnf">ConstructorExpression: (BaseExpression | MemberExpression) "." MemberName TypeArguments?</pre><p>A constructor expression is a reference to a constructor of a 
+            class.</p><p>The referenced member is determined by resolving the qualified 
+            reference as defined by <a href="statementblocks.html#qualifiedreferenceresolution" title="5.1.8.&nbsp;Qualified reference resolution">&sect;5.1.8 Qualified reference resolution</a>.
+            The qualified realization for the qualified reference is determined
+            according to <a href="typesystem.html#realizations" title="3.7.7.&nbsp;Realizations">&sect;3.7.7 Realizations</a>.</p><p>The type argument list, if any, must conform, as defined by
+            <a href="typesystem.html#typeargumentsandconstraints" title="3.6.3.&nbsp;Type arguments and type constraints">&sect;3.6.3 Type arguments and type constraints</a>, to the type parameter list
+            of the qualified realization.</p><p>If the constructor expression is qualified by a member expression,
+            its receiver expression produces the instance upon which the constructor
+            is invoked. When a constructor expression is executed, the receiver 
+            expression is evaluated to produce the receiving instance which is held 
+            until the constructor is invoked or evaluated, as defined in 
+            <a href="execution.html#evaluationinvocationandassignment" title="8.4.&nbsp;Evaluation, invocation, and assignment">&sect;8.4 Evaluation, invocation, and assignment</a>.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="valuereferences"></a>6.5.4.&nbsp;Value references</h3></div></div><div></div></div><p>A <span class="emphasis"><em>value reference</em></span> is a base expression or 
+            member expression that references a value declaration or value constructor
+            declaration.</p><p>The type of a value reference expression is the type of the 
+            realization of the referenced value or value constructor.</p><p>A value or value constructor declaration is never generic, so a value 
+            reference never has a type argument list.</p><p>A value reference that does not occur within any <tt class="literal">dynamic</tt>
+            block may not refer to a value declaration or value parameter with no type.</p><p>A value reference which occurs within a <tt class="literal">dynamic</tt> 
+            block and which does not reference any statically typed declaration, or
+            which references a value declaration or value parameter with no type, 
+            has no type.</p><p>If a base expression or member expression does not reference any 
+            statically typed declaration, and occurs within a <tt class="literal">dynamic</tt> 
+            block, then it is considered a value reference.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="callablereferences"></a>6.5.5.&nbsp;Callable references</h3></div></div><div></div></div><p>A <span class="emphasis"><em>callable reference</em></span> is a base expression,
+            member expression, or constructor expression that references something&#8212;a 
+            function, class, or callable constructor&#8212;that can be <span class="emphasis"><em>invoked</em></span> 
+            or <span class="emphasis"><em>instantiated</em></span> by specifying a list of arguments.</p><p>If a callable reference refers to a class with a default constructor,
+            the callable reference is considered a reference to the default constructor.</p><p>A callable reference may be invoked immediately, or it may be passed 
+            to other code which may invoke the reference. A callable reference captures 
+            the return type and parameter list types of the function or class it refers 
+            to, allowing compile-time validation of argument types when the callable 
+            reference is invoked.</p><p>The type of a callable reference expression is the callable type of
+            the realization of the referenced function, class, or callable constructor.</p><p>If a callable reference expression refers to a generic declaration, 
+            it must either:</p><div class="itemizedlist"><ul type="disc"><li><p>have an explicit type argument list,</p></li><li><p>be immediately followed by an argument list, allowing the 
+                    compiler to infer the type arguments, as defined in
+                    <a href="typesystem.html#typeargumentinference" title="3.6.5.&nbsp;Type argument inference">&sect;3.6.5 Type argument inference</a>, or,</p></li><li><p>be the immediate child of a constructor expression that is 
+                    immediately followed by an argument list, allowing the compiler to 
+                    infer the type arguments, as defined in
+                    <a href="typesystem.html#typeargumentinference" title="3.6.5.&nbsp;Type argument inference">&sect;3.6.5 Type argument inference</a>, or</p></li><li><p>occur as a listed argument, as defined in
+                    <a href="expressions.html#listedarguments" title="6.6.4.&nbsp;Listed arguments">&sect;6.6.4 Listed arguments</a> in a positional argument 
+                    list, or as a specified argument, anonymous argument, or
+                    listed argument, as defined in <a href="expressions.html#namedarguments" title="6.6.8.&nbsp;Named argument lists">&sect;6.6.8 Named argument lists</a>,
+                    in a named argument list, and its type arguments must be
+                    inferable as defined below.</p></li></ul></div><p>A callable reference may not occur as the receiver expression of a 
+            member expression.</p><i><span class="comment"><p>Note: this restriction exists to eliminate an ambiguity in
+            the interpretation of static expressions such as <tt class="literal">Person.string</tt>
+            and <tt class="literal">Person.equals</tt>.</p></span></i><p>A callable reference that does not occur within any <tt class="literal">dynamic</tt>
+            block may not refer to a function declaration with no return type.</p><p>A callable reference which occurs within a <tt class="literal">dynamic</tt> 
+            block and which references a function declaration with no return type, has 
+            no type.</p><i><span class="comment"><p>Note: in a future release of the language, we would like to 
+            add a syntax for obtaining a callable reference to an attribute, something
+            like <tt class="literal">person.@name</tt>, to allow attributes to be passed by 
+            reference. This would also allow static references like
+            <tt class="literal">Person.@name</tt>.</p></span></i><p>If a callable reference <tt class="literal">f</tt> with no explicit type 
+            argument list occurs as the argument to a callable parameter <tt class="literal">p</tt>
+            of a function or class in a direct invocation expression, as defined below in 
+            <a href="expressions.html#directinvocations" title="6.6.1.&nbsp;Direct invocations">&sect;6.6.1 Direct invocations</a>, then the type arguments of <tt class="literal">f</tt> 
+            are inferred according to the rules defined in <a href="typesystem.html#typeargumentinference" title="3.6.5.&nbsp;Type argument inference">&sect;3.6.5 Type argument inference</a> 
+            as if the types of the parameters of <tt class="literal">p</tt> were the types of 
+            listed arguments of <tt class="literal">f</tt> in a positional argument list, unless 
+            the invoked function or class is generic, and the invocation expression does 
+            not itself specify explicit type arguments, in which case any parameter whose 
+            type involves a type argument of the invoked function or class is ignored.</p><p>If a callable reference <tt class="literal">f</tt> with no explicit type 
+            argument list occurs as the argument to a value parameter <tt class="literal">p</tt>
+            of type <tt class="literal">Return(*Args)</tt> in a direct or indirect 
+            invocation expression, then the type arguments of <tt class="literal">f</tt> are 
+            inferred according to the rules defined in <a href="typesystem.html#typeargumentinference" title="3.6.5.&nbsp;Type argument inference">&sect;3.6.5 Type argument inference</a> 
+            as if <tt class="literal">Args</tt> were the type of a positional argument list, unless 
+            the invocation is a direct invocation expression, and the invoked function or 
+            class is generic, and <tt class="literal">Args</tt> involves type parameters of the
+            invoked function or class.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="staticexpressions"></a>6.5.6.&nbsp;Static expressions</h3></div></div><div></div></div><p>A <span class="emphasis"><em>static expression</em></span> is a type, optionally qualifier by 
+            the keyword <tt class="literal">package</tt>, followed by an identifier, with an optional 
+            list of type arguments.</p><pre data-language="bnf">StaticExpression: PackageQualifier? (TypeName TypeArguments? ".")+ (MemberName | TypeName) TypeArguments?</pre><p>A static expression is a reference to a member of a type: an attribute, method, 
+            or member class, or to a constructor of a member class of the type.</p><p>The referenced member is determined by resolving the qualified reference as defined 
+            by <a href="statementblocks.html#qualifiedreferenceresolution" title="5.1.8.&nbsp;Qualified reference resolution">&sect;5.1.8 Qualified reference resolution</a>. The qualified realization for the 
+            qualified reference is determined according to <a href="typesystem.html#realizations" title="3.7.7.&nbsp;Realizations">&sect;3.7.7 Realizations</a>.</p><p>The type argument list, if any, must conform, as defined by
+            <a href="typesystem.html#typeargumentsandconstraints" title="3.6.3.&nbsp;Type arguments and type constraints">&sect;3.6.3 Type arguments and type constraints</a>, to the type parameter list of the 
+            qualified realization.</p><p>Unlike member expressions, a static expression does not have a receiver expression. 
+            All static expressions are callable expressions which accept an argument of the specified 
+            type.</p><p>A static expression must reference a statically typed declaration with no missing 
+            types, even within a <tt class="literal">dynamic</tt> block.</p><p>If the qualifying type in a static expression refers to a generic declaration, then 
+            either:</p><div class="itemizedlist"><ul type="disc"><li><p>it must have an explicit type argument list, or</p></li><li><p>the static expression must occur as a listed argument, as defined in
+                    <a href="expressions.html#listedarguments" title="6.6.4.&nbsp;Listed arguments">&sect;6.6.4 Listed arguments</a> in a positional argument list, or as a 
+                    specified argument, anonymous argument, or listed argument, as defined in 
+                    <a href="expressions.html#namedarguments" title="6.6.8.&nbsp;Named argument lists">&sect;6.6.8 Named argument lists</a>, in a named argument list, and its type 
+                    arguments must be inferable as defined below.</p></li></ul></div><p>If a static expression <tt class="literal">T.m</tt> for a generic type <tt class="literal">T</tt> 
+            with no explicit type argument list occurs as the argument to a parameter <tt class="literal">p</tt>
+            of type <tt class="literal">Return(*Arg)</tt> in a direct or indirect invocation expression, 
+            then the type arguments of <tt class="literal">T</tt> are inferred according to the rules defined 
+            in <a href="typesystem.html#typeargumentinference" title="3.6.5.&nbsp;Type argument inference">&sect;3.6.5 Type argument inference</a> as if <tt class="literal">Arg</tt> were the type of a 
+            positional argument list, and <tt class="literal">[T]</tt> were the type of a parameter list, 
+            unless the invocation is a direct invocation expression, and the invoked function or class 
+            is generic, and <tt class="literal">Arg</tt> involves type parameters of the invoked function or 
+            class.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="staticvaluereferences"></a>6.5.7.&nbsp;Static value references</h3></div></div><div></div></div><p>A <span class="emphasis"><em>static value reference</em></span> is a static expression that 
+            references an attribute declaration or member class value constructor declaration.
+            </p><pre data-language="ceylon">List&lt;Anything&gt;.size</pre><p>The type of a static value reference expression is:</p><div class="itemizedlist"><ul type="disc"><li><p><tt class="literal">X(T)</tt> for an attribute whose realization is of 
+		            type <tt class="literal">X</tt>, and with qualifying type <tt class="literal">T</tt>,
+		            or</p></li><li><p><tt class="literal">T.X(T)</tt> for a member class value constructor whose 
+		            realization is of type <tt class="literal">T.X</tt>, and with qualifying type 
+		            <tt class="literal">T.X</tt>.</p></li></ul></div><p>A value or value constructor declaration is never generic, so a static value 
+            reference never ends in a type argument list.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="staticcallablereferences"></a>6.5.8.&nbsp;Static callable references</h3></div></div><div></div></div><p>A <span class="emphasis"><em>static callable reference</em></span> is a static expression that 
+            references something&#8212;a method or member class, or a callable constructor of
+            a member class&#8212;that can be <span class="emphasis"><em>invoked</em></span> or 
+            <span class="emphasis"><em>instantiated</em></span>.</p><pre data-language="ceylon">List&lt;String&gt;.filter</pre><pre data-language="ceylon">Iterable&lt;Integer&gt;.map&lt;String&gt;</pre><p>The type of a static callable reference expression is:</p><div class="itemizedlist"><ul type="disc"><li><p><tt class="literal">R(*A)(T)</tt> for a method, member class, or member class 
+                    constructor whose realization has callable type <tt class="literal">R(*A)</tt>, and 
+                    with qualifying type <tt class="literal">T</tt>, or</p></li><li><p><tt class="literal">T.X(*A)(T)</tt> for a member class constructor whose 
+                    realization has callable type <tt class="literal">T.X(*A)</tt>, and with qualifying 
+                    type <tt class="literal">T.X</tt>.</p></li></ul></div><p>If a callable reference expression refers to a generic declaration, it must 
+            end in an explicit type argument list.</p></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="invocationexpressions"></a>6.6.&nbsp;Invocation expressions</h2></div></div><div></div></div><p>A callable expression&#8212;any expression of type 
+        <tt class="literal">Callable</tt>&#8212;is <span class="emphasis"><em>invokable</em></span>. An 
+        <span class="emphasis"><em>invocation</em></span> consists of an <span class="emphasis"><em>invoked expression</em></span>, 
+        together with an argument list and, optionally, an explicit type argument list.</p><pre data-language="bnf">Invocation: Primary Arguments</pre><p>The invoked expression must be of type <tt class="literal">R(*P)</tt>
+        for some types <tt class="literal">R</tt> and <tt class="literal">P</tt>. Then the type of the 
+        invocation expression is simply <tt class="literal">R</tt>.</p><p>If the invoked expression has no type, and occurs within a <tt class="literal">dynamic</tt> 
+        block, then the whole invocation expression has no type, and the argument list is 
+        not type-checked at compile time, unless it is a direct invocation expression.</p><p>An invocation expression must specify arguments for parameters of the callable 
+        object, either as a positional argument list, or as a named argument list.</p><pre data-language="bnf">Arguments: PositionalArguments | NamedArguments</pre><p>Every argument list has a type, as specified below in 
+        <a href="expressions.html#positionalarguments" title="6.6.7.&nbsp;Positional argument lists">&sect;6.6.7 Positional argument lists</a> and <a href="expressions.html#namedarguments" title="6.6.8.&nbsp;Named argument lists">&sect;6.6.8 Named argument lists</a>. If an 
+        invocation is formed from a callable expression of type exactly 
+        <tt class="literal">R(*P)</tt> and an argument list of type 
+        <tt class="literal">A</tt>, then <tt class="literal">A</tt> must be a subtype of 
+        <tt class="literal">P</tt>.</p><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="directinvocations"></a>6.6.1.&nbsp;Direct invocations</h3></div></div><div></div></div><p>Any invocation expression where the invoked expression is a callable 
+            reference expression is called a <span class="emphasis"><em>direct invocation expression</em></span> 
+            of the function, class, or callable constructor to which the callable reference 
+            refers.</p><p>A direct invocation expression of a callable reference expression that 
+            refers to a class or constructor is called a (direct) 
+            <span class="emphasis"><em>instantiation expression</em></span>.</p><i><span class="comment"><p>TODO: Should we consider <tt class="literal">x{y=1;}{z=2;}</tt> a legal
+            direct invocation if <tt class="literal">x</tt> has multiple parameter lists?</p></span></i><p>In a direct invocation expression:</p><div class="itemizedlist"><ul type="disc"><li><p>the compiler has one item of additional information about the schema 
+                    of the method or class that is not reified by the <tt class="literal">Callable</tt> 
+                    interface: the names of the parameters of the function, class, or callable
+                    constructor, and therefore named arguments may be used, and</p></li><li><p>type argument inference is possible, as defined in 
+                    <a href="typesystem.html#typeargumentinference" title="3.6.5.&nbsp;Type argument inference">&sect;3.6.5 Type argument inference</a>, since the compiler has access to 
+                    the type parameters and constraints of the function or class, or of the class
+                    to which the callable constructor belongs.</p></li></ul></div><p>If an invocation expression has a named argument list, it must be a direct
+            invocation.</p><p>The type of a direct invocation expression is the return type of the
+            realization of the function, or the type of the realization of the class, as 
+            defined in <a href="typesystem.html#realizations" title="3.7.7.&nbsp;Realizations">&sect;3.7.7 Realizations</a>.</p><p>If the function has no return type, and occurs within a <tt class="literal">dynamic</tt> 
+            block, then the whole direct invocation expression has no type.</p><p>In a direct invocation expression of a function, class, or callable 
+            constructor, the restriction above on the argument list type is equivalent to the 
+            following requirements. Given the parameter list of the realization of the function, 
+            class, or callable constructor, and the arguments of the direct invocation:</p><div class="itemizedlist"><ul type="disc"><li><p>for each required parameter, an argument must be given,</p></li><li><p>for each defaulted parameter, an argument may optionally be 
+                    given,</p></li><li><p>if the parameter list has a variadic parameter of type 
+                    <tt class="literal">T+</tt>, one or more arguments must be given,</p></li><li><p>if the parameter list has a variadic parameter of type 
+                    <tt class="literal">T*</tt>, one or more arguments may optionally be 
+                    given,</p></li><li><p>no additional arguments may be given,</p></li><li><p>for a required or defaulted parameter of type <tt class="literal">T</tt>, 
+                    the type of the corresponding argument expression must be assignable to 
+                    <tt class="literal">T</tt>, and</p></li><li><p>for a variadic parameter of type <tt class="literal">T*</tt> or 
+                    <tt class="literal">T+</tt>, the type of every corresponding argument 
+                    expression must be assignable to <tt class="literal">T</tt>.</p></li></ul></div><p>Furthermore, if type argument are inferred, then the inferred type 
+            arguments must conform, as defined by <a href="typesystem.html#typeargumentsandconstraints" title="3.6.3.&nbsp;Type arguments and type constraints">&sect;3.6.3 Type arguments and type constraints</a>, 
+            to the type parameter list of the realization of the function or class, or
+            class to which the callable constructor belongs.</p><p>If an argument expression has no type, or if its parameter has no type, 
+            and the invocation occurs within a <tt class="literal">dynamic</tt> block, then the 
+            argument is not type-checked at compile time.</p><p>An invocation expression that does not occur within any <tt class="literal">dynamic</tt>
+            block may not assign an argument to a value parameter with no type.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="defaultarguments"></a>6.6.2.&nbsp;Default arguments</h3></div></div><div></div></div><p>When no argument is assigned to a defaulted parameter by the caller, 
+            the default argument defined by the parameter declaration of the realization,
+            as defined by <a href="typesystem.html#typeargumentsandconstraints" title="3.6.3.&nbsp;Type arguments and type constraints">&sect;3.6.3 Type arguments and type constraints</a>, of the function, 
+            class, or callable constructor is used. The default argument expression is 
+            evaluated every time the method is invoked with no argument specified for the 
+            defaulted parameter.</p><p>This class:</p><pre data-language="ceylon">shared class Counter(Integer initialCount=0) { ... }</pre><p>May be instantiated using any of the following invocations:</p><pre data-language="ceylon">Counter()</pre><pre data-language="ceylon">Counter(1)</pre><pre data-language="ceylon">Counter {}</pre><pre data-language="ceylon">Counter { initialCount=10; }</pre></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="tupletypeofarglist"></a>6.6.3.&nbsp;The type of a list of arguments</h3></div></div><div></div></div><p>A list of arguments may be formed from:</p><div class="itemizedlist"><ul type="disc"><li><p>any number of <span class="emphasis"><em>listed arguments</em></span>,
+                    optionally followed by either</p></li><li><p>a <span class="emphasis"><em>spread argument</em></span>, or</p></li><li><p>a <span class="emphasis"><em>comprehension</em></span>.</p></li></ul></div><pre data-language="bnf">ArgumentList: ((ListedArgument ",")* (ListedArgument | SpreadArgument | Comprehension))?</pre><p>Every such list of arguments has a type, which captures the types of 
+            the individual arguments in the list. This type is always a subtype of 
+            <tt class="literal">Anything[]</tt>. The type of an empty list of arguments is 
+            <tt class="literal">[]</tt>.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="listedarguments"></a>6.6.4.&nbsp;Listed arguments</h3></div></div><div></div></div><p>A listed argument is an expression.</p><pre data-language="bnf">ListedArgument: Expression</pre><p>If a listed argument is an expression of type <tt class="literal">T</tt>, and 
+            a list of arguments has type <tt class="literal">P</tt> with principal instantiation 
+            <tt class="literal">Sequential&lt;Y&gt;</tt>, then the type of a new argument list 
+            formed by prepending the expression to the first parameter list is 
+            <tt class="literal">Tuple&lt;T|Y,T,P&gt;</tt>.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="spreadarguments"></a>6.6.5.&nbsp;Spread arguments</h3></div></div><div></div></div><p>A spread argument is an expression prefixed by the 
+            <span class="emphasis"><em>spread operator</em></span> <tt class="literal">*</tt>.</p><pre data-language="bnf">SpreadArgument: "*" ValueExpression</pre><p>The spread operator is parsed with a precedence just lower than 
+            the multiplication operator <tt class="literal">*</tt> and just higher than 
+            the set union and complement operators <tt class="literal">|</tt> and
+            <tt class="literal">~</tt>, and is not associative.</p><i><span class="comment"><p>Note: this restriction means that the symbol <tt class="literal">*</tt>
+            always has the same precedence, wherever it occurs in the language.</p></span></i><p>The expression type <tt class="literal">T</tt> must have the principal 
+            instantiation <tt class="literal">{X*}</tt> for some type <tt class="literal">X</tt>. 
+            We form the <span class="emphasis"><em>sequential type of a spread argument</em></span> as 
+            follows:</p><div class="itemizedlist"><ul type="disc"><li><p>if the expression type <tt class="literal">T</tt> is an invariant 
+                    subtype of <tt class="literal">X[]</tt>, for some type <tt class="literal">X</tt> 
+                    then the sequential type of the spread argument is 
+                    <tt class="literal">T</tt>, or, if not,</p></li><li><p>if the expression type <tt class="literal">T</tt> is an invariant 
+                    subtype of <tt class="literal">{X+}</tt>, for some type <tt class="literal">X</tt> 
+                    then the sequential type of the spread argument is 
+                    <tt class="literal">[X+]</tt>, or, otherwise,</p></li><li><p>the expression type <tt class="literal">T</tt> is an invariant 
+                    subtype of <tt class="literal">{X*}</tt>, for some type <tt class="literal">X</tt>
+                    and the sequential type of the spread argument is 
+                    <tt class="literal">X[]</tt>.</p></li></ul></div><p>When a spread argument with an expression type not assignable to 
+            <tt class="literal">Anything[]</tt> is evaluated, the elements of the iterable
+            automatically are packaged into a sequence.</p><i><span class="comment"><p>Note: the spread "operator" is not truly an operator in the
+            sense of <a href="expressions.html#operators" title="6.8.&nbsp;Operators">&sect;6.8 Operators</a>, and so a spread argument is not an 
+            expresson. An expression, when evaluated, produces a single value. The
+            spread operator produces multiple values. It is therefore more correct to 
+            view the spread operator as simply part of the syntax of an argument list.
+            </p></span></i><p>The type of a list of arguments containing only a spread argument of 
+            sequential type <tt class="literal">S</tt> is simply <tt class="literal">S</tt>.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="comprehensions"></a>6.6.6.&nbsp;Comprehensions</h3></div></div><div></div></div><p>A <span class="emphasis"><em>comprehension</em></span> accepts one or more streams of values 
+            and produces a new stream of values. Any instance of <tt class="literal">Iterable</tt>
+            is considered a stream of values. The comprehension has two or more
+            <span class="emphasis"><em>clauses</em></span>:</p><div class="itemizedlist"><ul type="disc"><li><p>A <tt class="literal">for</tt> clause specifies a source stream and an 
+                    iterator pattern, as defined in <a href="statementblocks.html#forelse" title="5.5.3.&nbsp;for/else">&sect;5.5.3 for/else</a>, representing 
+                    the values produced by the stream.</p></li><li><p>An <tt class="literal">if</tt> clause specifies a condition list, as
+                    defined in <a href="statementblocks.html#controlstructureconditions" title="5.4.&nbsp;Conditions">&sect;5.4 Conditions</a>, used to filter
+                    the values produced by the source stream or streams.</p></li><li><p>An expression clause produces the values of the resulting stream.</p></li></ul></div><p>Every comprehension begins with a <tt class="literal">for</tt> or <tt class="literal">if</tt>
+            clause, and ends with an expression clause. There may be any number of intervening 
+            <tt class="literal">for</tt> or <tt class="literal">if</tt> clauses. Each clause in the
+            comprehension is considered a child of the clause that immediately precedes 
+            it.</p><pre data-language="bnf">Comprehension: ForComprehensionClause | IfComprehensionClause</pre><pre data-language="bnf">ForComprehensionClause: "for" ForIterator ComprehensionClause</pre><pre data-language="bnf">IfComprehensionClause: "if" ConditionList ComprehensionClause</pre><pre data-language="bnf">ComprehensionClause: ForComprehensionClause | IfComprehensionClause | Expression</pre><p>An expression that occurs in a child clause may refer to iteration 
+            variables and condition variables declared by parent clauses. The types
+            of such variables are specified in <a href="statementblocks.html#controlstructures" title="5.5.&nbsp;Control structures and assertions">&sect;5.5 Control structures and assertions</a>.</p><i><span class="comment"><p>Note: each child clause can be viewed as a body nested inside 
+            the parent clause. The scoping rules for variables declared by comprehension
+            clauses reflects this model.</p></span></i><p>The type of a list of arguments containing only a comprehension is 
+            <tt class="literal">[T*]</tt> where <tt class="literal">T</tt> is the type of the
+            expression which terminates the comprehension, or <tt class="literal">[T+]</tt>
+            if there are no <tt class="literal">if</tt> clauses, and if every 
+            <tt class="literal">for</tt> clause has an iterated expression of nonempty
+            type.</p><p>An comprehension occurring in an <tt class="literal">extends</tt> clause may 
+            not contain a reference to a variable value.</p><i><span class="comment"><p>Note: a comprehension, like a spread argument, is not considered an 
+            expression. An expression, when evaluated, produces a single value. A comprehension
+            produces multiple values, like a spread argument, or like a series of listed 
+            arguments. Therefore, a comprehension may only appear in an argument list or an 
+            enumeration expression. This is, however, no limitation; we can simply wrap the
+            comprehension in braces in order to get an expression of type <tt class="literal">{T*}</tt>,
+            or in brackets to get an expression of type <tt class="literal">[T*]</tt>.</p></span></i><i><span class="comment"><p>TODO: properly define how expressions with no type occurring in a
+            <tt class="literal">dynamic</tt> block affect comprehensions.</p></span></i></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="positionalarguments"></a>6.6.7.&nbsp;Positional argument lists</h3></div></div><div></div></div><p>When invocation arguments are listed positionally, the argument list is 
+            enclosed in parentheses.</p><pre data-language="bnf">PositionalArguments: "(" ArgumentList ")"</pre><p>The type of the positional argument list is the type of the list of arguments 
+            it contains.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="namedarguments"></a>6.6.8.&nbsp;Named argument lists</h3></div></div><div></div></div><p>When invocation arguments are listed by name, the argument list is enclosed 
+            in braces.</p><pre data-language="bnf">NamedArguments: "{" NamedArgument* ArgumentList "}"</pre><p>Named arguments may be listed in a different order to the corresponding
+            parameters.</p><p>Each named argument in a named argument list is either:</p><div class="itemizedlist"><ul type="disc"><li><p>an <span class="emphasis"><em>anonymous argument</em></span>&#8212;an expression, with
+                    no parameter name explicitly specified,</p></li><li><p>a <span class="emphasis"><em>specified argument</em></span>&#8212;a specification 
+                    statement where name of the value of function being specified is interpreted
+                    as the name of a parameter, or</p></li><li><p>an inline getter, function, or anonymous class declaration, whose name 
+                    is interpreted as the name of a parameter.</p></li></ul></div><pre data-language="bnf">NamedArgument: AnonymousArgument | SpecifiedArgument | InlineDeclarationArgument</pre><p>Additionally, a named argument list has an ordinary list of arguments, which 
+            may be empty. This argument list is interpreted as a single argument to a parameter 
+            of type <tt class="literal">Iterable</tt>.</p><pre data-language="ceylon">{ initialCapacity=2; "hello", "world" }</pre><pre data-language="ceylon">{ initialCapacity=people.size; loadFactor=0.8; for (p in people) p.name-&gt;p }</pre><i><span class="comment"><p>Note: in a future release of the language, we would like to be able 
+            to assign a local name to an anonymous argument or listed argument, allowing it to 
+            be referenced later in the argument list. We might consider this a kind of "let"
+            expression, perhaps.</p></span></i><p>Given a parameter list, and a named argument list, we may attempt to construct 
+            an <span class="emphasis"><em>equivalent positional argument list</em></span> as follows:</p><div class="itemizedlist"><ul type="disc"><li><p>Taking each argument in the named argument list in turn, on the order 
+                    they occur lexically:</p><div class="itemizedlist"><ul type="circle"><li><p>if the argument is anonymous, assign it to the first unassigned
+                            parameter of the parameter list, or</p></li><li><p>if the argument is named, assign it to the parameter with that
+                            name in the parameter list.</p></li></ul></div><p>If, for some argument, there is no unassigned parameter, no parameter 
+                    with the given name, or the parameter with the given name has already been 
+                    assigned an argument, construction of the positional argument list fails, and 
+                    the invocation is not well-typed.</p></li><li><p>Next, if the parameter list has an unassigned parameter of type exactly
+                    <tt class="literal">Iterable&lt;T,N&gt;</tt> for some types <tt class="literal">T</tt> and
+                    <tt class="literal">N</tt>, then an iterable enumeration expression, as defined in
+                    <a href="expressions.html#enumeration" title="6.6.12.&nbsp;Iterable and tuple enumeration">&sect;6.6.12 Iterable and tuple enumeration</a>, is formed from the ordinary list of arguments, 
+                    and assigned to that parameter.</p><p>If there is no such parameter, and the ordinary list of arguments is
+                    nonempty, then construction of the positional argument list fails, and the 
+                    invocation is not well-typed.</p></li><li><p>Finally, we assign each unassigned defaulted parameter its default 
+                    argument.</p></li></ul></div><p>The resulting equivalent positional argument list is formed by ordering
+            the arguments according to the position of their corresponding parameters in
+            the parameter list, and then replacing any inline value, function, or object
+            declarations with a reference to the declaration.</p><p>The type of a named argument list is the type of the equivalent positional 
+            argument list.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="anonymousarguments"></a>6.6.9.&nbsp;Anonymous arguments</h3></div></div><div></div></div><p>An anonymous argument is just an expression followed by a semicolon.</p><pre data-language="bnf">AnonymousArgument: Expression ";"</pre><p>The type of the argument is the type of the expression.</p><pre data-language="ceylon">{
+    Head { title="Hello"; };
+    Body {
+        Div { "Hello ``name``!" };
+    };
+}</pre></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="specifiedarguments"></a>6.6.10.&nbsp;Specified arguments</h3></div></div><div></div></div><p>A specified argument is a value specification statement or lazy specification 
+            statement, as defined in <a href="statementblocks.html#specificationstatements" title="5.3.3.&nbsp;Specification statements">&sect;5.3.3 Specification statements</a>, where the value
+            reference or callable reference is treated as the name of a parameter of the invoked 
+            function or class instead of using the usual rules for resolving unqualified names.</p><pre data-language="bnf">SpecifiedArgument: Specification</pre><div class="itemizedlist"><ul type="disc"><li><p>If a specified argument is a value specification statement, its type 
+                    is the type of the specified expression.</p></li><li><p>If a specified argument is a lazy specification statement with no 
+                    parameter lists, its type is the type of the specified expression.</p></li><li><p>Otherwise, if it is a lazy specification statement with a parameter 
+                    list, its type is the callable type formed from the type of the expression,
+                    interpreted as a function return type, and the types of its parameter lists, 
+                    according to <a href="declarations.html#callabletypeoffunction" title="4.7.1.&nbsp;Callable type of a function">&sect;4.7.1 Callable type of a function</a>.</p></li></ul></div><i><span class="comment"><p>Note: there is an ambiguity here between assignment expressions 
+            and specified arguments. This ambiguity is resolved in favor of interpreting the
+            argument as a specified argument. Therefore an anonymous argument in a named 
+            argument list may not be an assignment expression.</p></span></i><pre data-language="ceylon">{ 
+    product = getProduct(id); 
+    quantity = 1; 
+}</pre><pre data-language="ceylon">{ 
+    by(Value x, Value y) =&gt; x&lt;=&gt;y;
+}</pre></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="inlinedeclarationarguments"></a>6.6.11.&nbsp;Inline declaration arguments</h3></div></div><div></div></div><p>An <span class="emphasis"><em>inline declaration argument</em></span> defines a getter,
+            function, or anonymous class, and assigns it to a parameter.</p><pre data-language="bnf">InlineDeclarationArgument: ValueArgument | FunctionArgument | ObjectArgument</pre><p>An inline getter argument is a streamlined value declaration, as defined
+            in <a href="declarations.html#values" title="4.8.&nbsp;Values">&sect;4.8 Values</a>. The type of the argument is the declared or inferred 
+            type of the value.</p><pre data-language="bnf">ValueArgument: ValueHeader (Block | (Specifier | LazySpecifier) ";")</pre><p>An inline function argument is a streamlined function declaration, as
+            defined in <a href="declarations.html#functions" title="4.7.&nbsp;Functions">&sect;4.7 Functions</a>. The type of the argument is the callable 
+            type of the function, as defined by <a href="declarations.html#callabletypeoffunction" title="4.7.1.&nbsp;Callable type of a function">&sect;4.7.1 Callable type of a function</a>.</p><pre data-language="bnf">FunctionArgument: FunctionHeader (Block | LazySpecifier ";")</pre><p>An inline anonymous class argument is a streamlined anonymous class 
+            declaration, as defined in <a href="declarations.html#anonymousclasses" title="4.5.7.&nbsp;Anonymous classes">&sect;4.5.7 Anonymous classes</a>. The type of the 
+            argument is the anonymous class type.</p><pre data-language="bnf">ObjectArgument: ObjectHeader ClassBody</pre><p>A named argument may not have type parameters or annotations.</p><pre data-language="ceylon">{
+    description = "Total";
+    value amount { 
+        variable Float total = 0.0;
+        for (Item item in items) {
+            sum += item.amount;
+        }
+        return total;
+    }
+}</pre><pre data-language="ceylon">{ 
+    label = "Say Hello"; 
+    void onClick() { 
+        say("Hello!"); 
+    } 
+}</pre><pre data-language="ceylon">{ 
+    function by(Value x, Value y) =&gt; x&lt;=&gt;y;
+}</pre><pre data-language="ceylon">{
+    object iterator 
+            satisfies Iterator&lt;Order&gt; {
+        variable value done = false;
+        shared actual Order|Finished next() {
+            if (done) {
+                return finished;
+            }
+            else {
+                done=true;
+                return order; 
+            }
+        }
+    }   
+}</pre></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="enumeration"></a>6.6.12.&nbsp;Iterable and tuple enumeration</h3></div></div><div></div></div><p>An <span class="emphasis"><em>enumeration expression</em></span> is an abbreviation for
+            tuple and iterable object instantiation. Iterable enumerations are delimited
+            using braces. Tuple enumerations are delimited by brackets.</p><pre data-language="bnf">Enumeration: Iterable | Tuple | DynamicValue</pre><pre data-language="bnf">Iterable: "{" ArgumentList "}"</pre><pre data-language="bnf">Tuple: "[" ArgumentList "]"</pre><p>The type of an iterable enumeration expression is:</p><div class="itemizedlist"><ul type="disc"><li><p><tt class="literal">Iterable&lt;Nothing,Null&gt;</tt> if there are no 
+                    argument expressions, or</p></li><li><p><tt class="literal">Iterable&lt;U,Nothing&gt;</tt> where 
+                    <tt class="literal">U</tt>, the argument expression list is an invariant 
+                    suptype of <tt class="literal">U[]</tt>.</p></li></ul></div><p>The type of a tuple enumeration expression is the type of the list of
+            arguments it contains.</p><pre data-language="ceylon">{String+} = { "hello", "world" };</pre><pre data-language="ceylon">[] none = [];</pre><pre data-language="ceylon">[Float,Float] xy = [x, y];</pre><pre data-language="ceylon">[Float,Float, String*] xy = [x, y, *labels];</pre><p>Every argument expression must have a type, even if the enumeration expression
+            occurs in a <tt class="literal">dynamic</tt> block.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="dynamicenumerations"></a>6.6.13.&nbsp;Dynamic enumerations</h3></div></div><div></div></div><p>A <span class="emphasis"><em>dynamic enumeration expression</em></span> creates a new 
+            object with no class by enumerating its members, allowing interoperation 
+            with dynamically typed native code.</p><pre data-language="bnf">DynamicValue: "dynamic" "[" NamedArgument* ArgumentList "]"</pre><p>A dynamic enumeration expression has no type.</p><p>Any argument names may be specified in the named argument list.</p><p>A dynamic enumeration expression must occur inside a
+            <tt class="literal">dynamic</tt> block.</p><i><span class="comment"><p>The semantics of this construct are platform-dependent and
+            beyond the scope of this specification.</p></span></i></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="miscexpressions"></a>6.7.&nbsp;Conditional expressions, let expressions, and anonymous class expressions</h2></div></div><div></div></div><p>A <span class="emphasis"><em>conditional expression</em></span> resembles a control 
+        structure but is part of the expression syntax, and evaluates to a value. 
+        A conditional expression comes in one of two forms:</p><div class="itemizedlist"><ul type="disc"><li><p>an <tt class="literal">if/then/else</tt> expression resembles 
+                the <tt class="literal">if/else</tt> conditional defined in 
+                <a href="statementblocks.html#ifelse" title="5.5.1.&nbsp;if/else">&sect;5.5.1 if/else</a>, and</p></li><li><p>a <tt class="literal">switch/case/else</tt> expression resembles 
+                the <tt class="literal">switch/case/else</tt> conditional defined in 
+                <a href="statementblocks.html#switchcaseelse" title="5.5.2.&nbsp;switch/case/else">&sect;5.5.2 switch/case/else</a>.</p></li></ul></div><pre data-language="bnf">ConditionalExpression: IfElseExpression | SwitchCaseElseExpression</pre><p>A <span class="emphasis"><em>let expression</em></span> allows inline definition of a 
+        reference within an expression.</p><p>An <span class="emphasis"><em>inline class</em></span> is an anonymous class defined 
+        within an expression.</p><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="ifexpressions"></a>6.7.1.&nbsp;<tt class="literal">if/then/else</tt> expressions</h3></div></div><div></div></div><p>An <tt class="literal">if/then/else</tt> expression has a condition 
+            list, as defined in <a href="statementblocks.html#controlstructureconditions" title="5.4.&nbsp;Conditions">&sect;5.4 Conditions</a>, a
+            <tt class="literal">then</tt> expression, and an <tt class="literal">else</tt> 
+            expression. The <tt class="literal">else</tt> expression is not optional.</p><pre data-language="bnf">IfElseExpression: "if" ConditionList ThenExpression ElseExpression</pre><p>The type of an <tt class="literal">if/then/else</tt> expression with
+            <tt class="literal">then</tt> expression of type <tt class="literal">X</tt> and
+            <tt class="literal">else</tt> or <tt class="literal">else if</tt> expression of 
+            type <tt class="literal">Y</tt> is <tt class="literal">X|Y</tt>.</p><pre data-language="bnf">ThenExpression: "then" Expression</pre><pre data-language="bnf">ElseExpression: "else" Expression</pre><p>The expression following <tt class="literal">then</tt> or 
+            <tt class="literal">else</tt> is parsed with precedence just higher than the 
+            <tt class="literal">||</tt> operator, and just lower than the 
+            <tt class="literal">then</tt> and <tt class="literal">else</tt> operators, that is, 
+            between the layers 3 and 4 defined in
+            <a href="expressions.html#operatorprecedence" title="6.8.1.&nbsp;Operator precedence">&sect;6.8.1 Operator precedence</a>.</p><p>Alternatively, the expression following <tt class="literal">then</tt>
+            or <tt class="literal">else</tt> may be an <tt class="literal">if/then/else</tt> 
+            expression or a let expression.</p><i><span class="comment"><p>Note: the expression following <tt class="literal">then</tt>
+            or <tt class="literal">else</tt> may not be a <tt class="literal">switch/case/else</tt> 
+            expression, since that would introduce an ambiguity related to the optional 
+            <tt class="literal">else</tt> clause of the <tt class="literal">switch/case/else</tt> 
+            expression.</p></span></i><pre data-language="ceylon">if (exists lang) then lang.name else "Ceylon"</pre></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="switchexpressions"></a>6.7.2.&nbsp;<tt class="literal">switch/case/else</tt> expressions</h3></div></div><div></div></div><p>A <tt class="literal">switch/case/else</tt> expression has a 
+            <tt class="literal">switch</tt> expression or inline variable, a list of 
+            <tt class="literal">case</tt> expressions, and, optionally, an 
+            <tt class="literal">else</tt> expression.</p><pre data-language="bnf">SwitchCaseElseExpression: Switch CaseExpression+ ElseExpression</pre><p>The type of a <tt class="literal">switch/case/else</tt> expression 
+            with <tt class="literal">case</tt> expressions of type <tt class="literal">X1</tt>,
+            <tt class="literal">X2</tt>, ..., <tt class="literal">Xn</tt> and
+            <tt class="literal">else</tt> expression of type <tt class="literal">Y</tt> is
+            <tt class="literal">X1|X2|...|Xn|Y</tt>.</p><pre data-language="bnf">CaseExpression: "case" CaseCondition Expression</pre><p>The expression following <tt class="literal">case</tt> or 
+            <tt class="literal">else</tt> is parsed with precedence just higher than the 
+            <tt class="literal">||</tt> operator, and just lower than the 
+            <tt class="literal">then</tt> and <tt class="literal">else</tt> operators, that is, 
+            between the layers 3 and 4 defined in
+            <a href="expressions.html#operatorprecedence" title="6.8.1.&nbsp;Operator precedence">&sect;6.8.1 Operator precedence</a>.</p><p>Alternatively, the expression following <tt class="literal">then</tt>
+            or <tt class="literal">else</tt> may be an <tt class="literal">if/then/else</tt> 
+            expression or a let expression.</p><p>Each <tt class="literal">case</tt> expression includes a value case or
+            type case, as defined in <a href="statementblocks.html#caseconditions" title="5.4.4.&nbsp;Case conditions">&sect;5.4.4 Case conditions</a>. Just like
+            in a <tt class="literal">switch/case/else</tt> conditional statement:</p><div class="itemizedlist"><ul type="disc"><li><p>all cases must be disjoint, and</p></li><li><p>if there is no <tt class="literal">else</tt> expression,
+                    the cases must be exhaustive.</p></li></ul></div><pre data-language="ceylon">switch (seq) case (null) "null" case (is []) "empty" else "nonempty"</pre></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="letexpressions"></a>6.7.3.&nbsp;Let expressions</h3></div></div><div></div></div><p>A let expression comprises a pattern list, followed by an 
+            expression involving the pattern variables that occur in the listed
+            patterns.</p><pre data-language="bnf">LetExpression: "let" PatternList Expression</pre><p>The expression is parsed with precedence just higher than the 
+            <tt class="literal">||</tt> operator, and just lower than the 
+            <tt class="literal">then</tt> and <tt class="literal">else</tt> operators, that 
+            is, between the layers 3 and 4 defined in
+            <a href="expressions.html#operatorprecedence" title="6.8.1.&nbsp;Operator precedence">&sect;6.8.1 Operator precedence</a>.</p><p>Alternatively, the expression may be an <tt class="literal">if/then/else</tt> 
+            expression or another let expression.</p><p>A pattern list is enclosed in parentheses.</p><pre data-language="bnf">PatternList: "(" PatternListElement ("," PatternListElement)* ")"</pre><p>Each element of the pattern list is a pattern, as defined in
+            <a href="statementblocks.html#patterns" title="5.2.2.&nbsp;Patterns">&sect;5.2.2 Patterns</a>, followed by a specified expression. The
+            patterned type is the type of the specified expression.</p><pre data-language="bnf">PatternListElement: Pattern Specifier</pre><p>The pattern variables that occur in the pattern list are 
+            considered in scope in the expression that follows the pattern
+            list. Furthermore, a specified expression in the pattern list 
+            may refer to a pattern variable declared by an earlier element
+            in the pattern list.</p><pre data-language="ceylon">let ([x,y] = loc, d = sqrt(x^2+y^2)) [x/d, y/d]</pre></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="inlineanonymousclassexpressions"></a>6.7.4.&nbsp;Inline anonymous class expressions</h3></div></div><div></div></div><p>An inline anonymous class expression resembles an anonymous
+            class declaration as defined in <a href="declarations.html#anonymousclasses" title="4.5.7.&nbsp;Anonymous classes">&sect;4.5.7 Anonymous classes</a>.
+            The expression defines the schema, supertypes, and implementation 
+            of a class. It does not specify a type name. Instead, the type has 
+            a name assigned internally by the compiler that is not available at 
+            compilation time.</p><pre data-language="bnf">ObjectExpression: "object" ObjectInheritance ClassBody</pre><p>The class:</p><div class="itemizedlist"><ul type="disc"><li><p>is implicitly <tt class="literal">final</tt>, and</p></li><li><p>may not declare <tt class="literal">default</tt> members.</p></li></ul></div><p>The type of an inline anonymous class expression is the 
+            intersection of the class type it extends with all interface types 
+            it satisfies. The type of the inline anonymous class itself is not 
+            accessible outside the body of the inline anonymous class expression.</p><pre data-language="ceylon">object 
+        satisfies {Integer+} {
+    iterator() =&gt; object 
+            satisfies Iterator&lt;Integer&gt; {
+        variable value current = 0;
+        next() =&gt; current++;
+    };
+}</pre></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="operators"></a>6.8.&nbsp;Operators</h2></div></div><div></div></div><p>Operators are syntactic shorthand for more complex expressions involving 
+    invocation, evaluation, or instantiation. There is no support for user-defined 
+    <span class="emphasis"><em>operator overloading</em></span>:</p><div class="itemizedlist"><ul type="disc"><li><p>new operator symbols may not be defined outside of the operators
+            specified below, and</p></li><li><p>the definition of the operators specified below may not be changed 
+            or overloaded.</p></li></ul></div><p>However, many of the operators below are defined in terms of 
+    <tt class="literal">default</tt> or <tt class="literal">formal</tt> methods or attributes.
+    So, within well-defined limits a concrete implementation may customize the  
+    behavior of an operator. This approach is called 
+    <span class="emphasis"><em>operator polymorphism</em></span>.</p><p>Some examples:</p><pre data-language="ceylon">Float z = x * y + 1.0;</pre><pre data-language="ceylon">even = n % 2 == 0;</pre><pre data-language="ceylon">++count;</pre><pre data-language="ceylon">Integer j = i++;</pre><pre data-language="ceylon">if ( x &gt; 100 || x &lt; 0 ) { ... }</pre><pre data-language="ceylon">User user = users[userId] else guest;</pre><pre data-language="ceylon">List&lt;Item&gt; firstPage = results[0..20];</pre><pre data-language="ceylon">for (n in 0:length) { ... }</pre><pre data-language="ceylon">if (char in 'A'..'Z') { ... }</pre><pre data-language="ceylon">String[] names = people*.name;</pre><pre data-language="ceylon">this.total += item.price * item.quantity;</pre><pre data-language="ceylon">Float vol = length^3;</pre><pre data-language="ceylon">Vector scaled = scale ** vector;</pre><pre data-language="ceylon">map.contains(person.name-&gt;person);</pre><pre data-language="ceylon">if (!document.internal || user is Employee) { ... }</pre><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="operatorprecedence"></a>6.8.1.&nbsp;Operator precedence</h3></div></div><div></div></div><p>There are 19 distinct operator precedence levels, but these levels
+        are arranged into layers in order to make them easier to predict.</p><div class="itemizedlist"><ul type="disc"><li><p>Operators in layer 1 produce, transform, and combine
+            values.</p></li><li><p>Operators in layer 2 compare or predicate values, producing
+            a <tt class="literal">Boolean</tt> result.</p></li><li><p>Operators in layer 3 are logical operators that operate
+            upon <tt class="literal">Boolean</tt> arguments to produce a <tt class="literal">Boolean</tt>
+            value.</p></li><li><p>Operators in layer 4 perform assignment and conditional
+            evaluation.</p></li></ul></div><p>Within each layer, postfix operators have a higher precedence than 
+        prefix operators, and prefix operators have a higher precedence than 
+        binary operators.</p><p>There is a single exception to this principle: the binary 
+        exponentiation operator <tt class="literal">^</tt> has a higher precedence than 
+        the prefix operators <tt class="literal">+</tt> and <tt class="literal">-</tt>. The 
+        reason for this is that the following expressions should be equivalent:</p><pre data-language="ceylon">-x^2       //means -(x^2)</pre><pre data-language="ceylon">0 - x^2    //means 0 - (x^2)</pre><p>This table defines the relative precedence of the various operators, 
+        from highest to lowest, along with associativity rules:</p><div class="table"><a name="d0e16146"></a><p class="title"><b>Table&nbsp;6.1.&nbsp;</b></p><table border="1"><colgroup><col align="center"><col align="center"><col align="center"><col align="center"></colgroup><thead><tr><th align="center">Operations</th><th align="center">Operators</th><th align="center">Type</th><th align="center">Associativity</th></tr></thead><tbody><tr><td colspan="4" align="center"><span class="emphasis"><em>Layer 1</em></span></td></tr><tr><td align="center">Member invocation and selection, index, subrange:</td><td align="center"><tt class="literal">.</tt>,
+                <tt class="literal">*.</tt>, 
+                <tt class="literal">?.</tt>, 
+                <tt class="literal">()</tt>,
+                <tt class="literal">{}</tt>,
+                <tt class="literal">[]</tt>,
+                <tt class="literal">[:]</tt>, 
+                <tt class="literal">[..]</tt>, 
+                <tt class="literal">[...]</tt></td><td align="center">Binary / N-ary</td><td align="center">Left</td></tr><tr><td align="center">Postfix increment and decrement:</td><td align="center"><tt class="literal">++</tt>, 
+                <tt class="literal">--</tt></td><td align="center">Unary postfix</td><td align="center">Left</td></tr><tr><td align="center">Prefix increment and decrement:</td><td align="center"><tt class="literal">++</tt>, 
+                <tt class="literal">--</tt></td><td align="center">Unary prefix</td><td align="center">Right</td></tr><tr><td align="center">Exponentiation:</td><td align="center"><tt class="literal">^</tt></td><td align="center">Binary</td><td align="center">Right</td></tr><tr><td align="center">Negation:</td><td align="center"><tt class="literal">+</tt>,
+                <tt class="literal">-</tt></td><td align="center">Unary prefix</td><td align="center">Right</td></tr><tr><td align="center">Set intersection:</td><td align="center"><tt class="literal">&amp;</tt></td><td align="center">Binary</td><td align="center">Left</td></tr><tr><td align="center">Set union and complement:</td><td align="center"><tt class="literal">|</tt>,
+                <tt class="literal">~</tt></td><td align="center">Binary</td><td align="center">Left</td></tr><tr><td align="center">Multiplication, division, remainder:</td><td align="center"><tt class="literal">*</tt>, 
+                <tt class="literal">/</tt>, 
+                <tt class="literal">%</tt></td><td align="center">Binary</td><td align="center">Left</td></tr><tr><td align="center">Scale:</td><td align="center"><tt class="literal">**</tt></td><td align="center">Binary</td><td align="center">Right</td></tr><tr><td align="center">Addition, subtraction:</td><td align="center"><tt class="literal">+</tt>, 
+                <tt class="literal">-</tt></td><td align="center">Binary</td><td align="center">Left</td></tr><tr><td align="center">Range and entry construction:</td><td align="center"><tt class="literal">..</tt>,
+                <tt class="literal">:</tt>,  
+                <tt class="literal">-&gt;</tt></td><td align="center">Binary</td><td align="center">None</td></tr><tr><td colspan="4" align="center"><span class="emphasis"><em>Layer 2</em></span></td></tr><tr><td align="center">Existence, emptiness:</td><td align="center"><tt class="literal">exists</tt>, <tt class="literal">nonempty</tt></td><td align="center">Unary postfix</td><td align="center">None</td></tr><tr><td align="center">Comparison, containment,
+                assignability, inheritance:</td><td align="center"><tt class="literal">&lt;=&gt;</tt>,
+                <tt class="literal">&lt;</tt>, 
+                <tt class="literal">&gt;</tt>, 
+                <tt class="literal">&lt;=</tt>, 
+                <tt class="literal">&gt;=</tt>,
+                <tt class="literal">in</tt>,
+                <tt class="literal">is</tt>,
+                <tt class="literal">of</tt></td><td align="center">Binary (and ternary)</td><td align="center">None</td></tr><tr><td align="center">Equality, identity:</td><td align="center"><tt class="literal">==</tt>, 
+                <tt class="literal">!=</tt>, 
+                <tt class="literal">===</tt></td><td align="center">Binary</td><td align="center">None</td></tr><tr><td colspan="4" align="center"><span class="emphasis"><em>Layer 3</em></span></td></tr><tr><td align="center">Logical not:</td><td align="center"><tt class="literal">!</tt></td><td align="center">Unary prefix</td><td align="center">Right</td></tr><tr><td align="center">Logical and:</td><td align="center"><tt class="literal">&amp;&amp;</tt></td><td align="center">Binary</td><td align="center">Left</td></tr><tr><td align="center">Logical or:</td><td align="center"><tt class="literal">||</tt></td><td align="center">Binary</td><td align="center">Left</td></tr><tr><td colspan="4" align="center"><span class="emphasis"><em>Layer 4</em></span></td></tr><tr><td align="center">Conditionals:</td><td align="center"><tt class="literal">then</tt>, 
+                <tt class="literal">else</tt></td><td align="center">Binary</td><td align="center">Left</td></tr><tr><td align="center">Assignment:</td><td align="center"><tt class="literal">=</tt>, 
+                <tt class="literal">+=</tt>, 
+                <tt class="literal">-=</tt>, 
+                <tt class="literal">*=</tt>, 
+                <tt class="literal">/=</tt>, 
+                <tt class="literal">%=</tt>, 
+                <tt class="literal">&amp;=</tt>, 
+                <tt class="literal">|=</tt>, 
+                <tt class="literal">~=</tt>, 
+                <tt class="literal">&amp;&amp;=</tt>, 
+                <tt class="literal">||=</tt></td><td align="center">Binary</td><td align="center">Right</td></tr></tbody></table></div><p>It's important to be aware that in Ceylon, compared to other C-like 
+        languages, the logical not operator <tt class="literal">!</tt> has a very low
+        precedence. The following expressions are equivalent:</p><pre data-language="ceylon">!x.y == 0.0  //means !(x.y == 0.0)</pre><pre data-language="ceylon">x.y != 0.0</pre></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="operatordefinition"></a>6.8.2.&nbsp;Operator definition</h3></div></div><div></div></div><p>The following tables define the semantics of the Ceylon operators. 
+        There are six basic operators which do not have a definition in terms of 
+        other operators or invocations:</p><div class="itemizedlist"><ul type="disc"><li><p>the <span class="emphasis"><em>member selection</em></span> operator
+                <tt class="literal">.</tt> separates the receiver expression and member 
+                name in a member expression, as defined above in
+                <a href="expressions.html#memberexpressions" title="6.5.2.&nbsp;Member expressions">&sect;6.5.2 Member expressions</a>,</p></li><li><p>the <span class="emphasis"><em>argument specification</em></span> operators
+                <tt class="literal">()</tt> and <tt class="literal">{}</tt> specify the 
+                argument list of an invocation, as defined in
+                <a href="expressions.html#invocationexpressions" title="6.6.&nbsp;Invocation expressions">&sect;6.6 Invocation expressions</a> and 
+                <a href="execution.html#invocation" title="8.4.4.&nbsp;Invocation">&sect;8.4.4 Invocation</a>,</p></li><li><p>the <span class="emphasis"><em>assignment</em></span> operator
+                <tt class="literal">=</tt> assigns a new value to a variable and 
+                returns the new value after assignment, as defined in
+                <a href="execution.html#assignment" title="8.4.3.&nbsp;Assignment">&sect;8.4.3 Assignment</a>,</p></li><li><p>the <span class="emphasis"><em>identity</em></span> operator
+                <tt class="literal">===</tt> evaluates to <tt class="literal">true</tt> 
+                if its argument expressions evaluate to references to the same 
+                object, as defined in <a href="execution.html#objectinstancesidentity" title="8.1.&nbsp;Object instances, identity, and reference passing">&sect;8.1 Object instances, identity, and reference passing</a>,
+                or to <tt class="literal">false</tt> otherwise,</p></li><li><p>the <span class="emphasis"><em>assignability</em></span> operator
+                <tt class="literal">is</tt> evaluates to <tt class="literal">true</tt> if 
+                its argument expression evaluates to an instance of a class, as 
+                defined in <a href="execution.html#objectinstancesidentity" title="8.1.&nbsp;Object instances, identity, and reference passing">&sect;8.1 Object instances, identity, and reference passing</a>, that is a 
+                subtype of the specified type, or to <tt class="literal">false</tt> 
+                otherwise, and</p></li><li><p>the <span class="emphasis"><em>coverage</em></span> operator
+                <tt class="literal">of</tt> narrows or widens the type of an expression 
+                to any specified type that covers the expression type, as defined
+                by <a href="typesystem.html#coverage" title="3.4.1.&nbsp;Coverage">&sect;3.4.1 Coverage</a>, without affecting the value of the
+                expression.</p></li></ul></div><p>All other operators are defined below in terms of other operators 
+        and/or invocations.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="basic"></a>6.8.3.&nbsp;Basic invocation and assignment operators</h3></div></div><div></div></div><p>These operators support method invocation and attribute evaluation and
+        assignment.</p><div class="table"><a name="d0e16592"></a><p class="title"><b>Table&nbsp;6.2.&nbsp;</b></p><table border="1"><colgroup><col align="center"><col align="center"><col align="center"><col align="center"><col align="center"><col align="center"></colgroup><thead><tr><th align="center">Example</th><th align="center">Name</th><th align="center">Definition</th><th align="center">LHS type</th><th align="center">RHS type</th><th align="center">Return type</th></tr></thead><tbody><tr><td colspan="6" align="center"><span class="emphasis"><em>Invocation</em></span></td></tr><tr><td align="center"><tt class="literal">lhs.member</tt></td><td align="center">member</td><td align="center">&nbsp;</td><td align="center"><tt class="literal">X</tt></td><td align="center">a member of <tt class="literal">X</tt>, of type
+            <tt class="literal">T</tt></td><td align="center"><tt class="literal">T</tt></td></tr><tr><td align="center"><tt class="literal">lhs(x,y,z)</tt> or 
+            <tt class="literal">lhs{a=x;b=y;}</tt></td><td align="center">invoke</td><td align="center">&nbsp;</td><td align="center"><tt class="literal">T(*P)</tt></td><td align="center">argument list of type <tt class="literal">P</tt></td><td align="center"><tt class="literal">T</tt></td></tr><tr><td colspan="6" align="center"><span class="emphasis"><em>Assignment</em></span></td></tr><tr><td align="center"><tt class="literal">lhs = rhs</tt></td><td align="center">assign</td><td align="center"><tt class="literal"></tt></td><td align="center">variable of type <tt class="literal">X</tt></td><td align="center"><tt class="literal">X</tt></td><td align="center"><tt class="literal">X</tt></td></tr><tr><td colspan="6" align="center"><span class="emphasis"><em>Coverage</em></span></td></tr><tr><td align="center"><tt class="literal">lhs of Type</tt></td><td align="center">of</td><td align="center"><tt class="literal"></tt></td><td align="center"><tt class="literal">X</tt></td><td align="center">a literal type <tt class="literal">T</tt> that covers 
+            <tt class="literal">X</tt></td><td align="center"><tt class="literal">T</tt></td></tr></tbody></table></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="equalitycomparison"></a>6.8.4.&nbsp;Equality and comparison operators</h3></div></div><div></div></div><p>These operators compare values for equality, order, magnitude, or membership,
+        producing boolean values.</p><div class="table"><a name="d0e16711"></a><p class="title"><b>Table&nbsp;6.3.&nbsp;</b></p><table border="1"><colgroup><col align="center"><col align="center"><col align="center"><col align="center"><col align="center"><col align="center"></colgroup><thead><tr><th align="center">Example</th><th align="center">Name</th><th align="center">Definition</th><th align="center">LHS type</th><th align="center">RHS type</th><th align="center">Return type</th></tr></thead><tbody><tr><td colspan="6" align="center"><span class="emphasis"><em>Equality and identity</em></span></td></tr><tr><td align="center"><tt class="literal">lhs === rhs</tt></td><td align="center">identical</td><td align="center"><tt class="literal"></tt></td><td align="center"><tt class="literal">X given X satisfies Identifiable</tt></td><td align="center"><tt class="literal">Y given Y satisfies Identifiable</tt>
+            where <tt class="literal">X&amp;Y</tt> is not <tt class="literal">Nothing</tt></td><td align="center"><tt class="literal">Boolean</tt></td></tr><tr><td align="center"><tt class="literal">lhs == rhs</tt></td><td align="center">equal</td><td align="center"><tt class="literal">lhs.equals(rhs)</tt></td><td align="center"><tt class="literal">Object</tt></td><td align="center"><tt class="literal">Object</tt></td><td align="center"><tt class="literal">Boolean</tt></td></tr><tr><td align="center"><tt class="literal">lhs != rhs</tt></td><td align="center">not equal</td><td align="center"><tt class="literal">!lhs.equals(rhs)</tt></td><td align="center"><tt class="literal">Object</tt></td><td align="center"><tt class="literal">Object</tt></td><td align="center"><tt class="literal">Boolean</tt></td></tr><tr><td colspan="6" align="center"><span class="emphasis"><em>Comparison</em></span></td></tr><tr><td align="center"><tt class="literal">lhs &lt;=&gt; rhs</tt></td><td align="center">compare</td><td align="center"><tt class="literal">lhs.compare(rhs)</tt></td><td align="center"><tt class="literal">Comparable &lt;T&gt;</tt></td><td align="center"><tt class="literal">T</tt></td><td align="center"><tt class="literal">Comparison</tt></td></tr><tr><td align="center"><tt class="literal">lhs &lt; rhs</tt></td><td align="center">smaller</td><td align="center"><tt class="literal">lhs.compare(rhs)==smaller</tt></td><td align="center"><tt class="literal">Comparable &lt;T&gt;</tt></td><td align="center"><tt class="literal">T</tt></td><td align="center"><tt class="literal">Boolean</tt></td></tr><tr><td align="center"><tt class="literal">lhs &gt; rhs</tt></td><td align="center">larger</td><td align="center"><tt class="literal">lhs.compare(rhs)==larger</tt></td><td align="center"><tt class="literal">Comparable &lt;T&gt;</tt></td><td align="center"><tt class="literal">T</tt></td><td align="center"><tt class="literal">Boolean</tt></td></tr><tr><td align="center"><tt class="literal">lhs &lt;= rhs</tt></td><td align="center">small as</td><td align="center"><tt class="literal">lhs.compare(rhs)!=larger</tt></td><td align="center"><tt class="literal">Comparable &lt;T&gt;</tt></td><td align="center"><tt class="literal">T</tt></td><td align="center"><tt class="literal">Boolean</tt></td></tr><tr><td align="center"><tt class="literal">lhs &gt;= rhs</tt></td><td align="center">large as</td><td align="center"><tt class="literal">lhs.compare(rhs)!=smaller</tt></td><td align="center"><tt class="literal">Comparable &lt;T&gt;</tt></td><td align="center"><tt class="literal">T</tt></td><td align="center"><tt class="literal">Boolean</tt></td></tr><tr><td colspan="6" align="center"><span class="emphasis"><em>Containment</em></span></td></tr><tr><td align="center"><tt class="literal">lhs in rhs</tt></td><td align="center">in</td><td align="center"><tt class="literal">let (x=lhs) rhs.contains(x)</tt></td><td align="center"><tt class="literal">Object</tt></td><td align="center"><tt class="literal">Category</tt></td><td align="center"><tt class="literal">Boolean</tt></td></tr><tr><td colspan="6" align="center"><span class="emphasis"><em>Assignability</em></span></td></tr><tr><td align="center"><tt class="literal">rhs is Type</tt></td><td align="center">is</td><td align="center">&nbsp;</td><td align="center">any type which is not a subtype of 
+            <tt class="literal">T</tt>, whose intersection with 
+            <tt class="literal">T</tt> is not <tt class="literal">Nothing</tt></td><td align="center">any literal type <tt class="literal">T</tt></td><td align="center"><tt class="literal">Boolean</tt></td></tr></tbody></table></div><i><span class="comment"><p>TODO: Should we have allow the operators <tt class="literal">&lt;=</tt> 
+        and <tt class="literal">&gt;=</tt> to handle partial orders? A particular usecase is
+        <tt class="literal">Set</tt> comparison.</p></span></i><p>A <span class="emphasis"><em>bounded comparison</em></span> is an abbreviation 
+        for two binary comparisons:</p><div class="itemizedlist"><ul type="disc"><li><p><tt class="literal">l&lt;x&lt;u</tt> means 
+                <tt class="literal">let (t=x) l&lt;t &amp;&amp; t&lt;u</tt>,</p></li><li><p><tt class="literal">l&lt;=x&lt;u</tt> means 
+                <tt class="literal">let (t=x) l&lt;=t &amp;&amp; t&lt;u</tt>,</p></li><li><p><tt class="literal">l&lt;x&lt;=u</tt> means 
+                <tt class="literal">let (t=x) l&lt;t &amp;&amp; t&lt;=u</tt>, and</p></li><li><p><tt class="literal">l&lt;=x&lt;=u</tt> means 
+                <tt class="literal">let (t=x) l&lt;=t &amp;&amp; t&lt;=u</tt></p></li></ul></div><p>for expressions <tt class="literal">l</tt>, <tt class="literal">u</tt>, 
+        and <tt class="literal">x</tt>.</p><p>These abbreviations have the same precedence as the binary 
+        <tt class="literal">&lt;</tt> and <tt class="literal">&lt;=</tt> operators, and, 
+        like the binary forms, are not associative.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="logical"></a>6.8.5.&nbsp;Logical operators</h3></div></div><div></div></div><p>These are the usual logical operations for boolean values.</p><div class="table"><a name="d0e17015"></a><p class="title"><b>Table&nbsp;6.4.&nbsp;</b></p><table border="1"><colgroup><col align="center"><col align="center"><col align="center"><col align="center"><col align="center"><col align="center"></colgroup><thead><tr><th align="center">Example</th><th align="center">Name</th><th align="center">Definition</th><th align="center">LHS type</th><th align="center">RHS type</th><th align="center">Return type</th></tr></thead><tbody><tr><td colspan="6" align="center"><span class="emphasis"><em>Logical operators</em></span></td></tr><tr><td align="center"><tt class="literal">!rhs</tt></td><td align="center">not</td><td align="center"><tt class="literal">if (rhs) then false else true</tt></td><td align="center">&nbsp;</td><td align="center"><tt class="literal">Boolean</tt></td><td align="center"><tt class="literal">Boolean</tt></td></tr><tr><td align="center"><tt class="literal">lhs || rhs</tt></td><td align="center">conditional or</td><td align="center"><tt class="literal">if (lhs) then true else rhs</tt></td><td align="center"><tt class="literal">Boolean</tt></td><td align="center"><tt class="literal">Boolean</tt></td><td align="center"><tt class="literal">Boolean</tt></td></tr><tr><td align="center"><tt class="literal">lhs &amp;&amp; rhs</tt></td><td align="center">conditional and</td><td align="center"><tt class="literal">if (lhs) then rhs else false</tt></td><td align="center"><tt class="literal">Boolean</tt></td><td align="center"><tt class="literal">Boolean</tt></td><td align="center"><tt class="literal">Boolean</tt></td></tr><tr><td colspan="6" align="center"><span class="emphasis"><em>Logical assignment</em></span></td></tr><tr><td align="center"><tt class="literal">lhs ||= rhs</tt></td><td align="center">conditional or</td><td align="center"><tt class="literal">if (lhs) then true else lhs=rhs</tt></td><td align="center">variable of type <tt class="literal">Boolean</tt></td><td align="center"><tt class="literal">Boolean</tt></td><td align="center"><tt class="literal">Boolean</tt></td></tr><tr><td align="center"><tt class="literal">lhs &amp;&amp;= rhs</tt></td><td align="center">conditional and</td><td align="center"><tt class="literal">if (lhs) then lhs=rhs else false</tt></td><td align="center">variable of type <tt class="literal">Boolean</tt></td><td align="center"><tt class="literal">Boolean</tt></td><td align="center"><tt class="literal">Boolean</tt></td></tr></tbody></table></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="nullvalues"></a>6.8.6.&nbsp;Operators for handling null values</h3></div></div><div></div></div><p>These operators make it easy to work with optional expressions.</p><div class="table"><a name="d0e17141"></a><p class="title"><b>Table&nbsp;6.5.&nbsp;</b></p><table border="1"><colgroup><col align="center"><col align="center"><col align="center"><col align="center"><col align="center"><col align="center"></colgroup><thead><tr><th align="center">Example</th><th align="center">Name</th><th align="center">Definition</th><th align="center">LHS type</th><th align="center">RHS type</th><th align="center">Return type</th></tr></thead><tbody><tr><td colspan="6" align="center"><span class="emphasis"><em>Existence</em></span></td></tr><tr><td align="center"><tt class="literal">lhs exists</tt></td><td align="center">exists</td><td align="center"><tt class="literal">if (exists lhs) then true else false</tt></td><td align="center">any type whose intersections with <tt class="literal">Object</tt>
+            and <tt class="literal">Null</tt> are not <tt class="literal">Nothing</tt></td><td align="center">&nbsp;</td><td align="center"><tt class="literal">Boolean</tt></td></tr><tr><td align="center"><tt class="literal">lhs nonempty</tt></td><td align="center">nonempty</td><td align="center"><tt class="literal">if (nonempty lhs) then true else false</tt></td><td align="center">any subtype of <tt class="literal">Anything[]?</tt>
+            whose intersections with <tt class="literal">[]</tt> and 
+            <tt class="literal">[Nothing+]</tt> are not <tt class="literal">Nothing</tt></td><td align="center">&nbsp;</td><td align="center"><tt class="literal">Boolean</tt></td></tr><tr><td colspan="6" align="center"><span class="emphasis"><em>Nullsafe invocation</em></span></td></tr><tr><td align="center"><tt class="literal">lhs?.member</tt></td><td align="center">nullsafe attribute</td><td align="center"><tt class="literal">if (exists lhs) then lhs.member else null</tt></td><td align="center"><tt class="literal">X?</tt></td><td align="center">an attribute of type <tt class="literal">T</tt>
+            of <tt class="literal">X</tt></td><td align="center"><tt class="literal">T?</tt></td></tr><tr><td align="center"><tt class="literal">lhs?.member</tt></td><td align="center">nullsafe method</td><td align="center">&nbsp;</td><td align="center"><tt class="literal">X?</tt></td><td align="center">a method of callable type 
+            <tt class="literal">T(*P)</tt> 
+            of <tt class="literal">X</tt>
+            with exactly one parameter list</td><td align="center"><tt class="literal">T?(*P)</tt></td></tr></tbody></table></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="listmap"></a>6.8.7.&nbsp;Correspondence, subrange, and stream operators</h3></div></div><div></div></div><p>These operators provide a simplified syntax for accessing values 
+        of a <tt class="literal">Correspondence</tt>, for obtaining subranges of 
+        <tt class="literal">Ranged</tt> objects, and for spreading member access
+        over a stream.</p><div class="table"><a name="d0e17275"></a><p class="title"><b>Table&nbsp;6.6.&nbsp;</b></p><table border="1"><colgroup><col align="center"><col align="center"><col align="center"><col align="center"><col align="center"><col align="center"></colgroup><thead><tr><th align="center">Example</th><th align="center">Name</th><th align="center">Definition</th><th align="center">LHS type</th><th align="center">RHS type</th><th align="center">Return type</th></tr></thead><tbody><tr><td colspan="6" align="center"><span class="emphasis"><em>Keyed item access</em></span></td></tr><tr><td align="center"><tt class="literal">lhs[index]</tt></td><td align="center">lookup</td><td align="center"><tt class="literal">lhs.get(index)</tt></td><td align="center"><tt class="literal">Correspondence&lt;X,Y&gt;</tt></td><td align="center"><tt class="literal">X</tt></td><td align="center"><tt class="literal">Y?</tt></td></tr><tr><td colspan="6" align="center"><span class="emphasis"><em>Subranges</em></span></td></tr><tr><td align="center"><tt class="literal">lhs[from:length]</tt></td><td align="center">measured subrange</td><td align="center"><tt class="literal">lhs.measure(from,length)</tt></td><td align="center"><tt class="literal">Ranged&lt;X,Y,Z&gt;</tt></td><td align="center"><tt class="literal">X</tt>, <tt class="literal">Integer</tt></td><td align="center"><tt class="literal">Z</tt></td></tr><tr><td align="center"><tt class="literal">lhs[from..to]</tt></td><td align="center">spanned subrange</td><td align="center"><tt class="literal">lhs.span(from,to)</tt></td><td align="center"><tt class="literal">Ranged&lt;X,Y,Z&gt;</tt></td><td align="center"><tt class="literal">X</tt>, <tt class="literal">X</tt></td><td align="center"><tt class="literal">Z</tt></td></tr><tr><td align="center"><tt class="literal">lhs[from...]</tt></td><td align="center">upper spanned subrange</td><td align="center"><tt class="literal">lhs.spanFrom(from)</tt></td><td align="center"><tt class="literal">Ranged&lt;X,Y,Z&gt;</tt></td><td align="center"><tt class="literal">X</tt></td><td align="center"><tt class="literal">Z</tt></td></tr><tr><td align="center"><tt class="literal">lhs[...to]</tt></td><td align="center">lower spanned subrange</td><td align="center"><tt class="literal">lhs.spanTo(to)</tt></td><td align="center"><tt class="literal">Ranged&lt;X,Y,Z&gt;</tt></td><td align="center"><tt class="literal">X</tt></td><td align="center"><tt class="literal">Z</tt></td></tr><tr><td colspan="6" align="center"><span class="emphasis"><em>Spread invocation</em></span></td></tr><tr><td align="center"><tt class="literal">lhs*.attribute</tt></td><td align="center">spread attribute</td><td align="center"><tt class="literal">[*lhs.map(X.attribute)]</tt></td><td align="center"><tt class="literal">Iterable&lt;X,N&gt;</tt></td><td align="center">attribute of <tt class="literal">X</tt> of
+            type <tt class="literal">T</tt></td><td align="center"><tt class="literal">[T*]</tt> or <tt class="literal">[T+]</tt></td></tr><tr><td align="center"><tt class="literal">lhs*.method</tt></td><td align="center">spread method</td><td align="center"><tt class="literal">compose((Iterable&lt;T,N&gt; ts)=&gt;[*ts], lhs.spread(X.method))</tt></td><td align="center"><tt class="literal">Iterable&lt;X,N&gt;</tt></td><td align="center">method of <tt class="literal">X</tt> of
+            callable type <tt class="literal">T(*P)</tt>
+            with exactly one parameter list</td><td align="center"><tt class="literal">[T*](*P)</tt> or
+            <tt class="literal">[T+](*P)</tt></td></tr><tr><td colspan="6" align="center"><span class="emphasis"><em>Spread multiplication</em></span></td></tr><tr><td align="center"><tt class="literal">lhs ** rhs</tt></td><td align="center">scale</td><td align="center"><tt class="literal">rhs.scale(lhs)</tt></td><td align="center"><tt class="literal">X</tt></td><td align="center"><tt class="literal">Scalable&lt;X,Y&gt;</tt></td><td align="center"><tt class="literal">Y</tt></td></tr></tbody></table></div><p>Operands within brackets in any subrange operator are parsed as if they
+    were operands of the <tt class="literal">..</tt> or <tt class="literal">:</tt> operators.</p><i><span class="comment"><p>Note: an ambiguity exists in interpretation of expressions like
+    <tt class="literal">map[n..m]</tt> and <tt class="literal">map[0:l]</tt>, where the expression 
+    could in principle be interpreted as a lookup operator applied to a range 
+    constructor. This ambiguity is always resolved in favor or interpreting the 
+    expression as a subrange operator.</p></span></i><p>There are two special cases related to sequences. A type <tt class="literal">X</tt>
+    is a <span class="emphasis"><em>sequence type</em></span> if <tt class="literal">X</tt> is a subtype of 
+    <tt class="literal">Sequential&lt;Anything&gt;</tt>.</p><p>For any sequence type <tt class="literal">X</tt> with principal instantiation
+    <tt class="literal">[E*]</tt> and integer <tt class="literal">n</tt>, we can form the 
+    <span class="emphasis"><em><tt class="literal">n</tt>th tail type, <tt class="literal">Xn</tt>, of 
+    <tt class="literal">X</tt></em></span> as follows:</p><div class="itemizedlist"><ul type="disc"><li><p>for every <tt class="literal">i&lt;=0</tt>, <tt class="literal">Xi</tt> 
+            is <tt class="literal">X</tt>,</p></li><li><p>for every <tt class="literal">i&gt;0</tt>, if <tt class="literal">Xi</tt> 
+            has the principal instantiation <tt class="literal">Tuple&lt;Ui,Fi,Ti&gt;</tt> 
+            then <tt class="literal">X(i+1)</tt> is <tt class="literal">Ti</tt>, or, if 
+            <tt class="literal">Xi</tt> has principal instantiation <tt class="literal">[Fi*]</tt>
+            then <tt class="literal">X(i+1)</tt> is <tt class="literal">[Fi*]</tt>, or, otherwise,
+            if <tt class="literal">Xi</tt> is <tt class="literal">[]</tt>, then <tt class="literal">X(i+1)</tt> 
+            is also <tt class="literal">[]</tt>.</p></li></ul></div><p>For any sequence type <tt class="literal">X</tt> and integer <tt class="literal">n</tt>, 
+    we can form the <span class="emphasis"><em><tt class="literal">n</tt>th element type, <tt class="literal">En</tt>, 
+    of <tt class="literal">X</tt></em></span> as follows:</p><div class="itemizedlist"><ul type="disc"><li><p>if <tt class="literal">n&gt;=0</tt> and <tt class="literal">Xn</tt> 
+            has the principal instantiation <tt class="literal">[Fn+]</tt> then 
+            <tt class="literal">En</tt> is <tt class="literal">Fn</tt>, or,</p></li><li><p>otherwise, <tt class="literal">Xn</tt> has the principal 
+            instantiation <tt class="literal">[Fn*]</tt> and <tt class="literal">En</tt> 
+            is <tt class="literal">Fn?</tt>.</p></li></ul></div><p>Then the two special cases are:</p><div class="itemizedlist"><ul type="disc"><li><p>The type of an expression of form <tt class="literal">x[n]</tt> where
+            <tt class="literal">x</tt> is of the sequence type <tt class="literal">X</tt> and 
+            <tt class="literal">n</tt> is an integer literal is <tt class="literal">En</tt>.</p></li><li><p>The type of an expression of form <tt class="literal">x[n...]</tt> where
+            <tt class="literal">x</tt> is of the sequence type <tt class="literal">X</tt> and 
+            <tt class="literal">n</tt> is an integer literal is <tt class="literal">Xn</tt> if
+            <tt class="literal">Xn</tt> is an instantiation of <tt class="literal">Tuple</tt>,
+            <tt class="literal">[Fn+]</tt> if <tt class="literal">Xn</tt> has the principal 
+            instantiation <tt class="literal">[Fn+]</tt>, or <tt class="literal">[Fn*]</tt>
+            if <tt class="literal">Xn</tt> has the principal instantiation 
+            <tt class="literal">[Fn*]</tt>.</p></li></ul></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="creation"></a>6.8.8.&nbsp;Operators for creating objects</h3></div></div><div></div></div><p>These operators simplify the syntax for instantiating certain 
+        commonly used built-in types.</p><div class="table"><a name="d0e17706"></a><p class="title"><b>Table&nbsp;6.7.&nbsp;</b></p><table border="1"><colgroup><col align="center"><col align="center"><col align="center"><col align="center"><col align="center"><col align="center"></colgroup><thead><tr><th align="center">Example</th><th align="center">Name</th><th align="center">Definition</th><th align="center">LHS type</th><th align="center">RHS type</th><th align="center">Return type</th></tr></thead><tbody><tr><td colspan="6" align="center"><span class="emphasis"><em>Range and entry constructors</em></span></td></tr><tr><td align="center"><tt class="literal">lhs..rhs</tt></td><td align="center">spanned range</td><td align="center"><tt class="literal">span(lhs, rhs)</tt></td><td align="center"><tt class="literal">T given T satisfies Enumerable&lt;T&gt;</tt></td><td align="center"><tt class="literal">T</tt></td><td align="center"><tt class="literal">Range&lt;T&gt;</tt></td></tr><tr><td align="center"><tt class="literal">lhs:rhs</tt></td><td align="center">measured range</td><td align="center"><tt class="literal">measure(lhs,rhs)</tt></td><td align="center"><tt class="literal">T given T satisfies Enumerable&lt;T&gt;</tt></td><td align="center"><tt class="literal">Integer</tt></td><td align="center"><tt class="literal">Range&lt;T&gt;|[]</tt></td></tr><tr><td align="center"><tt class="literal">lhs-&gt;rhs</tt></td><td align="center">entry</td><td align="center"><tt class="literal">Entry(lhs, rhs)</tt></td><td align="center"><tt class="literal">U given U satisfies Object</tt></td><td align="center"><tt class="literal">V</tt></td><td align="center"><tt class="literal">Entry&lt;U,V&gt;</tt></td></tr></tbody></table></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="conditionals"></a>6.8.9.&nbsp;Conditional operators</h3></div></div><div></div></div><p>Two special operators allow emulation of the famous ternary
+        operator of C-like languages.</p><div class="table"><a name="d0e17793"></a><p class="title"><b>Table&nbsp;6.8.&nbsp;</b></p><table border="1"><colgroup><col align="center"><col align="center"><col align="center"><col align="center"><col align="center"><col align="center"></colgroup><thead><tr><th align="center">Example</th><th align="center">Name</th><th align="center">Definition</th><th align="center">LHS type</th><th align="center">RHS type</th><th align="center">Return type</th></tr></thead><tbody><tr><td colspan="6" align="center"><span class="emphasis"><em>Conditionals</em></span></td></tr><tr><td align="center"><tt class="literal">lhs then rhs</tt></td><td align="center">then</td><td align="center"><tt class="literal">if (lhs) then rhs else null</tt></td><td align="center"><tt class="literal">Boolean</tt></td><td align="center"><tt class="literal">T given T satisfies Object</tt></td><td align="center"><tt class="literal">T?</tt></td></tr><tr><td align="center"><tt class="literal">lhs else rhs</tt></td><td align="center">else</td><td align="center"><tt class="literal">if (exists lhs) then lhs else rhs</tt></td><td align="center"><tt class="literal">U</tt> such that <tt class="literal">null is U</tt></td><td align="center"><tt class="literal">V</tt></td><td align="center"><tt class="literal">U&amp;Object|V</tt></td></tr></tbody></table></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="arithmetic"></a>6.8.10.&nbsp;Arithmetic operators</h3></div></div><div></div></div><p>These are the usual mathematical operations for all kinds of
+        numeric values.</p><div class="table"><a name="d0e17864"></a><p class="title"><b>Table&nbsp;6.9.&nbsp;</b></p><table border="1"><colgroup><col align="center"><col align="center"><col align="center"><col align="center"><col align="center"><col align="center"></colgroup><thead><tr><th align="center">Example</th><th align="center">Name</th><th align="center">Definition</th><th align="center">LHS type</th><th align="center">RHS type</th><th align="center">Return type</th></tr></thead><tbody><tr><td colspan="6" align="center"><span class="emphasis"><em>Increment, decrement</em></span></td></tr><tr><td align="center"><tt class="literal">++rhs</tt></td><td align="center">successor</td><td align="center"><tt class="literal">rhs=rhs.successor</tt></td><td align="center">&nbsp;</td><td align="center">variable of type <tt class="literal">Ordinal&lt;T&gt;</tt></td><td align="center"><tt class="literal">T</tt></td></tr><tr><td align="center"><tt class="literal">--rhs</tt></td><td align="center">predecessor</td><td align="center"><tt class="literal">rhs=rhs.predecessor</tt></td><td align="center">&nbsp;</td><td align="center">variable of type <tt class="literal">Ordinal&lt;T&gt;</tt></td><td align="center"><tt class="literal">T</tt></td></tr><tr><td align="center"><tt class="literal">lhs++</tt></td><td align="center">increment</td><td align="center"><tt class="literal">let (x = lhs, _ = lhs = lhs.successor) x</tt></td><td align="center">variable of type <tt class="literal">Ordinal&lt;T&gt;</tt></td><td align="center">&nbsp;</td><td align="center"><tt class="literal">T</tt></td></tr><tr><td align="center"><tt class="literal">lhs--</tt></td><td align="center">decrement</td><td align="center"><tt class="literal">let (x = lhs, _ = lhs = lhs.predecessor) x</tt></td><td align="center">variable of type <tt class="literal">Ordinal&lt;T&gt;</tt></td><td align="center">&nbsp;</td><td align="center"><tt class="literal">T</tt></td></tr><tr><td colspan="6" align="center"><span class="emphasis"><em>Numeric operators</em></span></td></tr><tr><td align="center"><tt class="literal">+rhs</tt></td><td align="center">&nbsp;</td><td align="center"><tt class="literal">rhs</tt></td><td align="center">&nbsp;</td><td align="center"><tt class="literal">Invertible &lt;I&gt;</tt></td><td align="center"><tt class="literal">I</tt></td></tr><tr><td align="center"><tt class="literal">-rhs</tt></td><td align="center">negation</td><td align="center"><tt class="literal">rhs.negated</tt></td><td align="center">&nbsp;</td><td align="center"><tt class="literal">Invertible &lt;I&gt;</tt></td><td align="center"><tt class="literal">I</tt></td></tr><tr><td align="center"><tt class="literal">lhs + rhs</tt></td><td align="center">sum</td><td align="center"><tt class="literal">lhs.plus(rhs)</tt></td><td align="center"><tt class="literal">Summable&lt;X&gt;</tt></td><td align="center"><tt class="literal">X</tt></td><td align="center"><tt class="literal">X</tt></td></tr><tr><td align="center"><tt class="literal">lhs - rhs</tt></td><td align="center">difference</td><td align="center"><tt class="literal">lhs.minus(rhs)</tt></td><td align="center"><tt class="literal">Invertible &lt;X&gt;</tt></td><td align="center"><tt class="literal">X</tt></td><td align="center"><tt class="literal">X</tt></td></tr><tr><td align="center"><tt class="literal">lhs * rhs</tt></td><td align="center">product</td><td align="center"><tt class="literal">lhs.times(rhs)</tt></td><td align="center"><tt class="literal">Numeric&lt;X&gt;</tt></td><td align="center"><tt class="literal">X</tt></td><td align="center"><tt class="literal">X</tt></td></tr><tr><td align="center"><tt class="literal">lhs / rhs</tt></td><td align="center">quotient</td><td align="center"><tt class="literal">lhs.divided(rhs)</tt></td><td align="center"><tt class="literal">Numeric&lt;X&gt;</tt></td><td align="center"><tt class="literal">X</tt></td><td align="center"><tt class="literal">X</tt></td></tr><tr><td align="center"><tt class="literal">lhs % rhs</tt></td><td align="center">remainder</td><td align="center"><tt class="literal">lhs.remainder(rhs)</tt></td><td align="center"><tt class="literal">Integral&lt;X&gt;</tt></td><td align="center"><tt class="literal">X</tt></td><td align="center"><tt class="literal">X</tt></td></tr><tr><td align="center"><tt class="literal">lhs ^ rhs</tt></td><td align="center">power</td><td align="center"><tt class="literal">lhs.power(rhs)</tt></td><td align="center"><tt class="literal">Exponentiable &lt;X,Y&gt;</tt></td><td align="center"><tt class="literal">Y</tt></td><td align="center"><tt class="literal">X</tt></td></tr><tr><td colspan="6" align="center"><span class="emphasis"><em>Numeric assignment</em></span></td></tr><tr><td align="center"><tt class="literal">lhs += rhs</tt></td><td align="center">add</td><td align="center"><tt class="literal">lhs=lhs.plus(rhs)</tt></td><td align="center">variable of type <tt class="literal">Summable&lt;N&gt;</tt></td><td align="center"><tt class="literal">N</tt></td><td align="center"><tt class="literal">N</tt></td></tr><tr><td align="center"><tt class="literal">lhs -= rhs</tt></td><td align="center">subtract</td><td align="center"><tt class="literal">lhs=lhs.minus(rhs)</tt></td><td align="center">variable of type <tt class="literal">Invertible &lt;N&gt;</tt></td><td align="center"><tt class="literal">N</tt></td><td align="center"><tt class="literal">N</tt></td></tr><tr><td align="center"><tt class="literal">lhs *= rhs</tt></td><td align="center">multiply</td><td align="center"><tt class="literal">lhs=lhs.times(rhs)</tt></td><td align="center">variable of type <tt class="literal">Numeric&lt;N&gt;</tt></td><td align="center"><tt class="literal">N</tt></td><td align="center"><tt class="literal">N</tt></td></tr><tr><td align="center"><tt class="literal">lhs /= rhs</tt></td><td align="center">divide</td><td align="center"><tt class="literal">lhs=lhs.divided(rhs)</tt></td><td align="center">variable of type <tt class="literal">Numeric&lt;N&gt;</tt></td><td align="center"><tt class="literal">N</tt></td><td align="center"><tt class="literal">N</tt></td></tr><tr><td align="center"><tt class="literal">lhs %= rhs</tt></td><td align="center">remainder</td><td align="center"><tt class="literal">lhs=lhs.remainder(rhs)</tt></td><td align="center">variable of type <tt class="literal">Integral&lt;N&gt;</tt></td><td align="center"><tt class="literal">N</tt></td><td align="center"><tt class="literal">N</tt></td></tr></tbody></table></div><p>Arithmetic operators automatically widen from <tt class="literal">Integer</tt> 
+        to <tt class="literal">Float</tt> when necessary. If one operand expression is 
+        of static type <tt class="literal">Integer</tt>, and the other is of type 
+        <tt class="literal">Float</tt>, the operand of type <tt class="literal">Integer</tt> 
+        is widened to a <tt class="literal">Float</tt> in order to make the operator 
+        expression well-typed. Widening is performed by evaluating the attribute 
+        <tt class="literal">float</tt> defined by <tt class="literal">Integer</tt>.</p><i><span class="comment"><p>Note: this is the only circumstance in the language where 
+        implicit type conversion occurs. In fact, it is more correct to view this 
+        behavior as an instance of operator overloading than as an implicit type 
+        conversion. Implicit widening does not occur when an expression of type 
+        <tt class="literal">Integer</tt> is merely assigned to the type 
+        <tt class="literal">Float</tt>, since such behavior would result in ambiguities 
+        when generics come into play.</p></span></i></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="sets"></a>6.8.11.&nbsp;Set operators</h3></div></div><div></div></div><p>These operators provide traditional mathematical operations for sets.</p><div class="table"><a name="d0e18246"></a><p class="title"><b>Table&nbsp;6.10.&nbsp;</b></p><table border="1"><colgroup><col align="center"><col align="center"><col align="center"><col align="center"><col align="center"><col align="center"></colgroup><thead><tr><th align="center">Example</th><th align="center">Name</th><th align="center">Definition</th><th align="center">LHS type</th><th align="center">RHS type</th><th align="center">Return type</th></tr></thead><tbody><tr><td colspan="6" align="center"><span class="emphasis"><em>Set operators</em></span></td></tr><tr><td align="center"><tt class="literal">lhs | rhs</tt></td><td align="center">union</td><td align="center"><tt class="literal">lhs.union(rhs)</tt></td><td align="center"><tt class="literal">Set&lt;X&gt;</tt></td><td align="center"><tt class="literal">Set&lt;Y&gt;</tt></td><td align="center"><tt class="literal">Set&lt;X|Y&gt;</tt></td></tr><tr><td align="center"><tt class="literal">lhs &amp; rhs</tt></td><td align="center">intersection</td><td align="center"><tt class="literal">lhs.intersection(rhs)</tt></td><td align="center"><tt class="literal">Set&lt;X&gt;</tt></td><td align="center"><tt class="literal">Set&lt;Y&gt;</tt></td><td align="center"><tt class="literal">Set&lt;X&amp;Y&gt;</tt></td></tr><tr><td align="center"><tt class="literal">lhs ~ rhs</tt></td><td align="center">complement</td><td align="center"><tt class="literal">lhs.complement(rhs)</tt></td><td align="center"><tt class="literal">Set&lt;X&gt;</tt></td><td align="center"><tt class="literal">Set&lt;Object&gt;</tt></td><td align="center"><tt class="literal">Set&lt;X&gt;</tt></td></tr><tr><td colspan="6" align="center"><span class="emphasis"><em>Set assignment</em></span></td></tr><tr><td align="center"><tt class="literal">lhs |= rhs</tt></td><td align="center">union</td><td align="center"><tt class="literal">lhs=lhs|rhs</tt></td><td align="center">variable of type <tt class="literal">Set&lt;X&gt;</tt></td><td align="center"><tt class="literal">Set&lt;X&gt;</tt></td><td align="center"><tt class="literal">Set&lt;X&gt;</tt></td></tr><tr><td align="center"><tt class="literal">lhs &amp;= rhs</tt></td><td align="center">intersection</td><td align="center"><tt class="literal">lhs=lhs&amp;rhs</tt></td><td align="center">variable of type <tt class="literal">Set&lt;X&gt;</tt></td><td align="center"><tt class="literal">Set&lt;Object&gt;</tt></td><td align="center"><tt class="literal">Set&lt;X&gt;</tt></td></tr><tr><td align="center"><tt class="literal">lhs ~= rhs</tt></td><td align="center">complement</td><td align="center"><tt class="literal">lhs=lhs~rhs</tt></td><td align="center">variable of type <tt class="literal">Set&lt;X&gt;</tt></td><td align="center"><tt class="literal">Set&lt;Object&gt;</tt></td><td align="center"><tt class="literal">Set&lt;X&gt;</tt></td></tr></tbody></table></div></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="metamodelexpressions"></a>6.9.&nbsp;Metamodel expressions</h2></div></div><div></div></div><p>A <span class="emphasis"><em>metamodel expression</em></span> is a reference to
+        a type, a class, a function, a value, or a constructor. It evaluates 
+        to a metamodel object whose static type captures, respectively:</p><div class="itemizedlist"><ul type="disc"><li><p>the type itself,</p></li><li><p>the callable type of the class,</p></li><li><p>the callable type of the function,</p></li><li><p>the type of the value,</p></li><li><p>the type of the value constructor, or</p></li><li><p>the callable type of the callable constructor.</p></li></ul></div><pre data-language="bnf">Meta: TypeMeta | BaseMeta | MemberMeta | ConstructorMeta</pre><p>A <span class="emphasis"><em>type metamodel expression</em></span> is a type, as
+        defined by <a href="typesystem.html#type" title="3.2.&nbsp;Types">&sect;3.2 Types</a>, surrounded by backticks.</p><pre data-language="bnf">TypeMeta: "`" Type "`"</pre><p>The type may or may not be a reference to a class or interface.</p><pre data-language="ceylon">Class&lt;Person,[Name]&gt; personClass = `Person`;</pre><pre data-language="ceylon">Interface&lt;List&lt;String&gt;&gt; stringListInterface = `List&lt;String&gt;`;</pre><pre data-language="ceylon">UnionType&lt;Integer|Float&gt; numberType = `Number`;</pre><pre data-language="ceylon">Type&lt;Element&gt; elementType = `Element`;</pre><p>A <span class="emphasis"><em>base metamodel expression</em></span> is a member name, 
+        with an optional list of type arguments, surrounded by backticks.</p><pre data-language="bnf">BaseMeta: "`" PackageQualifier? MemberName TypeArguments? "`"</pre><p>A base metamodel expression is a reference to a value or function. 
+        The referenced declaration is determined according to
+        <a href="statementblocks.html#unqualifiedreferenceresolution" title="5.1.7.&nbsp;Unqualified reference resolution">&sect;5.1.7 Unqualified reference resolution</a>.</p><p>A <span class="emphasis"><em>member metamodel expression</em></span> is a qualifier, 
+        followed by a member name, with an optional list of type arguments, 
+        surrounded by backticks.</p><pre data-language="bnf">MemberMeta: "`" PrimaryType "." MemberName TypeArguments? "`"</pre><p>The member metamodel expression is qualified by a type, as defined 
+        by <a href="typesystem.html#type" title="3.2.&nbsp;Types">&sect;3.2 Types</a>.</p><p>A member metamodel expression is a reference to an attribute or 
+        method of the type identified by the qualifier. The member is resolved 
+        as a member of the type according to 
+        <a href="statementblocks.html#qualifiedreferenceresolution" title="5.1.8.&nbsp;Qualified reference resolution">&sect;5.1.8 Qualified reference resolution</a>.</p><pre data-language="ceylon">Function&lt;Float,[{Float+}]&gt; sumFunction = `sum&lt;Float&gt;`;</pre><pre data-language="ceylon">Attribute&lt;Person,String&gt; personNameAttribute = `Person.name`;</pre><pre data-language="ceylon">Method&lt;Person,Anything,[String]&gt; personSayMethod = `Person.say`;</pre><pre data-language="ceylon">Attribute&lt;\Isystem,Integer&gt; systemMillis = `\Isystem.milliseconds`;</pre><p>A <span class="emphasis"><em>constructor metamodel expression</em></span> is a qualifier, 
+        followed by a constructor name, with an optional list of type arguments, 
+        surrounded by backticks.</p><pre data-language="bnf">ConstructorMeta: "`" PrimaryType "." ()MemberName | TypeName) TypeArguments? "`"</pre><p>The constructor metamodel expression qualifier is a type that is an
+        instantiation of a class.</p><p>A constructor metamodel expression is a reference to a constructor or 
+        of the class identified by the qualifier. The constructor is resolved as a 
+        member of the class according to 
+        <a href="statementblocks.html#qualifiedreferenceresolution" title="5.1.8.&nbsp;Qualified reference resolution">&sect;5.1.8 Qualified reference resolution</a>.</p><p>Type argument inference is impossible in a metamodel expression,
+        so type arguments must be explicitly provided for every generic 
+        declaration.</p><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="typeofametamodelexpression"></a>6.9.1.&nbsp;Type of a metamodel expression</h3></div></div><div></div></div><p>The type of a metamodel expression depends upon the kind of 
+            declaration referenced:</p><div class="itemizedlist"><ul type="disc"><li><p>for a toplevel value of type <tt class="literal">R</tt>, 
+                    the type is <tt class="literal">Value&lt;R&gt;</tt>,</p></li><li><p>for a toplevel function of callable type 
+                    <tt class="literal">R(*P)</tt>, the type is 
+                    <tt class="literal">Function&lt;R,P&gt;</tt>,</p></li><li><p>for a toplevel class of callable type 
+                    <tt class="literal">R(*P)</tt>, the type is 
+                    <tt class="literal">Class&lt;R,P&gt;</tt>,</p></li><li><p>for a callable constructor of a toplevel class of 
+                    callable type <tt class="literal">R(*P)</tt>, the type is 
+                    <tt class="literal">CallableConstructor&lt;R,P&gt;</tt>,</p></li><li><p>for a value constructor of a toplevel class of 
+                    type <tt class="literal">R</tt>, the type is 
+                    <tt class="literal">ValueConstructor&lt;R&gt;</tt>,</p></li><li><p>for a class nested in a block of callable type 
+                    <tt class="literal">R(*P)</tt>, the type is 
+                    <tt class="literal">Class&lt;R,Nothing&gt;</tt>, and</p></li><li><p>for a toplevel interface or interface nested 
+                    in a block of type <tt class="literal">R</tt>, the type is 
+                    <tt class="literal">Interface&lt;R&gt;</tt>.</p></li></ul></div><i><span class="comment"><p>Note: members of anonymous classes are treated as 
+            toplevels here.</p></span></i><p>Furthermore, given a member of a type <tt class="literal">T</tt>:</p><div class="itemizedlist"><ul type="disc"><li><p>for an attribute of type <tt class="literal">R</tt>, the 
+                    type is <tt class="literal">Attribute&lt;T,R&gt;</tt>,</p></li><li><p>for a method of callable type 
+                    <tt class="literal">R(*P)</tt>, the type is 
+                    <tt class="literal">Method&lt;T,R,P&gt;</tt>,</p></li><li><p>for a member class of callable type 
+                    <tt class="literal">R(*P)</tt>, the type is 
+                    <tt class="literal">MemberClass&lt;T,R,P&gt;</tt>, and</p></li><li><p>for a callable constructor of a member class of 
+                    callable type <tt class="literal">R(*P)</tt>, the type is 
+                    <tt class="literal">MemberClassCallableConstructor&lt;T,R,P&gt;</tt>, 
+                    and</p></li><li><p>for a value constructor of a member class of 
+                    type <tt class="literal">R</tt>, the type is 
+                    <tt class="literal">MemberClassValueConstructor&lt;T,R&gt;</tt>, 
+                    and</p></li><li><p>for a value of a member class of type 
+                    <tt class="literal">R</tt>, the type is 
+                    <tt class="literal">Attribute&lt;T,R&gt;</tt>, 
+                    and</p></li><li><p>for a nested interface of type 
+                    <tt class="literal">R</tt>, the type is 
+                    <tt class="literal">MemberInterface&lt;T,R&gt;</tt>.</p></li></ul></div><p>Finally:</p><div class="itemizedlist"><ul type="disc"><li><p>for a union type <tt class="literal">T</tt>, the type is
+                    <tt class="literal">UnionType&lt;T&gt;</tt>,</p></li><li><p>for an intersection type <tt class="literal">T</tt>, the 
+                    type is <tt class="literal">IntersectionType&lt;T&gt;</tt>,</p></li><li><p>for the type <tt class="literal">Nothing</tt>, the type is 
+                    <tt class="literal">Type&lt;Nothing&gt;</tt>, and</p></li><li><p>for a type parameter <tt class="literal">T</tt>, the type is
+                    <tt class="literal">Type&lt;T&gt;</tt>.</p></li></ul></div><p>If a type alias occurs inside a typed metamodel expression, it 
+            is replaced by its definition, after substituting type arguments, 
+            before determining the type of the metamodel expression.</p></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="referenceexpressions"></a>6.10.&nbsp;Reference expressions</h2></div></div><div></div></div><p>A <span class="emphasis"><em>reference expression</em></span> is a reference to
+        a program element and evaluates to a detyped metamodel of the program 
+        element. Reference expressions are used primarily in annotations, 
+        especially the documentation annotations listed in 
+        <a href="annotations.html#documentation" title="7.4.2.&nbsp;Documentation">&sect;7.4.2 Documentation</a>. A reference expression may refer to:</p><div class="itemizedlist"><ul type="disc"><li><p>a class, interface, type alias, or type parameter,</p></li><li><p>a function or value,</p></li><li><p>a constructor, or</p></li><li><p>a package or module.</p></li></ul></div><pre data-language="bnf">Dec: TypeDec | MemberDec | ConstructorDec | PackageDec | ModuleDec</pre><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="declarationreferences"></a>6.10.1.&nbsp;Declaration references</h3></div></div><div></div></div><p>Declaration reference expressions may be qualified by a
+            <span class="emphasis"><em>member declaration qualifier</em></span>, a sequence
+            of identifiers identifying a class or interface declaration or 
+            an anonymous class declaration:</p><pre data-language="bnf">MemberDecQualifier: ( (TypeName | MemberName) "." )+</pre><p>Each identifier in the member declaration qualifier is 
+            the name of a class, interface, or anonymous class.</p><p>A <span class="emphasis"><em>class reference expression</em></span>, 
+            <span class="emphasis"><em>interface reference expression</em></span>,
+            <span class="emphasis"><em>alias reference expression</em></span>, or
+            <span class="emphasis"><em>type parameter reference expression</em></span> is an
+            optional member declaration qualifier, followed by the name of
+            a class or anonymous class, interface, alias, or type parameter,
+            with the keyword <tt class="literal">class</tt>, <tt class="literal">interface</tt>, 
+            <tt class="literal">alias</tt>, or <tt class="literal">given</tt>, respectively, 
+            surrounded by backticks.</p><pre data-language="bnf">TypeKeyword: "class" | "interface" | "alias" | "given"</pre><pre data-language="bnf">TypeDec: "`" TypeKeyword ( PackageQualifier? MemberDecQualifier? (TypeName | MemberName) )? "`"</pre><p>For a class or interface reference expression, the name of 
+            the class or interface is optional. In this case, the class or
+            interface reference is to the immediately containing class or
+            interface, if any, as defined in <a href="expressions.html#selfreferences" title="6.3.&nbsp;Self references">&sect;6.3 Self references</a>. 
+            For alias or type parameter reference expressions, the name of 
+            the alias or type parameter is required.</p><pre data-language="ceylon">ClassDeclaration thisClass = `class`;</pre><pre data-language="ceylon">ClassDeclaration personClass = `class Person`;</pre><pre data-language="ceylon">ClassDeclaration thisInterface = `interface`;</pre><pre data-language="ceylon">InterfaceDeclaration stringListInterface = `interface List`;</pre><pre data-language="ceylon">AliasDeclaration numberAlias = `alias Number`;</pre><pre data-language="ceylon">TypeParameter elementTypeParameter = `given Element`;</pre><pre data-language="ceylon">CallableConstructorDeclaration arrayOfSizeConstructor = `new Array.ofSize`;</pre><p>A <span class="emphasis"><em>value reference expression</em></span> or
+            <span class="emphasis"><em>function reference expression</em></span> is an optional 
+            member declaration qualifier, followed by the name of a function,
+            value, value constructor, or anonymous class, with the keyword 
+            <tt class="literal">value</tt> or <tt class="literal">function</tt>, surrounded 
+            by backticks.</p><pre data-language="bnf">MemberKeyword: "value" | "function"</pre><pre data-language="bnf">MemberDec: "`" MemberKeyword PackageQualifier? MemberDecQualifier? MemberName "`"</pre><p>A <span class="emphasis"><em>constructor reference expression</em></span> is a 
+            member declaration qualifier, followed by the name of a callable 
+            constructor, with the keyword <tt class="literal">new</tt>, surrounded by 
+            backticks.</p><pre data-language="bnf">ConstructorKeyword: "new"</pre><pre data-language="bnf">ConstructorDec: "`" ConstructorKeyword PackageQualifier? MemberDecQualifier TypeName "`"</pre><p>A reference expression is a reference to a declaration. The 
+            referenced declaration is determined according to
+            <a href="statementblocks.html#unqualifiedreferenceresolution" title="5.1.7.&nbsp;Unqualified reference resolution">&sect;5.1.7 Unqualified reference resolution</a> and
+            <a href="statementblocks.html#qualifiedreferenceresolution" title="5.1.8.&nbsp;Qualified reference resolution">&sect;5.1.8 Qualified reference resolution</a>. The kind of the
+            referenced declaration must match the kind of reference indicated
+            by the keyword.</p><pre data-language="ceylon">ValueDeclaration personNameAttribute = `value Person.name`;</pre><pre data-language="ceylon">FunctionDeclaration personSayMethod = `function Person.say`;</pre><pre data-language="ceylon">FunctionDeclaration processWriteMethod = `function process.write`;</pre><pre data-language="ceylon">ClassDeclaration processClass = `class process`;</pre></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="packageandmodulereferences"></a>6.10.2.&nbsp;Package and module references</h3></div></div><div></div></div><p>A <span class="emphasis"><em>package reference expression</em></span> is a package
+            name, as defined by <a href="declarations.html#packages" title="4.1.2.&nbsp;Packages">&sect;4.1.2 Packages</a>, with the keyword
+            <tt class="literal">package</tt>, surrounded by backticks.</p><pre data-language="bnf">PackageDec: "`" "package" FullPackageName? "`"</pre><p>The package name must refer to a package from which an 
+            <tt class="literal">import</tt> statement in the same compilation unit may 
+            import declarations, as defined by <a href="declarations.html#imports" title="4.2.&nbsp;Imports">&sect;4.2 Imports</a>.</p><p>If there is no explicit package name, the package reference
+            is to the package in which the package reference expression occurs.</p><pre data-language="ceylon">Package currentPackage = `package`;
+Package modelPackage = `package ceylon.language.meta.model`;</pre><p>A <span class="emphasis"><em>module reference expression</em></span> is a module
+            name, as defined by <a href="modulesystem.html#modulenamesandversionidentifiers" title="9.3.1.&nbsp;Module names and version identifiers">&sect;9.3.1 Module names and version identifiers</a>, 
+            with the keyword <tt class="literal">module</tt>, surrounded by backticks.</p><pre data-language="bnf">ModuleDec: "`" "module" FullPackageName? "`"</pre><p>The module name must refer to the module to which the 
+            compilation unit belongs, as specified by <a href="modulesystem.html#sourcelayout" title="9.2.&nbsp;Source layout">&sect;9.2 Source layout</a>, 
+            or to a module imported by the module to which the compilation unit 
+            belongs, as defined by <a href="modulesystem.html#moduledescriptors" title="9.3.10.&nbsp;Module descriptors">&sect;9.3.10 Module descriptors</a>.</p><p>If there is no explicit module name, the module reference
+            is to the package in which the module reference expression occurs.</p><pre data-language="ceylon">Module currentModule = `module`;
+Module languageModule = `module ceylon.language`;</pre></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="typeofareferenceexpression"></a>6.10.3.&nbsp;Type of a reference expression</h3></div></div><div></div></div><p>The type of a reference expression depends upon the kind of 
+            program element referenced:</p><div class="itemizedlist"><ul type="disc"><li><p>for a module, the type is 
+                    <tt class="literal">Module</tt>,</p></li><li><p>for a package, the type is 
+                    <tt class="literal">Package</tt>,</p></li><li><p>for a reference, the type is 
+                    <tt class="literal">ReferenceDeclaration</tt>,</p></li><li><p>for any other value, the type is 
+                    <tt class="literal">ValueDeclaration</tt>,</p></li><li><p>for a function, the type is 
+                    <tt class="literal">FunctionDeclaration</tt>,</p></li><li><p>for a callable constructor, the type is 
+                    <tt class="literal">CallableConstructorDeclaration</tt>,</p></li><li><p>for a value constructor, the type is 
+                    <tt class="literal">ValueConstructorDeclaration</tt>,</p></li><li><p>for a type parameter, the type is 
+                    <tt class="literal">TypeParameter</tt>,</p></li><li><p>for a type alias declared using the keyword
+                    <tt class="literal">alias</tt>, the type is 
+                    <tt class="literal">AliasDeclaration</tt>,</p></li><li><p>for a class with an initializer parameter list,
+                    or for any class alias, the type is 
+                    <tt class="literal">ClassWithInitializerDeclaration</tt>,
+                    </p></li><li><p>for a class with constructors, the type is 
+                    <tt class="literal">ClassWithConstructorsDeclaration</tt>, 
+                    and</p></li><li><p>for an interface or interface alias, the type 
+                    is <tt class="literal">InterfaceDeclaration</tt>.</p></li></ul></div><p>For a reference to an anonymous class, the type depends
+            upon the keyword, <tt class="literal">class</tt>, or <tt class="literal">value</tt>, 
+            specified in the reference expression:</p><div class="itemizedlist"><ul type="disc"><li><p>for a class reference expression, the type is 
+                    <tt class="literal">ClassDeclaration</tt>, but</p></li><li><p>for a value reference expression, the type is 
+                    <tt class="literal">ValueDeclaration</tt>.</p></li></ul></div></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="statementblocks.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="index.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="annotations.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter&nbsp;5.&nbsp;Statements, blocks, and control structures&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;Chapter&nbsp;7.&nbsp;Annotations</td></tr></table></div></body></html>

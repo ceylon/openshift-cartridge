@@ -1,0 +1,82 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>InterfaceDeclaration.ceylon</title><link href='../../.resources/favicon.ico' rel='shortcut icon'/>
+<link href='../../.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='../../.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='//fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '../../.resources/'</script><script src='../../.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='../../.resources/rainbow.min.js' type='text/javascript'></script><script src='../../.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='../../.resources/ceylon.js' type='text/javascript'></script><script src='../../.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>import ceylon.language.meta.model {
+    Interface,
+    MemberInterface,
+    AppliedType = Type,
+    IncompatibleTypeException,
+    TypeApplicationException
+}
+
+&quot;&quot;&quot;An interface declaration.
+   
+   &lt;a name=&quot;toplevel-sample&quot;&gt;&lt;/a&gt;
+   ### Usage sample for toplevel interfaces
+   
+   Because some interfaces have type parameters, getting a model requires applying type arguments to the
+   interface declaration with [[interfaceApply]] in order to be able to get a closed type. For example, here is how you would
+   obtain an interface model from a toplevel interface declaration:
+   
+       interface Foo&lt;T&gt; satisfies List&lt;T&gt; {
+       }
+       
+       void test(){
+           // We need to apply the Integer closed type to the Foo declaration in order to get the Foo&lt;Integer&gt; closed type
+           Interface&lt;Foo&lt;Integer&gt;&gt; interfaceModel = `interface Foo`.interfaceApply&lt;Foo&lt;Integer&gt;&gt;(`Integer`);
+           // This will print: ceylon.language::List&lt;ceylon.language::Integer&gt;
+           for(satisfiedType in interfaceModel.satisfiedTypes){
+               print(satisfiedType);
+           }
+       }
+   
+   &lt;a name=&quot;member-sample&quot;&gt;&lt;/a&gt;
+   ### Usage sample for member interfaces
+	
+   For member interfaces it is a bit longer, because member interfaces need to be applied not only their type arguments but also
+   the containing type, so you should use [[memberInterfaceApply]] and start by giving the containing closed type:
+   
+       class Outer(){
+           shared interface Inner&lt;T&gt; satisfies List&lt;T&gt; {
+           }
+       }
+	
+       void test(){
+           // apply the containing closed type `Outer` to the member class declaration `Outer.Inner`
+           MemberInterface&lt;Outer,Outer.Inner&lt;Integer&gt;&gt; memberInterfaceModel = `interface Outer.Inner`.memberInterfaceApply&lt;Outer,Outer.Inner&lt;Integer&gt;&gt;(`Outer`, `Integer`);
+           // This will print: ceylon.language::List&lt;ceylon.language::Integer&gt;
+           for(satisfiedType in memberInterfaceModel.satisfiedTypes){
+               print(satisfiedType);
+           }
+       }
+   &quot;&quot;&quot;
+
+shared sealed interface InterfaceDeclaration
+        satisfies ClassOrInterfaceDeclaration {
+    
+    &quot;Applies the given closed type arguments to this toplevel interface 
+     declaration in order to obtain an interface model. 
+     See [this code sample](#toplevel-sample) for an example on how to use this.&quot;
+    throws(`class IncompatibleTypeException`, 
+        &quot;If the specified `Type` type argument is not compatible with the 
+         actual result.&quot;)
+    throws(`class TypeApplicationException`, 
+            &quot;If the specified closed type argument values are not compatible 
+             with the actual result&apos;s type parameters.&quot;)
+    shared formal Interface&lt;Type&gt; interfaceApply&lt;Type=Anything&gt;(AppliedType&lt;&gt;* typeArguments);
+
+    &quot;Applies the given closed container type and type arguments to this member 
+     interface declaration in order to obtain a member interface model. 
+     See [this code sample](#member-sample) for an example on how to use this.&quot;
+    throws(`class IncompatibleTypeException`, 
+        &quot;If the specified `Container` or `Type` type arguments are not 
+         compatible with the actual result.&quot;)
+    throws(`class TypeApplicationException`, 
+            &quot;If the specified closed container type or type argument values 
+             are not compatible with the actual result&apos;s container type or 
+             type parameters.&quot;)
+    shared formal MemberInterface&lt;Container, Type&gt; memberInterfaceApply&lt;Container=Nothing, Type=Anything&gt;(AppliedType&lt;Object&gt; containerType, AppliedType&lt;&gt;* typeArguments);
+}
+</pre></body></html>

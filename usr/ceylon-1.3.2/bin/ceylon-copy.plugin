@@ -1,0 +1,4 @@
+; Plugin definition for the "ceylon copy" tool
+summary=Copies modules from one module repository to another
+module=com.redhat.ceylon.tools/1.3.2
+class=com.redhat.ceylon.tools.copy.CeylonCopyTool

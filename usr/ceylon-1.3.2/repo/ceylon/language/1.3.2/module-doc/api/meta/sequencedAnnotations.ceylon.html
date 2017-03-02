@@ -1,0 +1,24 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>sequencedAnnotations.ceylon</title><link href='../.resources/favicon.ico' rel='shortcut icon'/>
+<link href='../.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='../.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='//fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '../.resources/'</script><script src='../.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='../.resources/rainbow.min.js' type='text/javascript'></script><script src='../.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='../.resources/ceylon.js' type='text/javascript'></script><script src='../.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>import ceylon.language.meta.model { Class }
+// TODO Do we really need this? Isn&apos;t annotations sufficient?
+&quot;The values of given sequenced annotation type on the given program element, 
+ or empty if the program element was not annotated with that annotation type.
+ For example:
+ 
+     // Does the sum declaration have any ThrownException annotations?
+     value throwsSomething = sequencedAnnotation(`ThrownException`, `function sum`) nonempty;
+ 
+ The annotations may be returned in any order.
+ &quot;
+shared Value[] sequencedAnnotations&lt;Value, in ProgramElement&gt;(
+            Class&lt;SequencedAnnotation&lt;Value,ProgramElement&gt;&gt; annotationType,
+            ProgramElement programElement)
+        given Value satisfies SequencedAnnotation&lt;Value,ProgramElement&gt;
+        given ProgramElement satisfies Annotated { 
+    return annotations&lt;Value,Value[],ProgramElement&gt;(annotationType, programElement);
+}
+</pre></body></html>

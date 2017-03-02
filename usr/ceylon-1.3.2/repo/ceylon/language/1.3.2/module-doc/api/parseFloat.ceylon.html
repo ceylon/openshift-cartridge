@@ -1,0 +1,216 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>parseFloat.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='//fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>import ceylon.language {
+    ParseFloatState {
+        start, afterPlusMinus, digitsBeforeDecimal,
+        afterJustDecimal, afterDecimal, digitsAfterDecimal,
+        afterE, exponentDigits, afterEPlusMinus,
+        afterSuffix, invalid
+    }
+}
+
+class ParseFloatState of
+        start | afterPlusMinus | digitsBeforeDecimal |
+        afterJustDecimal | afterDecimal |
+        digitsAfterDecimal | afterE | exponentDigits |
+        afterEPlusMinus | afterSuffix | invalid {
+
+    shared new start {}
+    shared new afterPlusMinus {}
+    shared new digitsBeforeDecimal {}
+    shared new afterJustDecimal {}
+    shared new afterDecimal {}
+    shared new digitsAfterDecimal {}
+    shared new afterE {}
+    shared new exponentDigits {}
+    shared new afterEPlusMinus {}
+    shared new afterSuffix {}
+    shared new invalid {}
+}
+
+&quot;The [[Float]] value of the given 
+ [[string representation|string]] of a decimal floating 
+ point number, or `null` if the string does not represent a 
+ decimal floating point number.
+ 
+ If the given string representation contains more digits
+ than can be represented by a `Float`, then the least 
+ significant digits are ignored.
+ 
+ The syntax accepted by this method is the same as the 
+ syntax for a `Float` literal in the Ceylon language 
+ except that it may optionally begin with a sign 
+ character (`+` or `-`) and may not contain grouping 
+ underscore characters. That is, an optional sign character,
+ followed by a string of decimal digits, followed by an
+ optional decimal point and string of decimal digits, 
+ followed by an optional decimal exponent, for example 
+ `e+10` or `E-5`, or SI magnitude, `k`, `M`, `G`, `T`, `P`, 
+ `m`, `u`, `n`, `p`, or `f`.
+ 
+     Float: Sign? Digits (&apos;.&apos; Digits)? (Magnitude|Exponent)
+     Sign: &apos;+&apos; | &apos;-&apos;
+     Magnitude: &apos;k&apos; | &apos;M&apos; | &apos;G&apos; | &apos;T&apos; | &apos;P&apos; | &apos;m&apos; | &apos;u&apos; | &apos;n&apos; | &apos;p&apos; | &apos;f&apos;
+     Exponent: (&apos;e&apos;|&apos;E&apos;) Sign? Digits
+     Digits: (&apos;0&apos;..&apos;9&apos;)+&quot;
+see (`function Float.parse`)
+tagged(&quot;Numbers&quot;, &quot;Basic types&quot;)
+deprecated(&quot;Use [[Float.parse]]&quot;)
+shared Float? parseFloat(String string) {
+    // (&quot;-&quot;|&quot;+&quot;)?
+    // (Digit* &quot;.&quot; Digit+) | (Digit+ &quot;.&quot;?)
+    // ((&quot;E&quot;|&quot;e&quot;) (&quot;+&quot;|&quot;-&quot;)? Digit+) | suffix
+
+    variable value state = start;
+    variable value size = 0;
+    variable Integer? suffixExponent = null;
+
+    for (c in string) {
+        size++;
+        state = switch (state)
+        case (start)
+            if (c == &apos;+&apos; || c == &apos;-&apos;)
+                then afterPlusMinus
+            else if (&apos;0&apos; &lt;= c &lt;= &apos;9&apos;)
+                then digitsBeforeDecimal
+            else if (c == &apos;.&apos;)
+                then afterJustDecimal
+            else invalid
+        case (afterPlusMinus)
+            if (&apos;0&apos; &lt;= c &lt;= &apos;9&apos;)
+                then digitsBeforeDecimal
+            else if (c == &apos;.&apos;)
+                then afterJustDecimal
+            else invalid
+        case (digitsBeforeDecimal)
+            if (&apos;0&apos; &lt;= c &lt;= &apos;9&apos;)
+                then digitsBeforeDecimal
+            else if (c == &apos;.&apos;)
+                then afterDecimal
+            else if (c == &apos;e&apos; || c == &apos;E&apos;)
+                then afterE
+            else if (c in &quot;PTGMkmunpf&quot;)
+                then afterSuffix
+            else invalid
+        case (afterJustDecimal)
+            if (&apos;0&apos; &lt;= c &lt;= &apos;9&apos;)
+                then digitsAfterDecimal
+            else invalid
+        case (digitsAfterDecimal |
+              afterDecimal)
+            if (&apos;0&apos; &lt;= c &lt;= &apos;9&apos;)
+                then digitsAfterDecimal
+            else if (c == &apos;e&apos; || c == &apos;E&apos;)
+                then afterE
+            else if (c in &quot;PTGMkmunpf&quot;)
+                then afterSuffix
+            else invalid
+        case (afterE)
+            if (&apos;0&apos; &lt;= c &lt;= &apos;9&apos;)
+                then exponentDigits
+            else if (c == &apos;+&apos; || c == &apos;-&apos;)
+                then afterEPlusMinus
+            else invalid
+        case (exponentDigits |
+              afterEPlusMinus)
+            if (&apos;0&apos; &lt;= c &lt;= &apos;9&apos;)
+                then exponentDigits
+            else invalid
+        case (afterSuffix)
+            invalid
+        case (invalid)
+            invalid;
+
+        if (state == afterSuffix) {
+            suffixExponent = parseSuffix(c);
+        }
+
+        if (state == invalid) {
+            return null;
+        }
+    }
+
+    if (!state in [digitsBeforeDecimal,
+            afterDecimal, digitsAfterDecimal,
+            exponentDigits, afterSuffix]) {
+        return null;
+    }
+
+    if (exists exponent = suffixExponent) {
+        // Ceylon style magnitude suffix
+        return nativeParseFloat(
+            &quot;``string[...size-2]``\
+             E``exponent``&quot;);
+    }
+    else {
+        // may or may not have exponent
+        return nativeParseFloat(string);
+    }
+}
+
+Integer parseSuffix(Character suffix) {
+    switch (suffix)
+    case (&apos;P&apos;) {
+        return 15;
+    }
+    case (&apos;T&apos;) {
+        return 12;
+    }
+    case (&apos;G&apos;) {
+        return 9;
+    }
+    case (&apos;M&apos;) {
+        return 6;
+    }
+    case (&apos;k&apos;) {
+        return 3;
+    }
+    case (&apos;m&apos;) {
+        return -3;
+    }
+    case (&apos;u&apos;) {
+        return -6;
+    }
+    case (&apos;n&apos;) {
+        return -9;
+    }
+    case (&apos;p&apos;) {
+        return -12;
+    }
+    case (&apos;f&apos;) {
+        return -15;
+    }
+    else {
+        assert (false);
+    }
+}
+
+native
+Float? nativeParseFloat(String string);
+
+native(&quot;jvm&quot;)
+Float? nativeParseFloat(String string) {
+    import java.lang {
+        Double {
+            parseDouble
+        }
+    }
+
+    return parseDouble(string);
+}
+
+native(&quot;js&quot;)
+Float? nativeParseFloat(String string) {
+    Float result;
+    dynamic {
+        result = nativeJSParseFloat(string);
+    }
+    if (result == 0.0 &amp;&amp; string.occursAt(0, &apos;-&apos;)) {
+        return -0.0;
+    }
+    return result; 
+}
+</pre></body></html>

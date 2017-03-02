@@ -1,0 +1,245 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>StringTokens.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='//fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>native class StringTokens
+    (str, separator, discardSeparators, groupSeparators, limit)
+        satisfies {String+} {
+    
+    String str;
+    Boolean separator(Character ch);
+    Boolean discardSeparators;
+    Boolean groupSeparators;
+    Integer? limit;
+    
+    shared actual native Iterator&lt;String&gt; iterator();
+    shared actual native Boolean empty;
+    
+}
+
+native(&quot;js&quot;) class StringTokens
+    (str, separator, discardSeparators, groupSeparators, limit)
+        satisfies {String+} {
+    
+    String str;
+    Boolean separator(Character ch);
+    Boolean discardSeparators;
+    Boolean groupSeparators;
+    Integer? limit;
+    
+    shared actual native(&quot;js&quot;) Boolean empty =&gt; false;
+    
+    shared actual native(&quot;js&quot;) Iterator&lt;String&gt; iterator() {
+        dynamic str = this.str;
+        
+        return object satisfies Iterator&lt;String&gt; {
+            
+            variable value first = true;
+            variable value lastTokenWasSeparator = false;
+            variable value count = 0;
+            variable value index = 0;
+            
+            Integer currentCodePoint {
+                dynamic {
+                    return str.codePointAt(index);
+                }
+            }
+            
+            Integer currentCharCode {
+                dynamic {
+                    return str.codePointAt(index);
+                }
+            }
+            
+            void advanceToEnd() {
+                dynamic {
+                    index = str.length;
+                }
+            }
+            
+            void advance() {
+                index += #d800 &lt;= currentCharCode &lt;= #dbff
+                                    then 2 else 1;
+            }
+            
+            value eof {
+                dynamic {
+                    return index &gt;= str.length;
+                }
+            }
+            
+            value separator
+                    =&gt; !eof
+                    &amp;&amp; outer.separator(currentCodePoint.character);
+            
+            value regular
+                    =&gt; !eof
+                    &amp;&amp; !outer.separator(currentCodePoint.character);
+            
+            String token(Integer start, Boolean separator) {
+                if (!separator) {
+                    count ++;
+                }
+                first = false;
+                lastTokenWasSeparator = separator;
+                dynamic {
+                    return str.substring(start, index);
+                }
+            }
+            
+            function emptyToken() {
+                count ++;
+                first = false;
+                lastTokenWasSeparator = false;
+                return &quot;&quot;;
+            }
+            
+            shared actual String|Finished next() {
+                if (!eof) {
+                    if (first || lastTokenWasSeparator,
+                        separator) {
+                        return emptyToken();
+                    }
+                    
+                    if (separator) {
+                        value start = index;
+                        advance();
+                        if (groupSeparators) {
+                            while (separator) {
+                                advance();
+                            }
+                        }
+                        if (!discardSeparators) {
+                            return token(start, true);
+                        }
+                    }
+                    
+                    value start = index;
+                    if (exists limit, count&gt;=limit) {
+                        advanceToEnd();
+                    }
+                    else {
+                        while (regular) {
+                            advance();
+                        }
+                    }
+                    return token(start, true);
+                }
+                else if (lastTokenWasSeparator) {
+                    return emptyToken();
+                }
+                else {
+                    return finished;
+                }
+            }
+            
+        };
+    }
+    
+}
+
+native(&quot;jvm&quot;) class StringTokens
+    (str, separator, discardSeparators, groupSeparators, limit)
+        satisfies {String+} {
+    
+    import java.lang { 
+        JString=String, 
+        JCharacter=Character
+    }
+    
+    String str;
+    Boolean separator(Character ch);
+    Boolean discardSeparators;
+    Boolean groupSeparators;
+    Integer? limit;
+    
+    shared actual native(&quot;jvm&quot;) Boolean empty =&gt; false;
+    
+    shared actual native(&quot;jvm&quot;) Iterator&lt;String&gt; iterator()
+            =&gt; object satisfies Iterator&lt;String&gt; {
+        
+        value string = JString(str);
+        
+        variable value first = true;
+        variable value lastTokenWasSeparator = false;
+        variable value count = 0;
+        variable value index = 0;
+        
+        void advanceToEnd() {
+            index = string.length();
+        }
+        
+        void advance() {
+            index += JCharacter.charCount(string.codePointAt(index));
+        }
+        
+        value eof =&gt; index &gt;= string.length();
+        
+        value separator
+                =&gt; !eof
+                &amp;&amp; outer.separator(string.codePointAt(index).character);
+        
+        value regular
+                =&gt; !eof
+                &amp;&amp; !outer.separator(string.codePointAt(index).character);
+        
+        String token(Integer start, Boolean separator) {
+            if (!separator) {
+                count ++;
+            }
+            first = false;
+            lastTokenWasSeparator = separator;
+            return string.substring(start, index);
+        }
+        
+        String emptyToken() {
+            count ++;
+            first = false;
+            lastTokenWasSeparator = false;
+            return &quot;&quot;;
+        }
+        
+        shared actual String|Finished next() {
+            if (!eof) {
+                if (first || lastTokenWasSeparator,
+                    separator) {
+                    return emptyToken();
+                }
+                
+                if (separator) {
+                    value start = index;
+                    advance();
+                    if (groupSeparators) {
+                        while (separator) {
+                            advance();
+                        }
+                    }
+                    if (!discardSeparators) {
+                        return token(start, true);
+                    }
+                }
+                
+                value start = index;
+                if (exists limit, count&gt;=limit) {
+                    advanceToEnd();
+                }
+                else {
+                    while (regular) {
+                        advance();
+                    }
+                }
+                return token(start, true);
+            }
+            else if (lastTokenWasSeparator) {
+                return emptyToken();
+            }
+            else {
+                return finished;
+            }
+        }
+        
+    };
+    
+}
+</pre></body></html>

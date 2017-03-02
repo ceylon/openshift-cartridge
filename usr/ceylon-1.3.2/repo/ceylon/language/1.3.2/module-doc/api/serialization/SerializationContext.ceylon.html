@@ -1,0 +1,44 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>SerializationContext.ceylon</title><link href='../.resources/favicon.ico' rel='shortcut icon'/>
+<link href='../.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='../.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='//fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '../.resources/'</script><script src='../.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='../.resources/rainbow.min.js' type='text/javascript'></script><script src='../.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='../.resources/ceylon.js' type='text/javascript'></script><script src='../.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>import ceylon.language.meta {
+    classDeclaration, type
+}
+
+&quot;A context representing serialization of many objects to a 
+ single output stream. 
+ 
+ The serialization library obtains an instance by calling 
+ [[serialization]] and then uses
+ [[references]] to traverse the instances reachable from the 
+ instance(s) being serialized.
+ 
+ It is the serialization library&apos;s responsibility to 
+ manage object identity and handle cycles in the graph 
+ of object references. For example a serialization library 
+ that produced a hierarchical format might ignore identity 
+ when an instance is encountered multiple times 
+ (resulting in duplicate subtrees in the output), and 
+ simply throw an exception if it encountered a cycle. 
+ &quot;
+shared sealed
+interface SerializationContext {
+    // could be generic
+    &quot;Obtain the references of the given instance.&quot;
+    throws(`class SerializationException`,
+        &quot;If the class is not serializable&quot;)
+    shared formal References references(Anything instance);
+}
+
+class SerializationContextImpl() satisfies SerializationContext {
+    shared actual References references(Anything instance) {
+        if (classDeclaration(instance).serializable) {
+            return ReferencesImpl(instance);
+        } else {
+            throw SerializationException(&quot;instance of non-serializable class: ``type(instance)``&quot;);
+        }
+    }
+}
+</pre></body></html>

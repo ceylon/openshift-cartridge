@@ -1,0 +1,772 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>StringBuilder.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='//fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;&quot;&quot;Builder utility for constructing [[strings|String]] by 
+   incrementally appending strings or characters.
+   
+       value builder = StringBuilder();
+       builder.append(&quot;hello&quot;);
+       builder.appendCharacter(&apos; &apos;);
+       builder.append(&quot;world&quot;);
+       String hello = builder.string; //hello world&quot;&quot;&quot;
+tagged(&quot;Strings&quot;)
+shared native final class StringBuilder() 
+        satisfies SearchableList&lt;Character&gt; &amp;
+                  Ranged&lt;Integer,Character,String&gt; &amp;
+                  IndexedCorrespondenceMutator&lt;Character&gt; { 
+    
+    &quot;The number of characters in the current content, that 
+     is, the [[size|String.size]] of the produced [[string]].&quot;
+    shared actual native Integer size;
+    
+    &quot;Determines if the current content holds at least one
+     character.&quot;
+    shared actual native Boolean empty;
+    
+    shared actual native Integer? lastIndex;
+    
+    &quot;The resulting string. If no characters have been
+     appended, the empty string.&quot;
+    shared actual native variable String string;
+    
+    &quot;A copy of this `StringBuilder`, whose content is 
+     initially the same as the current content of this
+     instance.&quot;
+    since(&quot;1.3.0&quot;)
+    shared actual StringBuilder clone() {
+        value clone = StringBuilder();
+        clone.string = string;
+        return clone;
+    }
+    
+    shared actual native Iterator&lt;Character&gt; iterator();
+    
+    &quot;Returns a string of the given [[length]] containing
+     the characters beginning at the given [[index]].&quot;
+    deprecated (&quot;use [[measure]]&quot;)
+    since(&quot;1.1.0&quot;)
+    shared 
+    String substring(Integer index, Integer length)
+            =&gt; measure(index, length);
+    
+    shared actual native
+    Character? getFromFirst(Integer index);
+    
+    &quot;Append the characters in the given [[string]].&quot;
+    shared native 
+    StringBuilder append(String string);
+    
+    &quot;Append the characters in the given [[strings]].&quot;
+    shared native 
+    StringBuilder appendAll({String*} strings) {
+        for (s in strings) {
+            append(s);
+        }
+        return this;
+    }
+    
+    &quot;Prepend the characters in the given [[string]].&quot;
+    since(&quot;1.1.0&quot;)
+    shared native 
+    StringBuilder prepend(String string);
+    
+    &quot;Prepend the characters in the given [[strings]].&quot;
+    since(&quot;1.1.0&quot;)
+    shared native 
+    StringBuilder prependAll({String*} strings) {
+        for (s in strings) {
+            prepend(s);
+        }
+        return this;
+    }
+    
+    &quot;Append the given [[character]].&quot;
+    shared native 
+    StringBuilder appendCharacter(Character character);
+    
+    &quot;Prepend the given [[character]].&quot;
+    since(&quot;1.1.0&quot;)
+    shared native 
+    StringBuilder prependCharacter(Character character);
+    
+    &quot;Append a newline character.&quot;
+    shared native 
+    StringBuilder appendNewline() =&gt; appendCharacter(&apos;\n&apos;);
+    
+    &quot;Append a space character.&quot;
+    shared native 
+    StringBuilder appendSpace() =&gt; appendCharacter(&apos; &apos;);
+    
+    &quot;Remove all content and return to initial state.&quot;
+    since(&quot;1.1.0&quot;)
+    shared native 
+    StringBuilder clear();
+    
+    &quot;Set the character at the given index to the given
+     [[character]].&quot;
+    since(&quot;1.3.0&quot;)
+    shared actual void set(Integer index, Character character)
+            =&gt; replace(index, 1, character.string);
+    
+    &quot;Insert a [[string]] at the specified [[index]].&quot;
+    shared native 
+    StringBuilder insert(Integer index, String string);
+    
+    &quot;Insert a [[character]] at the specified [[index]].&quot;
+    shared native 
+    StringBuilder insertCharacter
+            (Integer index, Character character);
+    
+    &quot;Replaces the specified [[number of characters|length]] 
+     from the current content, starting at the specified 
+     [[index]], with the given [[string]]. If [[length]] is 
+     nonpositive, nothing is replaced, and the `string` is
+     simply inserted at the specified `index`.&quot;
+    since(&quot;1.1.0&quot;)
+    shared native 
+    StringBuilder replace
+            (Integer index, Integer length, String string);
+    
+    &quot;Deletes the specified [[number of characters|length]] 
+     from the current content, starting at the specified 
+     [[index]]. If [[length]] is nonpositive, nothing is 
+     deleted.&quot;
+    shared native 
+    StringBuilder delete(Integer index, Integer length/*=1*/);
+    
+    &quot;Deletes the specified [[number of characters|length]] 
+     from the start of the string. If `length` is 
+     nonpositive, nothing is deleted.&quot;
+    since(&quot;1.1.0&quot;)
+    shared native 
+    StringBuilder deleteInitial(Integer length);
+    
+    &quot;Deletes the specified [[number of characters|length]] 
+     from the end of the string. If `length` is nonpositive, 
+     nothing is deleted.&quot;
+    since(&quot;1.1.0&quot;)
+    shared native 
+    StringBuilder deleteTerminal(Integer length);
+    
+    &quot;Reverses the order of the current characters.&quot;
+    since(&quot;1.1.0&quot;)
+    shared native 
+    StringBuilder reverseInPlace();
+    
+    &quot;The first index at which the given 
+     [[list of characters|sublist]] occurs as a sublist, 
+     that is greater than or equal to the optional 
+     [[starting index|from]].&quot;
+    shared actual native
+    Integer? firstInclusion(List&lt;Character&gt; sublist,
+        Integer from);
+    
+    &quot;The last index at which the given 
+     [[list of characters|sublist]] occurs as a sublist, 
+     that falls within the range `0:size-from+1-sublist.size` 
+     defined by the optional [[starting index|from]], 
+     interpreted as a reverse index counting from the _end_
+     of the list.&quot;
+    shared actual native
+    Integer? lastInclusion(List&lt;Character&gt; sublist,
+        Integer from);
+    
+    &quot;The first index at which the given [[character]] occurs, 
+     that is greater than or equal to the optional 
+     [[starting index|from]].&quot;
+    shared actual native
+    Integer? firstOccurrence(Character character,
+        Integer from, Integer length);
+    
+    &quot;The last index at which the given [[character]] occurs, 
+     that falls within the range `0:size-from` defined by 
+     the optional [[starting index|from]], interpreted as a 
+     reverse index counting from the _end_ of the list.&quot;
+    shared actual native
+    Integer? lastOccurrence(Character character,
+        Integer from, Integer length);
+    
+    shared actual native
+    {Integer*} inclusions(List&lt;Character&gt; sublist, 
+        Integer from);
+    
+    shared actual native
+    {Integer*} occurrences(Character character, 
+        Integer from, Integer length);
+    
+    shared actual 
+    Boolean occursAt(Integer index, Character character) 
+            =&gt; if (exists ch = getFromFirst(index))
+                then ch == character else false;
+    
+    shared actual 
+    Boolean includesAt(Integer index, List&lt;Character&gt; sublist)
+            =&gt; this[index:sublist.size] == sublist;
+    
+    shared actual native 
+    String measure(Integer from, Integer length);
+    
+    shared actual 
+    String initial(Integer length) 
+            =&gt; measure(0, length);
+    
+    shared actual 
+    String terminal(Integer length) 
+            =&gt; measure(size-length, length);
+    
+    shared actual native String span(Integer from, Integer to);
+    shared actual native String spanTo(Integer to);
+    shared actual native String spanFrom(Integer from);
+    
+    shared actual native Boolean equals(Object that);
+    shared actual native Integer hash;
+}
+
+shared native(&quot;jvm&quot;) final class StringBuilder() 
+        satisfies SearchableList&lt;Character&gt; &amp;
+                  Ranged&lt;Integer,Character,String&gt; &amp;
+                  IndexedCorrespondenceMutator&lt;Character&gt; {
+    
+    import java.lang {
+        JStringBuilder=StringBuilder,
+        JCharacter=Character {
+            toChars,
+            charCount
+        },
+        IndexOutOfBoundsException
+    }
+    
+    value builder = JStringBuilder();
+    
+    shared actual native(&quot;jvm&quot;) Integer size 
+            =&gt; builder.codePointCount(0, builder.length());
+    
+    shared actual native(&quot;jvm&quot;) Boolean empty
+            =&gt; builder.length() == 0;
+    
+    shared actual native(&quot;jvm&quot;) Integer? lastIndex 
+            =&gt; if (builder.length() == 0)
+            then null
+            else builder.length() - 1;
+    
+    shared actual native(&quot;jvm&quot;) String string 
+            =&gt; builder.string;
+    
+    native(&quot;jvm&quot;) assign string 
+            =&gt; builder.replace(0, builder.length(), string);
+    
+    shared actual native(&quot;jvm&quot;) 
+    Iterator&lt;Character&gt; iterator() {
+        object stringBuilderIterator
+                satisfies Iterator&lt;Character&gt; {
+            variable Integer offset = 0;
+            shared actual Character|Finished next() {
+                if (offset &lt; builder.length()) {
+                    Integer codePoint = 
+                            builder.codePointAt(offset);
+                    offset += charCount(codePoint);
+                    return codePoint.character;
+                }
+                else {
+                    return finished;
+                }
+            }
+        }
+        return stringBuilderIterator;
+    }
+    
+    shared actual native(&quot;jvm&quot;)
+    Character? getFromFirst(Integer index) {
+        try {
+            return builder.codePointAt(startIndex(index))
+                          .character;
+        }
+        catch (IndexOutOfBoundsException ioobe) {
+            return null;
+        }
+    }
+    
+    shared native(&quot;jvm&quot;) 
+    StringBuilder append(String string) {
+        builder.append(string);
+        return this;
+    }
+    
+    shared native(&quot;jvm&quot;) 
+    StringBuilder prepend(String string) {
+        builder.insert(0, string);
+        return this;
+    }
+    
+    shared native(&quot;jvm&quot;) 
+    StringBuilder appendCharacter(Character character) {
+        builder.appendCodePoint(character.integer);
+        return this;
+    }
+    
+    shared native(&quot;jvm&quot;) 
+    StringBuilder prependCharacter(Character character) {
+        builder.insert(0, toChars(character.integer));
+        return this;
+    }
+    
+    shared native(&quot;jvm&quot;) 
+    StringBuilder clear() {
+        builder.setLength(0);
+        return this;
+    }
+    
+    shared native(&quot;jvm&quot;) 
+    StringBuilder insert(Integer index, String string) {
+        &quot;index must not be negative&quot;
+        assert (index&gt;=0);
+        &quot;index must not be greater than size&quot;
+        assert (index&lt;=size);
+        builder.insert(startIndex(index), string);
+        return this;
+    }
+    
+    shared native(&quot;jvm&quot;) 
+    StringBuilder insertCharacter
+            (Integer index, Character character) {
+        &quot;index must not be negative&quot;
+        assert (index&gt;=0);
+        &quot;index must not be greater than size&quot;
+        assert (index&lt;=size);
+        builder.insert(startIndex(index),
+            toChars(character.integer));
+        return this;
+    }
+    
+    shared native(&quot;jvm&quot;) 
+    StringBuilder replace
+            (Integer index, Integer length, String string) {
+        &quot;index must not be negative&quot;
+        assert (index&gt;=0);
+        &quot;index must not be greater than size&quot;
+        assert (index&lt;=size);
+        &quot;index+length must not be greater than size&quot;
+        assert (index+length&lt;=size);
+        Integer len = length&lt;0 then 0 else length;
+        Integer start = startIndex(index);
+        Integer end = endIndex(start, len);
+        builder.replace(start, end, string);
+        return this;
+    }
+    
+    shared native(&quot;jvm&quot;) 
+    StringBuilder delete(Integer index, Integer length) {
+        &quot;index must not be negative&quot;
+        assert (index&gt;=0);
+        &quot;index must not be greater than size&quot;
+        assert (index&lt;=size);
+        &quot;index+length must not be greater than size&quot;
+        assert (index+length&lt;=size);
+        if (length&gt;0) {
+            Integer start = startIndex(index);
+            Integer end = endIndex(start, length);
+            builder.delete(start, end);
+        }
+        return this;
+    }
+    
+    shared native(&quot;jvm&quot;) 
+    StringBuilder deleteInitial(Integer length) {
+        &quot;length must not be greater than size&quot;
+        assert (length&lt;=size);
+        if (length&gt;0) {
+            builder.delete(0, startIndex(length));
+        }
+        return this;
+    }
+    
+    shared native(&quot;jvm&quot;) 
+    StringBuilder deleteTerminal(Integer length) {
+        &quot;length must not be greater than size&quot;
+        assert (length&lt;=size);
+        if (length&gt;0) {
+            Integer start = startIndex(size - length);
+            builder.delete(start, builder.length());
+        }
+        return this;
+    }
+    
+    shared native(&quot;jvm&quot;) 
+    StringBuilder reverseInPlace() {
+        builder.reverse();
+        return this;
+    }
+    
+    shared actual native(&quot;jvm&quot;)
+    Integer? firstInclusion(List&lt;Character&gt; sublist,
+        Integer from) {
+        try {
+            value start 
+                    = builder.offsetByCodePoints(0, 
+                            from&gt;0 then from else 0);
+            value index 
+                    = builder.indexOf(String(sublist), 
+                            start);
+            return index&gt;=0 
+                then from 
+                    + builder.codePointCount(start, index);
+        }
+        catch (IndexOutOfBoundsException ioe) {
+            return null;
+        }
+    }
+    
+    shared actual native(&quot;jvm&quot;)
+    Integer? lastInclusion(List&lt;Character&gt; sublist,
+        Integer from) {
+        try {
+            value start 
+                    = builder.offsetByCodePoints(
+                            builder.length(), 
+                            (from&gt;0 then -from else 0)
+                                - sublist.size);
+            value index 
+                    = builder.lastIndexOf(String(sublist), 
+                            start);
+            return index&gt;=0 
+                then builder.codePointCount(0, index);
+        }
+        catch (IndexOutOfBoundsException ioe) {
+            return null;
+        }
+    }
+    
+    shared actual native(&quot;jvm&quot;)
+    Integer? firstOccurrence(Character character,
+        Integer from, Integer length) {
+        if (length&lt;=0) { return null; }
+        try {
+            value start 
+                    = builder.offsetByCodePoints(0, 
+                            from&gt;0 then from else 0);
+            value index 
+                    = builder.indexOf(character.string, 
+                            start);
+            if (index&gt;=0) {
+                value count  //TODO: wrong if from&lt;0
+                        = builder.codePointCount(start, index);
+                return count &lt; length
+                    then from + count 
+                    else null;
+            }
+            else {
+                return null;
+            }
+        }
+        catch (IndexOutOfBoundsException ioe) {
+            return null;
+        }
+    }
+    
+    shared actual native(&quot;jvm&quot;)
+    Integer? lastOccurrence(Character character,
+        Integer from, Integer length) {
+        if (length&lt;=0) { return null; }
+        try {
+            value start 
+                    = builder.offsetByCodePoints(
+                            builder.length(), 
+                            (from&gt;0 then -from else 0) - 1);
+            value index 
+                    = builder.lastIndexOf(character.string, 
+                            start);
+            if (index&gt;=0) {
+                value count = //TODO: wrong if from&lt;0
+                        builder.codePointCount(index, start);
+                return count &lt; length 
+                    then builder.codePointCount(0, index)
+                    else null;
+            }
+            else {
+                return null;
+            }
+        }
+        catch (IndexOutOfBoundsException ioe) {
+            return null;
+        }
+    }
+    
+    shared actual native(&quot;jvm&quot;)
+    {Integer*} inclusions(List&lt;Character&gt; sublist, 
+        Integer from)
+            //TODO: optimize this!
+            =&gt; string.inclusions(sublist, from);
+    
+    shared actual native(&quot;jvm&quot;)
+    {Integer*} occurrences(Character character, 
+        Integer from, Integer length)
+            //TODO: optimize this!
+            =&gt; string.occurrences(character, from, length);
+    
+    shared actual native(&quot;jvm&quot;)
+    String measure(Integer from, Integer length) {
+        value len = size;
+        if (from &gt;= len || length &lt;= 0) {
+            return &quot;&quot;;
+        }
+        value resultLength 
+                = if (from + length &gt; len) 
+                then len - from 
+                else length;
+        value start = startIndex(from);
+        value end = endIndex(start, resultLength);
+        return builder.substring(start, end);
+    }
+    
+    shared actual native(&quot;jvm&quot;) 
+    String span(Integer from, Integer to) {
+        value len = size;
+        if (len == 0) {
+            return &quot;&quot;;
+        }
+        value reverse = to &lt; from;
+        Integer _to;
+        Integer _from;
+        if (reverse) {
+            _to = from;
+            _from = to;
+        }
+        else {
+            _to = to;
+            _from = from;
+        }
+        if (_to &lt; 0 || _from &gt;= len) {
+            return &quot;&quot;;
+        }
+        value begin = _from &lt; 0 then 0 else _from;
+        value start = startIndex(begin);
+        String result;
+        if (_to &gt;= len) {
+            result = builder.substring(start);
+        }
+        else {
+            value end = endIndex(start, _to+1 - begin);
+            result = builder.substring(start, end);
+        }
+        return reverse then result.reversed else result;
+    }
+    
+    shared actual native(&quot;jvm&quot;) 
+    String spanFrom(Integer from) {
+        if (from &lt;= 0) {
+            return string;
+        }
+        value len = size;
+        if (len == 0 || from &gt;= len) {
+            return &quot;&quot;;
+        }
+        return builder.substring(startIndex(from));
+    }
+    
+    shared actual native(&quot;jvm&quot;) 
+    String spanTo(Integer to) {
+        value len = size;
+        if (len == 0 || to &lt; 0) {
+            return &quot;&quot;;
+        }
+        if (to &gt;= len) {
+            return string;
+        }
+        return builder.substring(0, startIndex(to+1));
+    }
+    
+    shared actual native(&quot;jvm&quot;) Boolean equals(Object that) 
+            =&gt; builder.equals(that);
+    
+    shared actual native(&quot;jvm&quot;) Integer hash 
+            =&gt; builder.hash;
+    
+    Integer startIndex(Integer index) 
+            =&gt; builder.offsetByCodePoints(0, index);
+    
+    Integer endIndex(Integer start, Integer length) 
+            =&gt; builder.offsetByCodePoints(start, length);
+    
+}
+
+shared native(&quot;js&quot;) final class StringBuilder() 
+        satisfies SearchableList&lt;Character&gt; &amp;
+                  Ranged&lt;Integer,Character,String&gt; &amp;
+                  IndexedCorrespondenceMutator&lt;Character&gt; {
+    
+    shared actual native(&quot;js&quot;) variable String string = &quot;&quot;;
+        
+    shared actual native(&quot;js&quot;) Integer size =&gt; string.size;
+    
+    shared actual native(&quot;js&quot;) Boolean empty =&gt; string.empty;
+    
+    shared actual native(&quot;js&quot;) Integer? lastIndex 
+            =&gt; if (string.size == 0)
+            then null
+            else string.size - 1;
+    
+    shared actual native(&quot;js&quot;) 
+    Iterator&lt;Character&gt; iterator() 
+            =&gt; string.iterator();
+    
+    shared actual native(&quot;js&quot;)
+    String measure(Integer from, Integer length)
+            =&gt; string[from:length];
+    
+    shared actual native(&quot;js&quot;)
+    String span(Integer from, Integer to) =&gt; string[from:to];
+    
+    shared actual native(&quot;js&quot;)
+    String spanTo(Integer to) =&gt; string[...to];
+    
+    shared actual native(&quot;js&quot;)
+    String spanFrom(Integer from) =&gt; string[from...];
+    
+    shared actual native(&quot;js&quot;)
+    Character? getFromFirst(Integer index) 
+            =&gt; string.getFromFirst(index);
+    
+    shared native(&quot;js&quot;) 
+    StringBuilder append(String string) {
+        this.string = this.string + string;
+        return this;
+    }
+    
+    shared native(&quot;js&quot;) 
+    StringBuilder prepend(String string) {
+        this.string = string + this.string;
+        return this;
+    }
+    
+    shared native(&quot;js&quot;) 
+    StringBuilder appendCharacter(Character character) {
+        string = string + character.string;
+        return this;
+    }
+    
+    shared native(&quot;js&quot;) 
+    StringBuilder prependCharacter(Character character) {
+        string = character.string + string;
+        return this;
+    }
+    
+    shared native(&quot;js&quot;) 
+    StringBuilder clear() {
+        string = &quot;&quot;;
+        return this;
+    }
+    
+    shared native(&quot;js&quot;) 
+    StringBuilder insert(Integer index, String string) {
+        &quot;index must not be negative&quot;
+        assert (index&gt;=0);
+        &quot;index must not be greater than size&quot;
+        assert (index&lt;=size);
+        this.string 
+                = this.string[0:index] 
+                + string 
+                + this.string[index...];
+        return this;
+    }
+    
+    shared native(&quot;js&quot;) 
+    StringBuilder insertCharacter
+            (Integer index, Character character) 
+            =&gt; insert(index, character.string);
+    
+    shared native(&quot;js&quot;) 
+    StringBuilder replace
+            (Integer index, Integer length, String string) {
+        &quot;index must not be negative&quot;
+        assert (index&gt;=0);
+        &quot;index must not be greater than size&quot;
+        assert (index&lt;=size);
+        &quot;index+length must not be greater than size&quot;
+        assert (index+length&lt;=size);
+        value len = length&lt;0 then 0 else length;
+        this.string 
+                = this.string[0:index] 
+                + string + 
+                this.string[index+len...];
+        return this;
+    }
+    
+    shared native(&quot;js&quot;) 
+    StringBuilder delete(Integer index, Integer length) {
+        &quot;index must not be negative&quot;
+        assert (index&gt;=0);
+        &quot;index must not be greater than size&quot;
+        assert (index&lt;=size);
+        &quot;index+length must not be greater than size&quot;
+        assert (index+length&lt;=size);
+        if (length&gt;0) {
+            string = string[0:index] 
+                   + string[index+length...];
+        }
+        return this;
+    }
+    
+    shared native(&quot;js&quot;) 
+    StringBuilder deleteInitial(Integer length) {
+        &quot;length must not be greater than size&quot;
+        assert (length&lt;=size);
+        if (length&gt;0) {
+            string = string[length...];
+        }
+        return this;
+    }
+    
+    shared native(&quot;js&quot;) 
+    StringBuilder deleteTerminal(Integer length) {
+        &quot;length must not be greater than size&quot;
+        assert (length&lt;=size);
+        if (length&gt;0) {
+            string = string[0:size-length];
+        }
+        return this;
+    }
+    
+    shared native(&quot;js&quot;) 
+    StringBuilder reverseInPlace() {
+        string = string.reversed;
+        return this;
+    }
+    
+    shared actual native(&quot;js&quot;)
+    Integer? firstInclusion(List&lt;Character&gt; sublist,
+        Integer from) 
+            =&gt; string.firstInclusion(sublist, from);
+    
+    shared actual native(&quot;js&quot;)
+    Integer? lastInclusion(List&lt;Character&gt; sublist,
+        Integer from) 
+            =&gt; string.lastInclusion(sublist, from);
+    
+    shared actual native(&quot;js&quot;)
+    Integer? firstOccurrence(Character character,
+        Integer from, Integer length) 
+            =&gt; string.firstOccurrence(character, from, length);
+    
+    shared actual native(&quot;js&quot;)
+    Integer? lastOccurrence(Character character,
+        Integer from, Integer length) 
+            =&gt; string.lastOccurrence(character, from, length);
+    
+    shared actual native(&quot;js&quot;)
+    {Integer*} inclusions(List&lt;Character&gt; sublist, 
+        Integer from)
+            =&gt; string.inclusions(sublist, from);
+    
+    shared actual native(&quot;js&quot;)
+    {Integer*} occurrences(Character character, 
+        Integer from, Integer length)
+            =&gt; string.occurrences(character, from, length);
+    
+    shared actual native(&quot;js&quot;) Boolean equals(Object that) 
+            =&gt; string.equals(that);
+    
+    shared actual native(&quot;js&quot;) Integer hash =&gt; string.hash;
+}
+</pre></body></html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>OpenClassOrInterfaceType.ceylon</title><link href='../../.resources/favicon.ico' rel='shortcut icon'/>
+<link href='../../.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='../../.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='//fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '../../.resources/'</script><script src='../../.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='../../.resources/rainbow.min.js' type='text/javascript'></script><script src='../../.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='../../.resources/ceylon.js' type='text/javascript'></script><script src='../../.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;An open class or interface, with open type arguments.
+ 
+ For example, `List&lt;T&gt;` is an open interface type, with a type argument which is the
+ [[OpenTypeVariable]] `T`.&quot;
+shared sealed interface OpenClassOrInterfaceType
+    of OpenClassType | OpenInterfaceType
+    satisfies OpenType {
+    
+    &quot;The class or interface declaration for this open type.&quot;
+    shared formal ClassOrInterfaceDeclaration declaration;
+    
+    &quot;The extended type of this open type.&quot;
+    shared formal OpenClassType? extendedType;
+    
+    &quot;The satisfied types of this open type.&quot;
+    shared formal OpenInterfaceType[] satisfiedTypes;
+
+    &quot;The map of open type arguments.&quot;
+    shared formal Map&lt;TypeParameter, OpenType&gt; typeArguments;
+
+    &quot;The list of open type arguments.&quot;
+    since(&quot;1.2.0&quot;)
+    shared formal OpenType[] typeArgumentList;
+
+    &quot;The map of type parameter declaration to open type arguments and use-site variance.&quot;
+    since(&quot;1.2.0&quot;)
+    shared formal Map&lt;TypeParameter, OpenTypeArgument&gt; typeArgumentWithVariances;
+
+    &quot;The list of open type arguments with use-site variance.&quot;
+    since(&quot;1.2.0&quot;)
+    shared formal OpenTypeArgument[] typeArgumentWithVarianceList;
+
+    // FIXME: pretty sure we&apos;re missing an optional container type here
+}
+</pre></body></html>
