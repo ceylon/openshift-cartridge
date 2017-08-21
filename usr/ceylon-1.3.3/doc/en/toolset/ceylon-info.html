@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html><head><meta charset='UTF-8'/>
+<title>ceylon info</title>
+<link rel='stylesheet' type='text/css' href='bootstrap.min.css'/>
+<link rel='stylesheet' type='text/css' href='doc-tool.css'/>
+</head>
+<body>
+<div class='navbar navbar-inverse navbar-static-top'>
+<div class='navbar-inner'>
+<a class='tool-header' href='index.html'>
+<i class='tool-logo'></i>
+<span class='tool-label'>The Ceylon Toolset</span>
+<span><code class='tool-name'>ceylon info</code></span>
+<span class='tool-version'>1.3.3 0d594b3 (Contents May Differ)</span>
+</a>
+<ul class='nav pull-right'><li class='divider-vertical'/><li id='infoDropdown' class='dropdown'><a href='#' title='Show keyboard shortcuts [Shortcut: ?]' role='button' class='dropdown-toggle' data-toggle='dropdown'><i class='icon-info'></i></a><ul id='info-dropdown-panel' class='dropdown-menu'><h4>Keyboard Shortcuts</h4><li class='divider'></li><div id='info-common-shortcuts'><div id='?'><span class='key badge'>?</span><span class='info muted'>Open this information panel</span></div><div id='i'><span class='key badge'>i</span><span class='info muted'>Jump to tool index</span></div><div id='s'><span class='key badge'>s</span><span class='info muted'>Jump to synopsis</span></div><div id='d'><span class='key badge'>d</span><span class='info muted'>Jump to description</span></div><div id='o'><span class='key badge'>o</span><span class='info muted'>Jump to options</span></div></div></ul></li></ul></div>
+</div>
+<div class='sub-navbar'>
+<div class='sub-navbar-inner'><div><code class='sub-navbar-tool'>ceylon info</code></div>
+<div class='sub-navbar-summary'><p>Prints information about modules in repositories</p>
+</div>
+</div><div class='sub-navbar-menu'>
+<a href='index.html'><span title='Jump to tool index [Shortcut: I]'><span class='accesskey'>I</span>ndex</span></a><a href='#section-synopsis'><span title='Jump to tool synopsis [Shortcut: S]'><span class='accesskey'>S</span>ynopsis</span></a><a href='#section-description'><span title='Jump to tool description [Shortcut: D]'><span class='accesskey'>D</span>escription</span></a><a href='#section-options'><span title='Jump to tool options [Shortcut: O]'><span class='accesskey'>O</span>ptions</span></a></div></div>
+<div class='container-fluid'>
+<div class='section section-synopsis'>
+<table class='table table-condensed table-bordered'>
+<thead>
+<tr class='table-header' title='Click for expand/collapse'><td colspan='1' id='section-synopsis'><i class='icon-expand'></i><h2>Synopsis</h2>
+</td></tr>
+</thead>
+<tbody>
+<tr><td><div class='synopsis'><code>ceylon info  [<a href='#option--cacherep'>--cacherep</a>=&lt;url&gt;] [<a href='#option--cwd'>--cwd</a>=&lt;dir&gt;] [<a href='#option--dependency-depth'>--dependency-depth</a>=&lt;depth&gt;] [<a href='#option--exact-match'>--exact-match</a>] [<a href='#option--find-member'>--find-member</a>=&lt;member-name&gt;] [<a href='#option--find-package'>--find-package</a>=&lt;package-name&gt;] [<a href='#option--formatting'>--formatting</a>=&lt;formatting&gt;] [<a href='#option--include-optional'>--include-optional</a>] [<a href='#option--maven-overrides'>--maven-overrides</a>=&lt;file&gt;] [<a href='#option--no-default-repositories'>--no-default-repositories</a>] [<a href='#option--offline'>--offline</a>] [<a href='#option--overrides'>--overrides</a>=&lt;file&gt;] [<a href='#option--print-overrides'>--print-overrides</a>] [<a href='#option--rep'>--rep</a>=&lt;url&gt;...] [<a href='#option--require-all'>--require-all</a>] [<a href='#option--show-dependencies'>--show-dependencies</a>] [<a href='#option--show-full-description'>--show-full-description</a>] [<a href='#option--show-incompatible'>--show-incompatible</a>=&lt;mode&gt;] [<a href='#option--show-names'>--show-names</a>] [<a href='#option--show-type'>--show-type</a>=&lt;type&gt;] [<a href='#option--show-versions'>--show-versions</a>] [<a href='#option--src'>--src</a>=&lt;dir&gt;...] [<a href='#option--sysrep'>--sysrep</a>=&lt;url&gt;] [<a href='#option--timeout'>--timeout</a>=&lt;seconds&gt;] [<a href='#option--verbose'>--verbose</a>[=&lt;flags&gt;]] [--] &lt;module...&gt;</code></div>
+</td></tr></tbody></table></div>
+
+<div class='section section-description'>
+<table class='table table-condensed table-bordered'>
+<thead>
+<tr class='table-header' title='Click for expand/collapse'><td colspan='1' id='section-description'><i class='icon-expand'></i><h2> Description</h2>
+</td></tr>
+</thead>
+<tbody>
+<tr><td><p>When passed a search query like <code>*foo*</code> it will look at all the modules in all repositories and see if the word <code>foo</code> appears anywhere in the name, description, version, license or any other field in the module's descriptor and print their names. </p>
+
+<p>When passed a partial module name like <code>com.acme.foo*</code> it will look at all the modules in all the repositories and see if their names start with <code>com.acme.foo</code> and print their names.</p>
+
+<p>When passed a complete module name like <code>com.acme.foobar</code> it will print the list of available versions for that module, with the module repository in which each version was found. Versions marked with <code>*</code> are not currently available on the local file system but will be downloaded on-demand from remote servers.</p>
+
+<p>When passed a complete module name and version like <code>com.acme.foobar/1.0</code> it will print information about the contents of a module archive, its description, its licence and its dependencies</p>
+</td></tr></tbody></table></div>
+<div class='section section-options'>
+<table class='table table-condensed table-bordered'>
+<thead>
+<tr class='table-header' title='Click for expand/collapse'><td colspan='2' id='section-options'><i class='icon-expand'></i><h2>Options</h2>
+</td></tr>
+</thead>
+<tbody>
+<tr><td class='span3' id='option--cacherep'><code>--cacherep=url</code></td>
+<td class='option-description'><p>Specifies the folder to use for caching downloaded modules. (default: <code>~/.ceylon/cache</code>)</p>
+</td>
+</tr><tr><td class='span3' id='option--cwd'><code>--cwd=dir</code></td>
+<td class='option-description'><p>Specifies the current working directory for this tool. (default: the directory where the tool is run from)</p>
+</td>
+</tr><tr><td class='span3' id='option--dependency-depth'><code>--dependency-depth=depth</code></td>
+<td class='option-description'><p>The depth of the dependency tree to show, or <code>all</code> for the full tree. (Allowed values: any positive integer or <code>all</code>, default: <code>1</code>)</p>
+</td>
+</tr><tr><td class='span3' id='option--exact-match'><code>--exact-match</code></td>
+<td class='option-description'><p>Only returns exact matches when using the <code>find-member</code> or <code>find-package</code> option</p>
+</td>
+</tr><tr><td class='span3' id='option--find-member'><code>--find-member=member-name</code></td>
+<td class='option-description'><p>Shows only those modules that contain members whose name match the given argument.</p>
+</td>
+</tr><tr><td class='span3' id='option--find-package'><code>--find-package=package-name</code></td>
+<td class='option-description'><p>Shows only those modules that contain packages whose name match the given argument.</p>
+</td>
+</tr><tr><td class='span3' id='option--formatting'><code>--formatting=formatting</code></td>
+<td class='option-description'><p>Set the output formatting to use, can be <code>simple</code> or <code>fancy</code></p>
+</td>
+</tr><tr><td class='span3' id='option--include-optional'><code>--include-optional</code></td>
+<td class='option-description'><p>Include optional modules when traversing dependencies</p>
+</td>
+</tr><tr><td class='span3' id='option--maven-overrides'><code>--maven-overrides=file</code></td>
+<td class='option-description'><p>Specifies the XML file to use to load Maven artifact overrides. See http://ceylon-lang.org/documentation/current/reference/repository/maven/ for information. Deprecated: use --overrides.</p>
+</td>
+</tr><tr><td class='span3' id='option--no-default-repositories'><code>--no-default-repositories</code></td>
+<td class='option-description'><p>Indicates that the default repositories should not be used.</p>
+</td>
+</tr><tr><td class='span3' id='option--offline'><code>--offline</code>, <code id='option-L'>-L</code></td>
+<td class='option-description'><p>Enables offline mode that will prevent connections to remote repositories.</p>
+</td>
+</tr><tr><td class='span3' id='option--overrides'><code>--overrides=file</code>, <code id='option-O'>-O file</code></td>
+<td class='option-description'><p>Specifies the XML file to use to load module overrides. See http://ceylon-lang.org/documentation/current/reference/repository/maven/ for information. <em>Experimental</em>.</p>
+</td>
+</tr><tr><td class='span3' id='option--print-overrides'><code>--print-overrides</code></td>
+<td class='option-description'><p>Print a usable module overrides file when there are duplicate versions, selecting the latest versions</p>
+</td>
+</tr><tr><td class='span3' id='option--rep'><code>--rep=url</code></td>
+<td class='option-description'><p>Specifies a module repository containing dependencies. Can be specified multiple times. (default: <code>modules</code>, <code>~/.ceylon/repo</code>, <code>https://modules.ceylon-lang.org/repo/1</code>)</p>
+</td>
+</tr><tr><td class='span3' id='option--require-all'><code>--require-all</code></td>
+<td class='option-description'><p>Only show those results that have all the requested artifact types</p>
+</td>
+</tr><tr><td class='span3' id='option--show-dependencies'><code>--show-dependencies</code></td>
+<td class='option-description'><p>Show the dependencies whenever versions are shown</p>
+</td>
+</tr><tr><td class='span3' id='option--show-full-description'><code>--show-full-description</code></td>
+<td class='option-description'><p>Shows the full description for module details</p>
+</td>
+</tr><tr><td class='span3' id='option--show-incompatible'><code>--show-incompatible=mode</code></td>
+<td class='option-description'><p>Also show versions incompatible with the current Ceylon installation. allowed values are: 'yes', 'no' and 'auto'</p>
+</td>
+</tr><tr><td class='span3' id='option--show-names'><code>--show-names</code></td>
+<td class='option-description'><p>Show the matching items when using the <code>find-member</code> or <code>find-package</code> option</p>
+</td>
+</tr><tr><td class='span3' id='option--show-type'><code>--show-type=type</code></td>
+<td class='option-description'><p>The artifact types to show information for. Allowed values include: <code>all</code>, <code>jvm</code>, <code>car</code>, <code>jar</code>, <code>js</code>, <code>dart</code>, <code>src</code>, <code>code</code>, <code>ceylon</code> (default is <code>all</code>).</p>
+</td>
+</tr><tr><td class='span3' id='option--show-versions'><code>--show-versions</code></td>
+<td class='option-description'><p>Show the versions when searching for modules</p>
+</td>
+</tr><tr><td class='span3' id='option--src'><code>--src=dir</code></td>
+<td class='option-description'><p>A directory containing Ceylon and/or Java source code (default: <code>./source</code>)</p>
+</td>
+</tr><tr><td class='span3' id='option--sysrep'><code>--sysrep=url</code></td>
+<td class='option-description'><p>Specifies the system repository containing essential modules. (default: <code>$CEYLON_HOME/repo</code>)</p>
+</td>
+</tr><tr><td class='span3' id='option--timeout'><code>--timeout=seconds</code>, <code id='option-T'>-T seconds</code></td>
+<td class='option-description'><p>Sets the timeout for connections to remote repositories, use 0 for no timeout (default: 20).</p>
+</td>
+</tr><tr><td class='span3' id='option--verbose'><code>--verbose[=flags]</code>, <code id='option-d'>-d</code></td>
+<td class='option-description'><p>Produce verbose output. If no <code>flags</code> are given then be verbose about everything, otherwise just be verbose about the flags which are present. Allowed flags include: <code>all</code>, <code>loader</code>.</p>
+</td>
+</tr></tbody></table></div><div class='section'>
+<table class='table table-condensed table-bordered'>
+<thead>
+<tr class='table-header' title='Click for expand/collapse'><td colspan='1'><i class='icon-expand'></i><h2> EXAMPLE</h2>
+</td></tr>
+</thead>
+<tbody>
+<tr><td><p>First list the available modules in the 'ceylon' namespace:</p>
+
+<pre><code>ceylon info 'ceylon.*'
+</code></pre>
+
+<p>Next list the versions of a module:</p>
+
+<pre><code>ceylon info ceylon.collection
+</code></pre>
+
+<p>Then view information for a particular version:</p>
+
+<pre><code>ceylon info ceylon.collection/1.2.0</code></pre>
+</td></tr></tbody></table></div>
+</div><script type='text/javascript' src='jquery-1.8.2.min.js'></script><script type='text/javascript' src='bootstrap.min.js'></script><script type='text/javascript' src='doc-tool.js'></script><script type='text/javascript'>init();</script></body></html>

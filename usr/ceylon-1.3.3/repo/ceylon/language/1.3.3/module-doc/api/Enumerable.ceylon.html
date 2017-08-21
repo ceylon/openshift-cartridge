@@ -1,0 +1,93 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>Enumerable.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='//fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;Abstraction of [[ordinal types|Ordinal]] whose values may 
+ be used as endpoints of a [[span]] or [[measure]].
+ 
+ An `Enumerable` type is characterized by each element 
+ having well-defined [[offset]] and [[neighbour]] functions.
+ Given an instance `x` of an enumerable type `X`:
+ 
+ - for any integer-valued offset, there is a unique 
+   _neighbour_ `y` of `X` with that offset, and
+ - if `y` is an instance of `X`, then there is a
+   well-defined integer-valued _offset_ of `x` from `y`.
+ 
+ The offset function must satisfy:
+ 
+ - `x.offset(x) == 0`, and
+ - `x.successor.offset(x) == 1` if `x!=x.successor`.
+ 
+ The neighbour function must satisfy:
+ 
+ - `x.neighbour(0) == x`,
+ - `x.neighbour(n-1) == x.neighbour(n).predecessor`, and
+ - `x.neighbour(n+1) == x.neighbour(n).successor`.
+ 
+ Of course, it follows that:
+ 
+ - `x.neighbour(-1) == x.predecessor`, and
+ - `x.neighbour(1) == x.successor`.
+ 
+ An enumerable type may be _linear_ or _recursive_. If `X` 
+ is a linear enumerable type, then the offset function 
+ satisfies:
+ 
+ - `x.predecessor.offset(x) == -1` if `x!=x.predecessor`,
+ - `x.offset(y) == -y.offset(x)` for any instance `y` of `X`, 
+   and
+ - `x.offset(y) == x.offset(z) + z.offset(y)`.
+ 
+ Otherwise, `X` is a recursive enumerable type with a finite
+ list of enumerated instances of size `count`, and its 
+ offset and neighbour functions must satisfy:
+ 
+ - `x.neighbour(count)==x`,
+ - `x.offset(y) &gt;= 0` for any instance `y` of `X`, and 
+ - `x.predecessor.offset(x) == count - 1`.
+ 
+ A range of values of an enumerable type may be specified 
+ using:
+ 
+ - the _span operator_, written `first..last`, or 
+ - the _segment operator_, written `first:length`.&quot;
+see (`class Range`, 
+     `function span`, `function measure`)
+shared interface Enumerable&lt;Other&gt; of Other
+        satisfies Ordinal&lt;Other&gt;
+        given Other satisfies Enumerable&lt;Other&gt; {
+    
+    &quot;The indirect successor or predecessor at the given
+     [[offset]], where:
+     
+     - `x.neighbour(0) == x`,
+     - `x.neighbour(i+1) == x.neighbour(i).successor`, and
+     - `x.neighbour(i-1) == x.neighbour(i).predecessor`.&quot;
+    throws (`class OverflowException`, 
+            &quot;if the neighbour cannot be represented as an 
+             instance of the type&quot;)
+    since(&quot;1.1.0&quot;)
+    shared formal Other neighbour(Integer offset);
+    
+    shared actual default Other successor =&gt; neighbour(1);
+    shared actual default Other predecessor =&gt; neighbour(-1);
+    
+    &quot;Compute the offset from the given value, where:
+     
+     - `x.offset(x) == 0`, and
+     - `x.successor.offset(x) == 1` if `x!=x.successor`.&quot;
+    throws (`class OverflowException`,
+            &quot;if the offset cannot be represented as an 
+             integer&quot;)
+    since(&quot;1.1.0&quot;)
+    shared formal Integer offset(Other other);
+    
+    &quot;The sign of the offset from the given value.&quot;
+    since(&quot;1.1.0&quot;)
+    shared default Integer offsetSign(Other other)
+            =&gt; offset(other).sign;
+    
+}
+</pre></body></html>

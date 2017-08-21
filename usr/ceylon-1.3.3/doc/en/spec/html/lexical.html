@@ -1,0 +1,116 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Chapter&nbsp;2.&nbsp;Lexical structure</title><link rel="stylesheet" href="../shared/css/html.css" type="text/css">
+<link type='text/css' href='../shared/css/ceylon.css' rel='stylesheet'/>
+<link type='text/css' href='https://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet'/>
+<script src='../shared/css/rainbow.min.js' type='text/javascript'></script>
+<script src='../shared/css/ceylon.js' type='text/javascript'></script>
+<script src='../shared/css/bnf.js' type='text/javascript'></script><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="The Ceylon Language"><link rel="up" href="index.html" title="The Ceylon Language"><link rel="previous" href="introduction.html" title="Chapter&nbsp;1.&nbsp;Introduction"><link rel="next" href="typesystem.html" title="Chapter&nbsp;3.&nbsp;Type system"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">The Ceylon Language &mdash; 2.&nbsp;Lexical structure</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="introduction.html">Prev</a>&nbsp;</td><th width="60%" align="center">&nbsp;</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="typesystem.html">Next</a></td></tr></table><hr></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="lexical"></a>Chapter&nbsp;2.&nbsp;Lexical structure</h2></div></div><div></div></div><p>Every Ceylon source file is a sequence of Unicode characters. Lexical
+    analysis of the character stream, according to the grammar specified in this
+    chapter, results in a stream of tokens. These tokens form the input of the 
+    parser grammar defined in the later chapters of this specification. The
+    Ceylon lexer is able to completely tokenize a character stream in a single 
+    pass.</p><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="whitespace"></a>2.1.&nbsp;Whitespace</h2></div></div><div></div></div><p><span class="emphasis"><em>Whitespace</em></span> is composed of strings of Unicode 
+        <tt class="literal">SPACE</tt>, <tt class="literal">CHARACTER TABULATION</tt>, 
+        <tt class="literal">FORM FEED (FF)</tt>, <tt class="literal">LINE FEED (LF)</tt> and 
+        <tt class="literal">CARRIAGE RETURN (CR)</tt> characters.</p><pre data-language="bnf">Whitespace: " " | Tab | Formfeed | Newline | CarriageReturn</pre><pre data-language="bnf">Tab: "\{CHARACTER TABULATION}"</pre><pre data-language="bnf">Formfeed: "\{FORM FEED (FF)}"</pre><pre data-language="bnf">Newline: "\{LINE FEED (LF)}"</pre><pre data-language="bnf">CarriageReturn: "\{CARRIAGE RETURN (CR)}"</pre><p>Outside of a comment, string literal, or single quoted literal,
+        whitespace acts as a token separator and is immediately discarded by
+        the lexer. Whitespace is not used as a statement separator.</p><p>Source text is divided into lines by <span class="emphasis"><em>line-terminating 
+        character sequences</em></span>. The following Unicode character sequences 
+        terminate a line:</p><div class="itemizedlist"><ul type="disc"><li><p><tt class="literal">LINE FEED (LF)</tt>,</p></li><li><p><tt class="literal">CARRIAGE RETURN (CR)</tt>, and</p></li><li><p><tt class="literal">CARRIAGE RETURN (CR)</tt> followed by
+                <tt class="literal">LINE FEED (LF)</tt>.</p></li></ul></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="comments"></a>2.2.&nbsp;Comments</h2></div></div><div></div></div><p>There are two kinds of comments:</p><div class="itemizedlist"><ul type="disc"><li><p>a <span class="emphasis"><em>multiline comment</em></span> begins with 
+                <tt class="literal">/*</tt> and extends until <tt class="literal">*/</tt>, 
+                and</p></li><li><p>an <span class="emphasis"><em>end-of-line comment</em></span> begins with 
+                <tt class="literal">//</tt> or <tt class="literal">#!</tt> and extends until 
+                the next line terminating character sequence.</p></li></ul></div><p>Both kinds of comments can be nested.</p><pre data-language="bnf">LineComment: ("//"|"#!") ~(Newline | CarriageReturn)* (CarriageReturn Newline | CarriageReturn | Newline)?</pre><pre data-language="bnf">MultilineComment: "/*" (MultilineCommentCharacter | MultilineComment)* "*/"</pre><pre data-language="bnf">MultilineCommentCharacter: ~("/"|"*") | ("/" ~"*") =&gt; "/" | ("*" ~"/") =&gt; "*"</pre><p>The following examples are legal comments:</p><pre data-language="ceylon">//this comment stops at the end of the line</pre><pre data-language="ceylon">/*
+   but this is a comment that spans
+   multiple lines
+*/</pre><pre data-language="ceylon">#!/usr/bin/ceylon</pre><p>Comments are treated as whitespace by both the compiler and documentation
+        compiler. Comments may act as token separators, but their content is immediately 
+        discarded by the lexer and they are not visible to the parser.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="identifiersandkeywords"></a>2.3.&nbsp;Identifiers and keywords</h2></div></div><div></div></div><p><span class="emphasis"><em>Identifiers</em></span> may contain letters, digits and 
+        underscores.</p><pre data-language="bnf">LowercaseCharacter: LowercaseLetter | "_"</pre><pre data-language="bnf">UppercaseCharacter: UppercaseLetter</pre><pre data-language="bnf">IdentifierCharacter: LowercaseCharacter | UppercaseCharacter | Number</pre><p>The lexer classifies Unicode uppercase letters, lowercase letters, 
+        and numeric characters depending on the general category of the character
+        as defined by the Unicode standard.</p><div class="itemizedlist"><ul type="disc"><li><p>
+                    A <tt class="literal">LowercaseLetter</tt> is any character whose 
+                    general category is <tt class="literal">Ll</tt> or any character whose 
+                    general category is <tt class="literal">Lo</tt> or <tt class="literal">Lm</tt> 
+                    which has the property <tt class="literal">Other_Lowercase</tt>.
+                </p></li><li><p>
+                    An <tt class="literal">UppercaseLetter</tt> is any character whose 
+                    general category is <tt class="literal">Lu</tt> or <tt class="literal">Lt</tt>, 
+                    or any character whose general category is <tt class="literal">Lo</tt> or 
+                    <tt class="literal">Lm</tt> which does not have the property
+                    <tt class="literal">Other_Lowercase</tt>.
+                </p></li><li><p>
+                    A <tt class="literal">Number</tt> is any character whose general 
+                    category is <tt class="literal">Nd</tt>, <tt class="literal">Nl</tt>, or 
+                    <tt class="literal">No</tt>.
+                </p></li></ul></div><p>All identifiers are case sensitive: <tt class="literal">Person</tt> and
+        <tt class="literal">person</tt> are two different legal identifiers.</p><p>The lexer distinguishes identifiers which begin with an initial 
+        uppercase character from identifiers which begin with an initial lowercase
+        character or underscore. Additionally, an identifier may be qualified using 
+        the prefix <tt class="literal">\i</tt> or <tt class="literal">\I</tt> to disambiguate it 
+        from a reserved word or to explicitly specify whether it should be considered
+        an initial uppercase or initial lowercase identifier.</p><pre data-language="bnf">LIdentifier: LowercaseCharacter IdentifierCharacter* | "\i" IdentifierCharacter+</pre><pre data-language="bnf">UIdentifier: UppercaseCharacter IdentifierCharacter* | "\I" IdentifierCharacter+</pre><p>The following examples are legal identifiers:</p><pre data-language="ceylon">Person</pre><pre data-language="ceylon">name</pre><pre data-language="ceylon">personName</pre><pre data-language="ceylon">_id</pre><pre data-language="ceylon">x2</pre><pre data-language="ceylon">\I_id</pre><pre data-language="ceylon">\Iobject</pre><pre data-language="ceylon">\iObject</pre><pre data-language="ceylon">\iclass</pre><p>The prefix <tt class="literal">\I</tt> or <tt class="literal">\i</tt> is not 
+        considered part of the identifier name. Therefore, <tt class="literal">\iperson</tt>
+        is just an initial lowercase identifier named <tt class="literal">person</tt> and
+        <tt class="literal">\Iperson</tt> is an initial <span class="emphasis"><em>uppercase</em></span> 
+        identifier named <tt class="literal">person</tt>.</p><p>The following reserved words are not legal identifier names unless they 
+        appear escaped using <tt class="literal">\i</tt> or <tt class="literal">\I</tt>:</p><p><tt class="literal">
+        assembly module package import
+        alias class interface object given value assign void function new
+        of extends satisfies abstracts
+        in out
+        return break continue throw
+        assert dynamic
+        if else switch case for while try catch finally then let
+        this outer super
+        is exists nonempty
+        </tt></p><i><span class="comment"><p>Note: <tt class="literal">assembly</tt> and <tt class="literal">abstracts</tt>
+        are reserved for possible use in a future release of the language, for declaration
+        of assemblies and lower bound type constraints respectively.</p></span></i></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="literals"></a>2.4.&nbsp;Literals</h2></div></div><div></div></div><p>A <span class="emphasis"><em>literal</em></span> is a single token that represents a
+        Unicode character, a character string, or a numeric value.</p><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="numericliterals"></a>2.4.1.&nbsp;Numeric literals</h3></div></div><div></div></div><p>An <span class="emphasis"><em>integer literal</em></span> may be expressed in decimal, 
+            hexadecimal, or binary notation:</p><pre data-language="bnf">IntegerLiteral: DecimalLiteral | HexLiteral | BinLiteral</pre><p>A <span class="emphasis"><em>decimal literal</em></span> has a list of digits and an
+            optional magnitude:</p><pre data-language="bnf">DecimalLiteral: Digits Magnitude?</pre><p><span class="emphasis"><em>Hexadecimal literals</em></span> are prefixed by <tt class="literal">#</tt>:</p><pre data-language="bnf">HexLiteral: "#" HexDigits</pre><p><span class="emphasis"><em>Binary literals</em></span> are prefixed by <tt class="literal">$</tt>:</p><pre data-language="bnf">BinLiteral: "$" BinDigits</pre><p>A <span class="emphasis"><em>floating point literal</em></span> is distinguished by the
+            presence of a decimal point or fractional magnitude:</p><pre data-language="bnf">FloatLiteral: NormalFloatLiteral | ShortcutFloatLiteral</pre><p>Most floating point literals have a list of digits including a decimal 
+            point, and an optional exponent or magnitude.</p><pre data-language="bnf">NormalFloatLiteral: Digits "." FractionalDigits (Exponent | Magnitude | FractionalMagnitude)?</pre><p>The decimal point is optional if a fractional magitude is specified.</p><pre data-language="bnf">ShortcutFloatLiteral: Digits FractionalMagnitude</pre><p>Decimal digits may be separated into groups of three using an underscore.</p><pre data-language="bnf">Digits: Digit+ | Digit{1..3} ("_" Digit{3})+</pre><pre data-language="bnf">FractionalDigits: Digit+ | (Digit{3} "_")+ Digit{1..3} </pre><p>Hexadecimal or binary digits may be separated into groups of four using 
+            an underscore. Hexadecimal digits may even be separated into groups of two.</p><pre data-language="bnf">HexDigits: HexDigit+ | HexDigit{1..4} ("_" HexDigit{4})+ | HexDigit{1..2} ("_" HexDigit{2})+</pre><pre data-language="bnf">BinDigits: BinDigit+ | BinDigit{1..4} ("_" Digit{4})+</pre><p>A digit is a decimal, hexadecimal, or binary digit.</p><pre data-language="bnf">Digit: "0".."9"</pre><pre data-language="bnf">HexDigit: "0".."9" | "A".."F" | "a".."f"</pre><pre data-language="bnf">BinDigit: "0"|"1"</pre><p>A floating point literal may include either an <span class="emphasis"><em>exponent</em></span> 
+            (for scientific notation) or a <span class="emphasis"><em>magnitude</em></span> (an SI unit
+            prefix). A decimal integer literal may include a magnitude.</p><pre data-language="bnf">Exponent: ("E"|"e") ("+"|"-")? Digit+</pre><pre data-language="bnf">Magnitude: "k" | "M" | "G" | "T" | "P"</pre><pre data-language="bnf">FractionalMagnitude: "m" | "u" | "n" | "p" | "f"</pre><p>The magnitude of a numeric literal is interpreted as follows:</p><div class="itemizedlist"><ul type="disc"><li><p><tt class="literal">k</tt> means <tt class="literal">e+3</tt>,</p></li><li><p><tt class="literal">M</tt> means <tt class="literal">e+6</tt>,</p></li><li><p><tt class="literal">G</tt> means <tt class="literal">e+9</tt>,</p></li><li><p><tt class="literal">T</tt> means <tt class="literal">e+12</tt>,</p></li><li><p><tt class="literal">P</tt> means <tt class="literal">e+15</tt>,</p></li><li><p><tt class="literal">m</tt> means <tt class="literal">e-3</tt>,</p></li><li><p><tt class="literal">u</tt> means <tt class="literal">e-6</tt>,</p></li><li><p><tt class="literal">n</tt> means <tt class="literal">e-9</tt>,</p></li><li><p><tt class="literal">p</tt> means <tt class="literal">e-12</tt>, and</p></li><li><p><tt class="literal">f</tt> means <tt class="literal">e-15</tt>.</p></li></ul></div><p>The following examples are legal numeric literals:</p><pre data-language="ceylon">69</pre><pre data-language="ceylon">6.9</pre><pre data-language="ceylon">0.999e-10</pre><pre data-language="ceylon">1.0E2</pre><pre data-language="ceylon">10000</pre><pre data-language="ceylon">1_000_000</pre><pre data-language="ceylon">12_345.678_9</pre><pre data-language="ceylon">1.5k</pre><pre data-language="ceylon">12M</pre><pre data-language="ceylon">2.34p</pre><pre data-language="ceylon">5u</pre><pre data-language="ceylon">$1010_0101</pre><pre data-language="ceylon">#D00D</pre><pre data-language="ceylon">#FF_FF_FF</pre><p>The following are <span class="emphasis"><em>not</em></span> valid numeric literals:</p><pre data-language="ceylon">.33  //Error: floating point literals may not begin with a decimal point</pre><pre data-language="ceylon">1.  //Error: floating point literals may not end with a decimal point</pre><pre data-language="ceylon">99E+3  //Error: floating point literals with an exponent must contain a decimal point</pre><pre data-language="ceylon">12_34  //Error: decimal digit groups must be of length three</pre><pre data-language="ceylon">#FF.00  //Error: floating point numbers may not be expressed in hexadecimal notation</pre></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="characterliterals"></a>2.4.2.&nbsp;Character literals</h3></div></div><div></div></div><p>A single <span class="emphasis"><em>character literal</em></span> consists of a Unicode 
+            character, inside single quotes.</p><pre data-language="bnf">CharacterLiteral: "'" Character "'"</pre><pre data-language="bnf">Character: ~("'" | "\") | EscapeSequence</pre><p>A character may be identified by an <span class="emphasis"><em>escape sequence</em></span>.
+            Every escape sequence begins with a backslash. An escape sequence is replaced
+            by its corresponding Unicode character during lexical analysis.</p><pre data-language="bnf">EscapeSequence: "\" (SingleCharacterEscape | "{" CharacterCode "}")</pre><pre data-language="bnf">SingleCharacterEscape: "b" | "t" | "n" | "f" | "r" | "e" | "\" | """ | "'" | "`" | "0"</pre><p>The single-character escape sequences have their traditional interpretations as
+            Unicode characters:</p><div class="itemizedlist"><ul type="disc"><li><p><tt class="literal">\b</tt> means <tt class="literal">BACKSPACE</tt>,</p></li><li><p><tt class="literal">\t</tt> means <tt class="literal">CHARACTER TABULATION</tt>,</p></li><li><p><tt class="literal">\n</tt> means <tt class="literal">LINE FEED (LF)</tt>,</p></li><li><p><tt class="literal">\f</tt> means <tt class="literal">FORM FEED (FF)</tt>,</p></li><li><p><tt class="literal">\r</tt> means <tt class="literal">CARRIAGE RETURN (CR)</tt>,</p></li><li><p><tt class="literal">\e</tt> means <tt class="literal">ESCAPE</tt>,</p></li><li><p><tt class="literal">\\</tt>, <tt class="literal">\`</tt>, <tt class="literal">\'</tt>, 
+                    and <tt class="literal">\"</tt> mean <tt class="literal">REVERSE SOLIDUS</tt>, 
+                    <tt class="literal">GRAVE ACCENT</tt>, <tt class="literal">APOSTROPHE</tt>, and 
+                    <tt class="literal">QUOTATION MARK</tt>, respectively, and, finally</p></li><li><p><tt class="literal">\0</tt> means <tt class="literal">NULL</tt>.</p></li></ul></div><p>A Unicode codepoint escape is a two-, four-, or six-digit hexadecimal literal 
+            representing an integer in the range 0 to 10FFFF, or a Unicode character name, 
+            surrounded by braces, and means the Unicode character with the specified codepoint or 
+            character name.</p><pre data-language="bnf">CharacterCode: "#" ( HexDigit{2} | HexDigit{4} | HexDigit{6} ) | UnicodeCharacterName</pre><p>Legal Unicode character names are defined by the Unicode specification.</p><p>The following are legal character literals:</p><pre data-language="ceylon">'A'</pre><pre data-language="ceylon">'#'</pre><pre data-language="ceylon">' '</pre><pre data-language="ceylon">'\n'</pre><pre data-language="ceylon">'\{#212B}'</pre><pre data-language="ceylon">'\{ALCHEMICAL SYMBOL FOR GOLD}'</pre></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="stringliterals"></a>2.4.3.&nbsp;String literals</h3></div></div><div></div></div><p>A character <span class="emphasis"><em>string literal</em></span> is a sequence of Unicode 
+            characters, inside double quotes.</p><pre data-language="bnf">StringLiteral: """ StringCharacter* """</pre><pre data-language="bnf">StringCharacter: ~( "\" | """ | "`" ) | "`" ~"`" | EscapeSequence | EscapedBreak</pre><p>A string literal may contain escape sequences. An escape sequence is 
+            replaced by its corresponding Unicode character during lexical analysis.</p><p>A line-terminating character sequence may be escaped with a backslash,
+            in which case the escaped line termination is removed from the string literal
+            during lexical analysis.</p><pre data-language="bnf">EscapedBreak: "\" (CarriageReturn Newline | CarriageReturn | Newline)</pre><p>A sequence of two backticks is used to delimit an interpolated expression
+            embedded in a string template.</p><pre data-language="bnf">StringStart: """ StringCharacter* "``"</pre><pre data-language="bnf">StringMid: "``" StringCharacter* "``"</pre><pre data-language="bnf">StringEnd: "``" StringCharacter* """</pre><p>A <span class="emphasis"><em>verbatim string</em></span> is a character sequence delimited
+            by a sequence of three double quotes. Verbatim strings do not contain escape
+            sequences or interpolated expressions, so every character occurring inside the
+            verbatim string is interpreted literally.</p><pre data-language="bnf">VerbatimStringLiteral: """"" VerbatimCharacter* """""</pre><pre data-language="bnf">VerbatimCharacter: ~""" | """ ~""" | """ """ ~"""</pre><p>The following are legal strings:</p><pre data-language="ceylon">"Hello!"</pre><pre data-language="ceylon">"\{#00E5}ngstr\{#00F6}ms"</pre><pre data-language="ceylon">" \t\n\f\r,;:"</pre><pre data-language="ceylon">"\{POLICE CAR} \{TROLLEYBUS} \{WOMAN WITH BUNNY EARS}"</pre><pre data-language="ceylon">"""This program prints "hello world" to the console."""</pre><p>The column in which the first character of a string literal occurs, excluding the 
+            opening quote characters, is called the <span class="emphasis"><em>initial column</em></span> of the string 
+            literal. Every following line of a multiline string literal must contain whitespace up to 
+            the initial column. That is, if the string contents begin at the <tt class="literal">n</tt>th 
+            character in a line of text, the following lines must start with <tt class="literal">n</tt> 
+            whitespace characters. This required whitespace is removed from the string literal during 
+            lexical analysis.</p></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="operatorsanddelimiters"></a>2.5.&nbsp;Operators and delimiters</h2></div></div><div></div></div><p>The following character sequences are operators and/or punctuation:</p><p><tt class="literal">
+        , ; ...
+        { } ( ) [ ] `
+        ?
+        . ?. *. 
+        = =&gt;
+        + - * / % ^ **
+        ++ --
+        .. : -&gt;
+        ! &amp;&amp; ||
+        ~ &amp; |
+        === == != &lt; &gt; &lt;= &gt;= &lt;=&gt;
+        += -= /= *= %= |= &amp;= ~= ||= &amp;&amp;=
+        </tt></p><p>Certain symbols serve dual or multiple purposes in the grammar.</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="introduction.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="index.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="typesystem.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter&nbsp;1.&nbsp;Introduction&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;Chapter&nbsp;3.&nbsp;Type system</td></tr></table></div></body></html>

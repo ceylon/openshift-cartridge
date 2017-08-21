@@ -35,7 +35,7 @@ It's trivial to make your application run on OpenShift. Just take your existing 
 import:
 
 ```ceylon
-import ceylon.openshift "1.3.2";
+import ceylon.openshift "1.3.3";
 ```
 
 This will let you access OpenShift information:
@@ -56,13 +56,13 @@ shared void run(){
 }
 ```
 
-Similarly you can get information about your database. Read the [API docs for more information](https://modules.ceylon-lang.org/repo/1/ceylon/openshift/1.3.2/module-doc/api/openshift.object.html).
+Similarly you can get information about your database. Read the [API docs for more information](https://modules.ceylon-lang.org/repo/1/ceylon/openshift/1.3.3/module-doc/api/openshift.object.html).
 
 Now you just have to add the required OpenShift setup to your application, for which
 you can install the `ceylon openshift` command (only need to do this once):
 
 ```shell
-$ ceylon plugin install ceylon.openshift/1.3.2
+$ ceylon plugin install ceylon.openshift/1.3.3
 ```
 
 And now you just turn your Ceylon application into a Ceylon OpenShift application:

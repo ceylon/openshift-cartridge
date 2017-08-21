@@ -1,0 +1,110 @@
+'\" -*- coding: us-ascii -*-
+.if \n(.g .ds T< \\FC
+.if \n(.g .ds T> \\F[\n[.fam]]
+.de URL
+\\$2 \(la\\$1\(ra\\$3
+..
+.if \n(.g .mso www.tmac
+.TH "ceylon plugin" 1 "18 August 2017" "" ""
+.SH NAME
+ceylon plugin \- Manages Ceylon command-line plugins
+.SH SYNOPSIS
+'nh
+.fi
+.ad l
+\fBceylon plugin\fR \kx
+.if (\nx>(\n(.l/2)) .nr x (\n(.l/5)
+'in \n(.iu+\nxu
+[--cacherep=\fIurl\fR] [--cwd=\fIdir\fR] [--force] [--local] [--maven-overrides=\fIfile\fR] [--no-default-repositories] [--offline] [--out=\fIurl\fR] [--overrides=\fIfile\fR] [--pass=\fIsecret\fR] [--rep=\fIurl\fR...] [--script=\fIdirs\fR...] [--source=\fIdirs\fR...] [--src=\fIdirs\fR...] [--sysrep=\fIurl\fR] [--system] [--timeout=\fIseconds\fR] [--user=\fIname\fR] [--verbose[=\fIflags\fR]] [--] {mode} [module]\&...
+'in \n(.iu-\nxu
+.ad b
+'hy
+.SH DESCRIPTION
+There are four modes of action:
+.TP 0.2i
+\(bu
+\*(T<list\*(T>: will list the scripts installed
+.TP 0.2i
+\(bu
+\*(T<install\*(T>: installs the scripts for the modules listed on the command line. The scripts must either be packed in a
+repository, or found in the current script folders
+.TP 0.2i
+\(bu
+\*(T<uninstall\*(T>: uninstalls the scripts for the modules listed on the command line
+.TP 0.2i
+\(bu
+\*(T<pack\*(T>: packs the scripts for the modules listed on the command line and publishes them to the specified output repository
+.PP
+The list of modules specified can have their versions set, but if missing we will try to find the
+version from the current source path. If the list of modules is omitted, we will use the list of
+modules found in the current source path.
+.SH OPTIONS
+.TP 
+--cacherep=\fIurl\fR
+Specifies the folder to use for caching downloaded modules. (default: \*(T<~/.ceylon/cache\*(T>)
+.TP 
+--cwd=\fIdir\fR
+Specifies the current working directory for this tool. (default: the directory where the tool is run from)
+.TP 
+--force, -f
+Force installation even if a previous version exists
+.TP 
+--local
+Install to or uninstall from a local folder
+.TP 
+--maven-overrides=\fIfile\fR
+Specifies the XML file to use to load Maven artifact overrides. See http://ceylon-lang.org/documentation/current/reference/repository/maven/ for information. Deprecated: use --overrides.
+.TP 
+--no-default-repositories
+Indicates that the default repositories should not be used.
+.TP 
+--offline, -L
+Enables offline mode that will prevent connections to remote repositories.
+.TP 
+--out=\fIurl\fR, -o \fIurl\fR
+Specifies the output module repository (which must be publishable). (default: \*(T<./modules\*(T>)
+.TP 
+--overrides=\fIfile\fR, -O \fIfile\fR
+Specifies the XML file to use to load module overrides. See http://ceylon-lang.org/documentation/current/reference/repository/maven/ for information. \fInull\fR.
+.TP 
+--pass=\fIsecret\fR
+Sets the password for use with an authenticated output repository (no default).
+.TP 
+--rep=\fIurl\fR
+Specifies a module repository containing dependencies. Can be specified multiple times. (default: \*(T<modules\*(T>, \*(T<~/.ceylon/repo\*(T>, \*(T<https://modules.ceylon\-lang.org/repo/1\*(T>)
+.TP 
+--script=\fIdirs\fR, -x \fIdirs\fR
+A directory containing your module documentation (default: \*(T<./script\*(T>)
+.TP 
+--source=\fIdirs\fR
+An alias for \*(T<\-\-src\*(T> (default: \*(T<./source\*(T>)
+.TP 
+--src=\fIdirs\fR, -s \fIdirs\fR
+A directory containing Ceylon and/or Java/JavaScript source code (default: \*(T<./source\*(T>)
+.TP 
+--sysrep=\fIurl\fR
+Specifies the system repository containing essential modules. (default: \*(T<$CEYLON_HOME/repo\*(T>)
+.TP 
+--system
+Install to or uninstall from the system folder
+.TP 
+--timeout=\fIseconds\fR, -T \fIseconds\fR
+Sets the timeout for connections to remote repositories, use 0 for no timeout (default: 20).
+.TP 
+--user=\fIname\fR
+Sets the user name for use with an authenticated output repository (no default).
+.TP 
+--verbose[=\fIflags\fR], -d
+Produce verbose output. If no \*(T<flags\*(T> are given then be verbose about everything, otherwise just be verbose about the flags which are present. Allowed flags include: \*(T<all\*(T>, \*(T<loader\*(T>.
+.SH EXAMPLE
+The following would list the plugins currently installed:
+.PP
+.nf
+\*(T<ceylon plugin list
+\*(T>.fi
+.PP
+The following would install the ceylon.build plugins:
+.PP
+.nf
+\*(T<ceylon plugin install ceylon.build.engine\*(T>
+.fi

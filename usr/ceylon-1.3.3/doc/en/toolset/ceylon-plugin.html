@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html><head><meta charset='UTF-8'/>
+<title>ceylon plugin</title>
+<link rel='stylesheet' type='text/css' href='bootstrap.min.css'/>
+<link rel='stylesheet' type='text/css' href='doc-tool.css'/>
+</head>
+<body>
+<div class='navbar navbar-inverse navbar-static-top'>
+<div class='navbar-inner'>
+<a class='tool-header' href='index.html'>
+<i class='tool-logo'></i>
+<span class='tool-label'>The Ceylon Toolset</span>
+<span><code class='tool-name'>ceylon plugin</code></span>
+<span class='tool-version'>1.3.3 0d594b3 (Contents May Differ)</span>
+</a>
+<ul class='nav pull-right'><li class='divider-vertical'/><li id='infoDropdown' class='dropdown'><a href='#' title='Show keyboard shortcuts [Shortcut: ?]' role='button' class='dropdown-toggle' data-toggle='dropdown'><i class='icon-info'></i></a><ul id='info-dropdown-panel' class='dropdown-menu'><h4>Keyboard Shortcuts</h4><li class='divider'></li><div id='info-common-shortcuts'><div id='?'><span class='key badge'>?</span><span class='info muted'>Open this information panel</span></div><div id='i'><span class='key badge'>i</span><span class='info muted'>Jump to tool index</span></div><div id='s'><span class='key badge'>s</span><span class='info muted'>Jump to synopsis</span></div><div id='d'><span class='key badge'>d</span><span class='info muted'>Jump to description</span></div><div id='o'><span class='key badge'>o</span><span class='info muted'>Jump to options</span></div></div></ul></li></ul></div>
+</div>
+<div class='sub-navbar'>
+<div class='sub-navbar-inner'><div><code class='sub-navbar-tool'>ceylon plugin</code></div>
+<div class='sub-navbar-summary'><p>Manages Ceylon command-line plugins</p>
+</div>
+</div><div class='sub-navbar-menu'>
+<a href='index.html'><span title='Jump to tool index [Shortcut: I]'><span class='accesskey'>I</span>ndex</span></a><a href='#section-synopsis'><span title='Jump to tool synopsis [Shortcut: S]'><span class='accesskey'>S</span>ynopsis</span></a><a href='#section-description'><span title='Jump to tool description [Shortcut: D]'><span class='accesskey'>D</span>escription</span></a><a href='#section-options'><span title='Jump to tool options [Shortcut: O]'><span class='accesskey'>O</span>ptions</span></a></div></div>
+<div class='container-fluid'>
+<div class='section section-synopsis'>
+<table class='table table-condensed table-bordered'>
+<thead>
+<tr class='table-header' title='Click for expand/collapse'><td colspan='1' id='section-synopsis'><i class='icon-expand'></i><h2>Synopsis</h2>
+</td></tr>
+</thead>
+<tbody>
+<tr><td><div class='synopsis'><code>ceylon plugin  [<a href='#option--cacherep'>--cacherep</a>=&lt;url&gt;] [<a href='#option--cwd'>--cwd</a>=&lt;dir&gt;] [<a href='#option--force'>--force</a>] [<a href='#option--local'>--local</a>] [<a href='#option--maven-overrides'>--maven-overrides</a>=&lt;file&gt;] [<a href='#option--no-default-repositories'>--no-default-repositories</a>] [<a href='#option--offline'>--offline</a>] [<a href='#option--out'>--out</a>=&lt;url&gt;] [<a href='#option--overrides'>--overrides</a>=&lt;file&gt;] [<a href='#option--pass'>--pass</a>=&lt;secret&gt;] [<a href='#option--rep'>--rep</a>=&lt;url&gt;...] [<a href='#option--script'>--script</a>=&lt;dirs&gt;...] [<a href='#option--source'>--source</a>=&lt;dirs&gt;...] [<a href='#option--src'>--src</a>=&lt;dirs&gt;...] [<a href='#option--sysrep'>--sysrep</a>=&lt;url&gt;] [<a href='#option--system'>--system</a>] [<a href='#option--timeout'>--timeout</a>=&lt;seconds&gt;] [<a href='#option--user'>--user</a>=&lt;name&gt;] [<a href='#option--verbose'>--verbose</a>[=&lt;flags&gt;]] [--] &lt;mode&gt; [&lt;module...&gt;]</code></div>
+</td></tr></tbody></table></div>
+
+<div class='section section-description'>
+<table class='table table-condensed table-bordered'>
+<thead>
+<tr class='table-header' title='Click for expand/collapse'><td colspan='1' id='section-description'><i class='icon-expand'></i><h2> Description</h2>
+</td></tr>
+</thead>
+<tbody>
+<tr><td><p>There are four modes of action:</p>
+
+<ul>
+<li><code>list</code>: will list the scripts installed</li>
+<li><code>install</code>: installs the scripts for the modules listed on the command line. The scripts must either be packed in a
+repository, or found in the current script folders</li>
+<li><code>uninstall</code>: uninstalls the scripts for the modules listed on the command line</li>
+<li><code>pack</code>: packs the scripts for the modules listed on the command line and publishes them to the specified output repository</li>
+</ul>
+
+<p>The list of modules specified can have their versions set, but if missing we will try to find the
+version from the current source path. If the list of modules is omitted, we will use the list of
+modules found in the current source path.</p>
+</td></tr></tbody></table></div>
+<div class='section section-options'>
+<table class='table table-condensed table-bordered'>
+<thead>
+<tr class='table-header' title='Click for expand/collapse'><td colspan='2' id='section-options'><i class='icon-expand'></i><h2>Options</h2>
+</td></tr>
+</thead>
+<tbody>
+<tr><td class='span3' id='option--cacherep'><code>--cacherep=url</code></td>
+<td class='option-description'><p>Specifies the folder to use for caching downloaded modules. (default: <code>~/.ceylon/cache</code>)</p>
+</td>
+</tr><tr><td class='span3' id='option--cwd'><code>--cwd=dir</code></td>
+<td class='option-description'><p>Specifies the current working directory for this tool. (default: the directory where the tool is run from)</p>
+</td>
+</tr><tr><td class='span3' id='option--force'><code>--force</code>, <code id='option-f'>-f</code></td>
+<td class='option-description'><p>Force installation even if a previous version exists</p>
+</td>
+</tr><tr><td class='span3' id='option--local'><code>--local</code></td>
+<td class='option-description'><p>Install to or uninstall from a local folder</p>
+</td>
+</tr><tr><td class='span3' id='option--maven-overrides'><code>--maven-overrides=file</code></td>
+<td class='option-description'><p>Specifies the XML file to use to load Maven artifact overrides. See http://ceylon-lang.org/documentation/current/reference/repository/maven/ for information. Deprecated: use --overrides.</p>
+</td>
+</tr><tr><td class='span3' id='option--no-default-repositories'><code>--no-default-repositories</code></td>
+<td class='option-description'><p>Indicates that the default repositories should not be used.</p>
+</td>
+</tr><tr><td class='span3' id='option--offline'><code>--offline</code>, <code id='option-L'>-L</code></td>
+<td class='option-description'><p>Enables offline mode that will prevent connections to remote repositories.</p>
+</td>
+</tr><tr><td class='span3' id='option--out'><code>--out=url</code>, <code id='option-o'>-o url</code></td>
+<td class='option-description'><p>Specifies the output module repository (which must be publishable). (default: <code>./modules</code>)</p>
+</td>
+</tr><tr><td class='span3' id='option--overrides'><code>--overrides=file</code>, <code id='option-O'>-O file</code></td>
+<td class='option-description'><p>Specifies the XML file to use to load module overrides. See http://ceylon-lang.org/documentation/current/reference/repository/maven/ for information. <em>Experimental</em>.</p>
+</td>
+</tr><tr><td class='span3' id='option--pass'><code>--pass=secret</code></td>
+<td class='option-description'><p>Sets the password for use with an authenticated output repository (no default).</p>
+</td>
+</tr><tr><td class='span3' id='option--rep'><code>--rep=url</code></td>
+<td class='option-description'><p>Specifies a module repository containing dependencies. Can be specified multiple times. (default: <code>modules</code>, <code>~/.ceylon/repo</code>, <code>https://modules.ceylon-lang.org/repo/1</code>)</p>
+</td>
+</tr><tr><td class='span3' id='option--script'><code>--script=dirs</code>, <code id='option-x'>-x dirs</code></td>
+<td class='option-description'><p>A directory containing your module documentation (default: <code>./script</code>)</p>
+</td>
+</tr><tr><td class='span3' id='option--source'><code>--source=dirs</code></td>
+<td class='option-description'><p>An alias for <code>--src</code> (default: <code>./source</code>)</p>
+</td>
+</tr><tr><td class='span3' id='option--src'><code>--src=dirs</code>, <code id='option-s'>-s dirs</code></td>
+<td class='option-description'><p>A directory containing Ceylon and/or Java/JavaScript source code (default: <code>./source</code>)</p>
+</td>
+</tr><tr><td class='span3' id='option--sysrep'><code>--sysrep=url</code></td>
+<td class='option-description'><p>Specifies the system repository containing essential modules. (default: <code>$CEYLON_HOME/repo</code>)</p>
+</td>
+</tr><tr><td class='span3' id='option--system'><code>--system</code></td>
+<td class='option-description'><p>Install to or uninstall from the system folder</p>
+</td>
+</tr><tr><td class='span3' id='option--timeout'><code>--timeout=seconds</code>, <code id='option-T'>-T seconds</code></td>
+<td class='option-description'><p>Sets the timeout for connections to remote repositories, use 0 for no timeout (default: 20).</p>
+</td>
+</tr><tr><td class='span3' id='option--user'><code>--user=name</code></td>
+<td class='option-description'><p>Sets the user name for use with an authenticated output repository (no default).</p>
+</td>
+</tr><tr><td class='span3' id='option--verbose'><code>--verbose[=flags]</code>, <code id='option-d'>-d</code></td>
+<td class='option-description'><p>Produce verbose output. If no <code>flags</code> are given then be verbose about everything, otherwise just be verbose about the flags which are present. Allowed flags include: <code>all</code>, <code>loader</code>.</p>
+</td>
+</tr></tbody></table></div><div class='section'>
+<table class='table table-condensed table-bordered'>
+<thead>
+<tr class='table-header' title='Click for expand/collapse'><td colspan='1'><i class='icon-expand'></i><h2>EXAMPLE</h2>
+</td></tr>
+</thead>
+<tbody>
+<tr><td><p>The following would list the plugins currently installed:</p>
+
+<pre><code>ceylon plugin list
+</code></pre>
+
+<p>The following would install the ceylon.build plugins:</p>
+
+<pre><code>ceylon plugin install ceylon.build.engine</code></pre>
+</td></tr></tbody></table></div>
+</div><script type='text/javascript' src='jquery-1.8.2.min.js'></script><script type='text/javascript' src='bootstrap.min.js'></script><script type='text/javascript' src='doc-tool.js'></script><script type='text/javascript'>init();</script></body></html>

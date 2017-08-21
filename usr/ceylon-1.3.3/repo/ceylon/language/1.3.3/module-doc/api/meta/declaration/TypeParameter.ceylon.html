@@ -1,0 +1,29 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>TypeParameter.ceylon</title><link href='../../.resources/favicon.ico' rel='shortcut icon'/>
+<link href='../../.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='../../.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='//fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '../../.resources/'</script><script src='../../.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='../../.resources/rainbow.min.js' type='text/javascript'></script><script src='../../.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='../../.resources/ceylon.js' type='text/javascript'></script><script src='../../.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;A type parameter declaration.&quot;
+shared sealed interface TypeParameter satisfies Declaration {
+    
+    // FIXME: make it NestableDeclaration&amp;GenericDeclaration?
+    &quot;The declaration that declared this type parameter. This is either a [[ClassOrInterfaceDeclaration]] or a
+     [[FunctionDeclaration]].&quot;
+    shared formal NestableDeclaration container;
+    
+    &quot;True if this type parameter has a default type argument and can be omitted.&quot;
+    shared formal Boolean defaulted;
+    
+    &quot;This type parameter&apos;s default type argument, if it has one.&quot;
+    shared formal OpenType? defaultTypeArgument;
+    
+    &quot;This type parameter&apos;s variance, as defined by `in` or `out` keywords.&quot;
+    shared formal Variance variance;
+    
+    &quot;The `satisfies` upper bounds for this type parameter.&quot;
+    shared formal OpenType[] satisfiedTypes;
+
+    &quot;The `of` enumerated bounds for this type parameter.&quot;
+    shared formal OpenType[] caseTypes;
+}
+</pre></body></html>

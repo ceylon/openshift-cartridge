@@ -1,0 +1,501 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>Integer.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='//fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;An exact representation of a positive whole number, 
+ negative whole number, or zero. The largest and smallest 
+ representable values are platform-dependent:
+ 
+ - For the JVM runtime, integer values between
+   -2&lt;sup&gt;63&lt;/sup&gt; and 2&lt;sup&gt;63&lt;/sup&gt;-1 may be represented 
+   without overflow.
+ - For the JavaScript runtime, integer values with a
+   magnitude no greater than 2&lt;sup&gt;53&lt;/sup&gt; may be
+   represented without loss of precision.
+ 
+ Overflow or loss of precision occurs silently (with no 
+ exception raised).
+ 
+ An integer is considered equal to its [[float]] 
+ representation, if that exists. That is, for every integer 
+ `int`, either `int.float` throws an [[OverflowException]], 
+ or the expression `int.float==int` evaluates to `true`.
+ 
+ An integer is representable as a sequence of bits. Not all 
+ of the bits in the representation may be addressed by the 
+ methods inherited from [[Binary]]:
+ 
+ - For the JVM runtime, the bits at all indices (0 to 63) 
+   are addressable.
+ - For the JavaScript runtime, the bits at indices 0 to 31 
+   are addressable.
+ 
+ Literal integers may be written in decimal, hexadecimal, or
+ binary notation:
+ 
+     8660
+     #21D4
+     $10000111010100
+ 
+ Underscores may be used to group digits:
+ 
+     8660
+     #21_D4
+     $10_0001_1101_0100&quot;
+see (`value runtime.integerSize`)
+tagged(&quot;Basic types&quot;, &quot;Numbers&quot;)
+shared native final class Integer
+        extends Object
+        satisfies Integral&lt;Integer&gt; &amp;
+                  Binary&lt;Integer&gt; &amp; 
+                  Exponentiable&lt;Integer,Integer&gt; {
+    
+    &quot;The sum of all the integers in the given stream, or
+     `0` if the stream is empty.&quot;
+    since(&quot;1.3.2&quot;)
+    shared static Integer sum({Integer*} integers) {
+        variable value sum = 0;
+        for (int in integers) {
+            sum += int;
+        }
+        return sum;
+    }
+    
+    &quot;The product of all the integers in the given stream, or
+     `1` if the stream is empty.&quot;
+    since(&quot;1.3.2&quot;)
+    shared static Integer product({Integer*} integers) {
+        variable value product = 1;
+        for (int in integers) {
+            product *= int;
+        }
+        return product;
+    }
+    
+    &quot;The largest integer in the given stream, or `null` if 
+     the stream is empty.&quot;
+    since(&quot;1.3.2&quot;)
+    shared static Integer|Absent max&lt;Absent&gt;
+            (Iterable&lt;Integer,Absent&gt; integers)
+            given Absent satisfies Null {
+        variable value first = true;
+        variable value max = 0;
+        for (x in integers) {
+            if (first) {
+                first = false;
+                max = x;
+            }
+            else if (x &gt; max) {
+                max = x;
+            }
+        }
+        if (first) {
+            assert (is Absent null);
+            return null;
+        }
+        else {
+            return max;
+        }
+    }
+    
+    &quot;The smallest integer in the given stream, or `null` if 
+     the stream is empty.&quot;
+    since(&quot;1.3.2&quot;)
+    shared static Integer|Absent min&lt;Absent&gt;
+            (Iterable&lt;Integer,Absent&gt; integers)
+            given Absent satisfies Null {
+        variable value first = true;
+        variable value min = 0;
+        for (x in integers) {
+            if (first) {
+                first = false;
+                min = x;
+            }
+            else if (x &lt; min) {
+                min = x;
+            }
+        }
+        if (first) {
+            assert (is Absent null);
+            return null;
+        }
+        else {
+            return min;
+        }
+    }
+    
+    &quot;The smaller of the two given integers.&quot;
+    since(&quot;1.3.2&quot;)
+    shared static Integer smallest(Integer x, Integer y)
+            =&gt;  if (x &lt; y) then x else y;
+    
+    &quot;The larger of the two given integers.&quot;
+    since(&quot;1.3.2&quot;)
+    shared static Integer largest(Integer x, Integer y)
+            =&gt;  if (x &gt; y) then x else y;
+    
+    &quot;The [[Integer]] value of the given 
+     [[string representation|string]] of an integer value in 
+     the base given by [[radix]], or `null` if the string 
+     does not represent an integer in that base, or if the 
+     mathematical integer it represents is too large in 
+     magnitude to be represented by an instance of the class 
+     `Integer`.
+     
+     The syntax accepted by this function depends upon the 
+     given [[base|radix]]:
+     
+     - For base 10, the accepted syntax is the same as the 
+       syntax for an `Integer` literal in the Ceylon 
+       language except that it may optionally begin with a 
+       sign character (`+` or `-`) and may not contain 
+       grouping underscore characters. That is, an optional 
+       sign character, followed by a string of decimal 
+       digits, followed by an optional SI magnitude: 
+       `k`, `M`, `G`, `T`, or `P`.
+     - For other bases, the accepted syntax is an optional 
+       sign character, followed by a string of digits of the 
+       given base. 
+     
+     The given `radix` specifies the base of the string 
+     representation. The list of available digits starts 
+     from `0` to `9`, followed by `a` to `z`. When parsing 
+     in a specific base, the first `radix` digits from the 
+     available digits list is used. This function is not 
+     case sensitive; `a` and `A` both correspond to the 
+     digit `a` whose decimal value is `10`.
+     
+     Integer: Base10 | BaseN
+     Base10: Sign? Base10Digits Magnitude
+     BaseN: Sign? BaseNDigits
+     Sign: &apos;+&apos; | &apos;-&apos;
+     Magnitude: &apos;k&apos; | &apos;M&apos; | &apos;G&apos; | &apos;T&apos; | &apos;P&apos;
+     Base10Digits: (&apos;0&apos;..&apos;9&apos;)+
+     BaseNDigits: (&apos;0&apos;..&apos;9&apos;|&apos;a&apos;..&apos;z&apos;|&apos;A&apos;..&apos;Z&apos;)+&quot;
+    throws (`class AssertionError`, 
+            &quot;if [[radix]] is not between [[minRadix]] and 
+             [[maxRadix]]&quot;)
+    see (`function format`, `function Float.parse`)
+    tagged(&quot;Numbers&quot;, &quot;Basic types&quot;)
+    since(&quot;1.3.1&quot;)
+    shared static Integer|ParseException parse(
+        &quot;The string representation to parse.&quot;
+        String string,
+        &quot;The base, between [[minRadix]] and [[maxRadix]] 
+         inclusive.&quot;
+        Integer radix = 10)
+            =&gt; parseIntegerInternal(string, radix);
+    
+    &quot;The string representation of the given [[integer]] in 
+     the base given by [[radix]]. If the given integer is 
+     [[negative|Integer.negative]], the string 
+     representation will begin with `-`. Digits consist of 
+     decimal digits `0` to `9`, together with and lowercase 
+     letters `a` to `z` for bases greater than 10.
+     
+     For example:
+     
+     - `Integer.format(-46)` is `\&quot;-46\&quot;`
+     - `Integer.format(9,2)` is `\&quot;1001\&quot;`
+     - `Integer.format(10,8)` is `\&quot;12\&quot;`
+     - `Integer.format(511,16)` is `\&quot;1ff\&quot;`
+     - `Integer.format(512,32)` is `\&quot;g0\&quot;`&quot;
+    throws (`class AssertionError`, 
+            &quot;if [[radix]] is not between [[minRadix]] and 
+             [[maxRadix]]&quot;)
+    see (`function parse`, `function Float.format`)
+    tagged(&quot;Numbers&quot;)
+    since(&quot;1.3.1&quot;)
+    shared static String format(
+        &quot;The integer value to format.&quot;
+        Integer integer,
+        &quot;The base, between [[minRadix]] and [[maxRadix]] 
+         inclusive.&quot;
+        Integer radix = 10,
+        &quot;If not `null`, `groupingSeparator` will be used to
+         separate each group of three digits if `radix` is 
+         10 (the default), or each group of four digits if 
+         `radix` is 2 or 16.
+         
+         `groupingSeparator` may not be &apos;-&apos;, a digit as
+         defined by the Unicode general category *Nd*, or a
+         letter as defined by the Unicode general categories
+         *Lu, Ll, Lt, Lm, and Lo*.&quot;
+        Character? groupingSeparator = null)
+            =&gt; package.formatInteger(integer, radix, 
+                    groupingSeparator);
+    
+    shared new (Integer integer) extends Object() {}
+    
+    &quot;The UTF-32 character with this UCS code point.&quot;
+    throws (`class OverflowException`,
+            &quot;if this integer is not in the range 
+             `0..#10FFFF` of legal Unicode code points&quot;)
+    shared native Character character;
+    
+    shared actual native Integer negated;
+    
+    shared actual native Integer plus(Integer other);
+    shared actual native Integer minus(Integer other);
+    shared actual native Integer times(Integer other);
+    shared actual native Integer divided(Integer other);
+    shared actual native Integer remainder(Integer other);
+    since(&quot;1.2.0&quot;)
+    shared actual native Integer modulo(Integer modulus);
+    
+    &quot;Determines if this integer is a factor of the given 
+     integer, that is, if `remainder(other)==0 `.&quot;
+    shared actual native Boolean divides(Integer other)
+            =&gt; other % this == 0;
+    
+    &quot;The result of raising this number to the given 
+     non-negative integer power, where `0^0` evaluates to 
+     `1`.&quot;
+    throws (`class AssertionError`, 
+            &quot;if the given [[power|other]] is negative&quot;)
+    shared actual native Integer power(Integer other);
+    
+    &quot;Determines if the given object is equal to this `Integer`,
+     that is, if:
+     
+     - the given object is an `Integer` representing the 
+       same whole number.
+     
+     Or if:
+     
+     - the given object is a [[Float]],
+     - its value is neither [[Float.undefined]], nor 
+       [[infinity]],
+     - the [[fractional part|Float.fractionalPart]] of its 
+       value equals `0.0`, and
+     - the [[integer part|Float.integer]] part of its value 
+       equals this integer, and
+     - this integer is between -2&lt;sup&gt;53&lt;/sup&gt; and 
+       2&lt;sup&gt;53&lt;/sup&gt; (exclusive).&quot;
+    shared actual native Boolean equals(Object that);
+    
+    &quot;The hash code of this `Integer`, which is just the
+     `Integer` itself, except on the JVM platform where, as 
+     with all `hash` codes, this 64-bit `Integer` value is 
+     truncated to 32 bits by taking the exclusive 
+     disjunction of the 32 lowest-order bits with the 32 
+     highest-order bits, that is:
+     
+         int.hash == int.rightArithmeticShift(32).exclusiveOr(int)&quot;
+    shared actual native Integer hash =&gt; this;
+    
+    &quot;Compare this integer with the given integer, returning:
+     
+     - `smaller`, if `this &lt; other`,
+     - `larger`, if `this &gt; other`, or
+     - `equal`, if `this == other`.&quot;
+    shared actual native Comparison compare(Integer other)
+            =&gt;   if (this &lt; other) then smaller
+            else if (this &gt; other) then larger
+            else equal;
+    
+    function indexInRange(Integer index)
+            =&gt; 0 &lt;= index &lt; runtime.integerAddressableSize;
+    
+    function mask(Integer index) 
+            =&gt; 1.leftLogicalShift(index);
+    
+    &quot;If the `index` is for an addressable bit, the value of 
+     that bit. Otherwise false.&quot;
+    shared actual native Boolean get(Integer index) 
+            =&gt; indexInRange(index)
+            then and(mask(index)) != 0 
+            else false;
+    
+    &quot;If the `index` is for an addressable bit, an instance 
+     with the same addressable bits as this instance, but 
+     with that bit cleared. Otherwise an instance with the 
+     same addressable bits as this instance.&quot;
+    shared actual native Integer clear(Integer index) 
+            =&gt; indexInRange(index)
+            then and(mask(index).not) 
+            else this;
+    
+    &quot;If the `index` is for an addressable bit, an instance 
+     with the same addressable bits as this instance, but 
+     with that bit flipped. Otherwise an instance with the 
+     same addressable bits as this instance.&quot;
+    shared actual native Integer flip(Integer index)
+            =&gt; indexInRange(index)
+            then xor(mask(index)) 
+            else this;
+    
+    &quot;If the `index` is for an addressable bit, an instance 
+     with the same addressable bits as this instance, but 
+     with that bit set to `bit`. Otherwise an instance with 
+     the same addressable bits as this instance.&quot;
+    shared actual native Integer set(Integer index, Boolean bit)
+            =&gt; indexInRange(index)
+            then (bit then or(mask(index)) 
+                      else and(mask(index).not))
+            else this;
+    
+    shared actual native Integer not;
+    shared actual native Integer or(Integer other);
+    shared actual native Integer xor(Integer other);
+    shared actual native Integer and(Integer other);
+    
+    &quot;If the given [[shift]] is in the range of 
+     [[addressable bits|runtime.integerAddressableSize]]
+     given by
+     
+         0..runtime.integerAddressableSize-1
+     
+     shift the addressable bits to the right by `shift` 
+     positions, using sign extension to fill in the most
+     significant bits. Otherwise shift the 
+     addressable bits to the right by 
+     
+         shift.and(runtime.integerAddressableSize-1)
+     
+     positions, using sign extension.&quot;
+    shared actual native Integer rightArithmeticShift(Integer shift);
+    
+    &quot;If the given [[shift]] is in the range of 
+     [[addressable bits|runtime.integerAddressableSize]]
+     given by
+     
+         0..runtime.integerAddressableSize-1
+     
+     shift the addressable bits to the right by `shift` 
+     positions, using zero extension to fill in the most
+     significant bits. Otherwise shift the addressable bits 
+     to the right by 
+     
+         shift.and(runtime.integerAddressableSize-1)
+     
+     positions, using zero extension.&quot;
+    aliased (&quot;rightShift&quot;)
+    shared actual native Integer rightLogicalShift(Integer shift);
+    
+    &quot;If the given [[shift]] is in the range of 
+     [[addressable bits|runtime.integerAddressableSize]]
+     given by
+     
+         0..runtime.integerAddressableSize-1
+     
+     shift the addressable bits to the left by `shift` 
+     positions, using zero extension to fill in the least
+     significant bits. Otherwise shift the addressable bits 
+     to the left by 
+     
+         shift.and(runtime.integerAddressableSize-1)
+     
+     positions, using zero extension.&quot;
+    aliased (&quot;leftShift&quot;)
+    shared actual native Integer leftLogicalShift(Integer shift);
+    
+    &quot;The number, represented as a [[Float]], if such a 
+     representation is possible. 
+     
+     - Any integer with [[magnitude]] smaller than 
+       [[runtime.maxExactIntegralFloat]] (2&lt;sup&gt;53&lt;/sup&gt;) 
+       has such a representation.
+     - For larger integers on the JVM platform, an 
+       [[OverflowException]] is thrown. If this behavior is 
+       not desired, use [[nearestFloat]] instead.&quot;
+    throws (`class OverflowException`,
+        &quot;if the number cannot be represented as a `Float`
+         without loss of precision, that is, if 
+         
+             this.magnitude&gt;runtime.maxExactIntegralFloat
+         
+         (Note that [[nearestFloat]] does not produce an
+         exception in this case.)&quot;)
+    see (`value runtime.maxExactIntegralFloat`,
+         `value nearestFloat`)
+    since(&quot;1.1.0&quot;)
+    shared native Float float;
+
+    &quot;The nearest [[Float]] to this number. 
+     
+     - For any integer with [[magnitude]] smaller than 
+       [[runtime.maxExactIntegralFloat]] (2&lt;sup&gt;53&lt;/sup&gt;), 
+       this is a `Float` with the exact same mathematical 
+       value (and the same value as [[float]]). 
+     - For larger integers on the JVM platform, the `Floats` 
+       are less dense than the `Integers` so there may be 
+       loss of precision.
+     
+     This method never throws an [[OverflowException]].&quot;
+    see (`value float`)
+    since(&quot;1.2.0&quot;)
+    shared native Float nearestFloat;
+
+    shared actual native Integer predecessor =&gt; minus(1);
+    shared actual native Integer successor =&gt; plus(1);
+    
+    shared actual native Integer neighbour(Integer offset)
+            =&gt; plus(offset);
+    
+    shared actual native Integer offset(Integer other)
+            =&gt; minus(other);
+    
+    shared actual native Integer offsetSign(Integer other)
+            =&gt; super.offsetSign(other);
+    
+    shared actual native Boolean unit =&gt; this==1;
+    shared actual native Boolean zero =&gt; this==0;
+    
+    &quot;Determine if this integer is even.
+     
+     An integer `i` is even if there exists an integer `k` 
+     such that:
+     
+         i == 2*k
+     
+     Thus, `i` is even if and only if `i%2 == 0`.&quot;
+    since(&quot;1.1.0&quot;)
+    shared native Boolean even =&gt; 2.divides(this);
+    
+    aliased(&quot;absolute&quot;)
+    shared actual native Integer magnitude 
+            =&gt; this &lt; 0 then -this else this;
+    
+    shared actual native Integer sign
+            =&gt;   if (this &lt; 0) then -1
+            else if (this &gt; 0) then 1
+            else 0;
+    
+    shared actual native Boolean negative =&gt; this &lt; 0;
+    shared actual native Boolean positive =&gt; this &gt; 0;
+    
+    shared actual native Integer wholePart =&gt; this;
+    shared actual native Integer fractionalPart =&gt; 0;
+    
+    shared actual native Integer timesInteger(Integer integer)
+            =&gt; times(integer);
+    
+    shared actual native Integer plusInteger(Integer integer)
+            =&gt; plus(integer);
+    
+    &quot;The result of raising this number to the given 
+     non-negative integer power, where `0^0` evaluates to 
+     `1`.&quot;
+    throws (`class AssertionError`, 
+        &quot;if the given [[power|integer]] is negative&quot;)
+    shared actual native Integer powerOfInteger(Integer integer)
+            =&gt; power(integer);
+    
+    see (`function formatInteger`)
+    shared actual native String string;
+    
+    shared actual native Boolean largerThan(Integer other); 
+    shared actual native Boolean smallerThan(Integer other); 
+    shared actual native Boolean notSmallerThan(Integer other); 
+    shared actual native Boolean notLargerThan(Integer other); 
+    
+    &quot;A [[Byte]] whose [[signed|Byte.signed]] and
+     [[unsigned|Byte.unsigned]] interpretations are 
+     congruent modulo 256 to this integer.&quot;
+    since(&quot;1.1.0&quot;)
+    shared native Byte byte =&gt; Byte(this);
+    
+}
+</pre></body></html>

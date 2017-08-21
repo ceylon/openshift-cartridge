@@ -1,0 +1,33 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>Qualified.ceylon</title><link href='../../.resources/favicon.ico' rel='shortcut icon'/>
+<link href='../../.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='../../.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='//fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '../../.resources/'</script><script src='../../.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='../../.resources/rainbow.min.js' type='text/javascript'></script><script src='../../.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='../../.resources/ceylon.js' type='text/javascript'></script><script src='../../.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>
+&quot;Abstraction for models of elements which must be qualified 
+ by an instance to order to be evaluated, including:
+ 
+ * [[Attribute]]s (a Qualified `Value`), 
+ * [[Method]]s  (a Qualified `Function`), 
+ * [[MemberClass|member classes]]  (a Qualified `Class`) and,
+ * [[MemberClassConstructor|member constructors]]  (a constructor of a Qualified `Class`).
+ 
+ To qualify a `Qualified` metamodel instance in a type-safe way you 
+ simply invoke it. Alternatively use [[bind]] if the qualifying instance&apos;s 
+ type is unknown until runtime.
+&quot;
+since(&quot;1.2.0&quot;)
+shared sealed interface Qualified&lt;out Kind=Anything, in Container=Nothing&gt; 
+        satisfies Kind(Container) {
+    
+    &quot;Type-unsafe container binding, to be used when the container type is unknown until runtime.
+     
+     A null argument is only permitted for `static` members (which 
+     have no container instance). In all other cases a non-null container is required.
+     
+     This has the same behaviour as invoking this `Member` directly, but exchanges compile-time type
+     safety with runtime checks.&quot;
+    throws(`class IncompatibleTypeException`, &quot;If the container is not assignable to this member&apos;s container&quot;)
+    shared formal Kind bind(Anything container);
+}
+</pre></body></html>

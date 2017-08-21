@@ -1,0 +1,79 @@
+'\" -*- coding: us-ascii -*-
+.if \n(.g .ds T< \\FC
+.if \n(.g .ds T> \\F[\n[.fam]]
+.de URL
+\\$2 \(la\\$1\(ra\\$3
+..
+.if \n(.g .mso www.tmac
+.TH "ceylon jigsaw" 1 "18 August 2017" "" ""
+.SH NAME
+ceylon jigsaw \- Tools to interop with Java 9 (Jigsaw) modules
+.SH SYNOPSIS
+'nh
+.fi
+.ad l
+\fBceylon jigsaw\fR \kx
+.if (\nx>(\n(.l/2)) .nr x (\n(.l/5)
+'in \n(.iu+\nxu
+[--cacherep=\fIurl\fR] [--cwd=\fIdir\fR] [--exclude-module=\fImoduleOrFile\fR...] [--force] [--jdk-provider=\fImodule\fR] [--link-with-current-distribution] [--maven-overrides=\fIfile\fR] [--no-default-repositories] [--offline] [--out=\fIdir\fR] [--overrides=\fIfile\fR] [--rep=\fIurl\fR...] [--static-metamodel] [--sysrep=\fIurl\fR] [--timeout=\fIseconds\fR] [--verbose[=\fIflags\fR]] [--] {mode} {module}\&...
+'in \n(.iu-\nxu
+.ad b
+'hy
+.SH DESCRIPTION
+There is currently one mode of action:
+.TP 0.2i
+\(bu
+\*(T<create\-mlib\*(T>: Generates an mlib folder suitable for Java 9 tools to run a given Ceylon module
+.PP
+The list of modules specified can have their versions set, but if missing we will try to find the
+version from the current source path. If the list of modules is omitted, we will use the list of
+modules found in the current source path.
+.SH OPTIONS
+.TP 
+--cacherep=\fIurl\fR
+Specifies the folder to use for caching downloaded modules. (default: \*(T<~/.ceylon/cache\*(T>)
+.TP 
+--cwd=\fIdir\fR
+Specifies the current working directory for this tool. (default: the directory where the tool is run from)
+.TP 
+--exclude-module=\fImoduleOrFile\fR, -x \fImoduleOrFile\fR
+Excludes modules from the resulting folder. Can be a module name or a file containing module names. Can be specified multiple times. Note that this excludes the module from the resulting folder, but if your modules require that module to be present at runtime it will still be required and may cause your application to fail to start if it is not provided at runtime.
+.TP 
+--force
+Force generation of mlib folder with multiple versions of the same module.
+.TP 
+--jdk-provider=\fImodule\fR
+Alternate JDK provider module (defaults to the current running JDK).
+.TP 
+--link-with-current-distribution
+Downgrade which were compiled with a more recent version of the distribution to the version of that module present in this distribution (1.3.3). This might fail with a linker error at runtime. For example if the module depended on an API present in the more recent version, but absent from 1.3.3. Allowed arguments are upgrade, downgrade or abort. Default: upgrade
+.TP 
+--maven-overrides=\fIfile\fR
+Specifies the XML file to use to load Maven artifact overrides. See http://ceylon-lang.org/documentation/current/reference/repository/maven/ for information. Deprecated: use --overrides.
+.TP 
+--no-default-repositories
+Indicates that the default repositories should not be used.
+.TP 
+--offline, -L
+Enables offline mode that will prevent connections to remote repositories.
+.TP 
+--out=\fIdir\fR, -o \fIdir\fR
+Folder in which to place the resulting jars (defaults to \*(T<mlib\*(T>).
+.TP 
+--overrides=\fIfile\fR, -O \fIfile\fR
+Specifies the XML file to use to load module overrides. See http://ceylon-lang.org/documentation/current/reference/repository/maven/ for information. \fInull\fR.
+.TP 
+--rep=\fIurl\fR
+Specifies a module repository containing dependencies. Can be specified multiple times. (default: \*(T<modules\*(T>, \*(T<~/.ceylon/repo\*(T>, \*(T<https://modules.ceylon\-lang.org/repo/1\*(T>)
+.TP 
+--static-metamodel
+Generate a static metamodel descriptor (default: \*(T<false\*(T>).
+.TP 
+--sysrep=\fIurl\fR
+Specifies the system repository containing essential modules. (default: \*(T<$CEYLON_HOME/repo\*(T>)
+.TP 
+--timeout=\fIseconds\fR, -T \fIseconds\fR
+Sets the timeout for connections to remote repositories, use 0 for no timeout (default: 20).
+.TP 
+--verbose[=\fIflags\fR], -d
+Produce verbose output. If no \*(T<flags\*(T> are given then be verbose about everything, otherwise just be verbose about the flags which are present. Allowed flags include: \*(T<all\*(T>, \*(T<loader\*(T>.

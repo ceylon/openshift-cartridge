@@ -1,0 +1,48 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>loop.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='//fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;Produces the [[stream|Iterable]] that results from repeated
+ application of the given [[function|next]] to the given
+ [[first]] element of the stream, until the function first
+ returns [[finished]]. If the given function never returns 
+ `finished`, the resulting stream is infinite.
+
+ For example:
+
+     loop(0)(2.plus).takeWhile(10.largerThan)
+
+ produces the stream `{ 0, 2, 4, 6, 8 }`.&quot;
+tagged(&quot;Streams&quot;)
+aliased(&quot;iterate&quot;)
+since(&quot;1.1.0&quot;)
+shared {Element+} loop&lt;Element&gt;(
+        &quot;The first element of the resulting stream.&quot;
+        Element first)(
+        &quot;The function that produces the next element of the
+         stream, given the current element. The function may
+         return [[finished]] to indicate the end of the 
+         stream.&quot;
+        Element|Finished next(Element element))
+    =&gt; let (start = first)
+    object satisfies {Element+} {
+        first =&gt; start;
+        empty =&gt; false;
+        function nextElement(Element element)
+                =&gt; next(element);
+        iterator()
+                =&gt; object satisfies Iterator&lt;Element&gt; {
+            variable Element|Finished current = start;
+            shared actual Element|Finished next() {
+                if (!is Finished result = current) {
+                    current = nextElement(result);
+                    return result;
+                }
+                else {
+                    return finished;
+                }
+            }
+        };
+    };
+</pre></body></html>

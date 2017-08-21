@@ -1,0 +1,77 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>Partial.ceylon</title><link href='../.resources/favicon.ico' rel='shortcut icon'/>
+<link href='../.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='../.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='//fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '../.resources/'</script><script src='../.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='../.resources/rainbow.min.js' type='text/javascript'></script><script src='../.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='../.resources/ceylon.js' type='text/javascript'></script><script src='../.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>import ceylon.language.meta.model {
+    ClassModel
+}
+
+&quot;A partially reconstructed instance: 
+ Holds state for reconstructing an instance which is built up 
+ progressively by calls to the [[DeserializationContext]].&quot;
+abstract class Partial(id) {
+    
+    &quot;The id&quot;// It&apos;s an object rather than an id to save space: we require a lot of partials!
+    shared Object id;
+    
+    &quot;The class, if we know it yet&quot;
+    shared variable ClassModel&lt;&gt;? clazz = null;
+    
+    &quot;The containing instance (a partial for it, or the instance itself).
+     null if this partial is not a member or we don&apos;t know the container yet.&quot;
+    shared variable Anything container = null;
+    
+    &quot;The (partially initialized) instance, if it has been [[instantiated|instantiate]], or null.&quot;
+    shared variable Anything instance_ = null;
+    
+    &quot;The state, mapping references to the 
+     **id** of the corresponding value in the [[DeserializationContext]].
+     nullified by a successful call to [[initialize]].&quot;
+    //The Value type is not Id to save space
+    shared variable NativeMap&lt;ReachableReference, Object&gt;? state = NativeMap&lt;ReachableReference, Object&gt;();
+    
+    &quot;Add some state.&quot;
+    shared void addState(ReachableReference attrOrIndex, Object partialOrComplete) {
+        assert(exists s=state);
+        s.put(attrOrIndex, partialOrComplete);
+    }
+    //shared formal void addState(String|Integer attrOrIndex, Object partialOrComplete);
+    
+    &quot;Creates (but does not initialize) the [[instance_]] using backend-specific reflection.
+     After normal completion of this method instance_ will be non-null.&quot;
+    throws(`class DeserializationException`,
+        &quot;* the class of the instance has already been specified
+         * instance is a member instance and the container has not been specified&quot;)
+    shared formal void instantiate();
+    
+    &quot;Initializes the [[instance_]] using backend-specific reflection.
+     After normal completion of this method state will be null.&quot;
+    throws(`class DeserializationException`,
+        &quot;the partial contains insufficient state&quot;)
+    shared formal void initialize&lt;Id&gt;(DeserializationContextImpl&lt;Id&gt; context)
+            given Id satisfies Object;
+    
+    &quot;Whether the partial has been instantiated&quot;
+    shared Boolean instantiated =&gt; instance_ exists;
+    &quot;Whether the partial has been initialized&quot;
+    shared Boolean initialized =&gt; !state exists;
+    &quot;Whether the partial is for an instance of a member class&quot;
+    shared Boolean member =&gt; container exists;
+    
+    &quot;Gets the fully initialized instance, or throws&quot;
+    shared Anything instance() {
+        assert(instantiated &amp;&amp; initialized);
+        return instance_;
+    }
+    
+    &quot;The ids of the instances that this instance refers to&quot;
+    shared {Object*} refersTo {
+        if (exists s=state) {
+            return s.items;
+        } else {
+            return [];
+        }
+    }
+}
+</pre></body></html>

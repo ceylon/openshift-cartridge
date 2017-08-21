@@ -1,0 +1,221 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>NativeMap.ceylon</title><link href='../.resources/favicon.ico' rel='shortcut icon'/>
+<link href='../.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='../.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='//fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '../.resources/'</script><script src='../.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='../.resources/rainbow.min.js' type='text/javascript'></script><script src='../.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='../.resources/ceylon.js' type='text/javascript'></script><script src='../.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>import ceylon.language.impl {
+    BaseIterable,
+    BaseIterator
+}
+
+&quot;Need a map-like thing, but can&apos;t use java.util.HashMap directly, 
+ not ceylon.collection::HashMap&quot;
+native class NativeMap&lt;Key,Element&gt;() {
+    shared native Element? get(Key id);
+    shared native void put(Key id, Element instanceOrPartial);
+    shared native Boolean contains(Key id);
+    shared native {Key*} keys;
+    shared native {Element*} items;
+    shared native Integer size;
+    shared native actual String string;
+}
+
+
+native(&quot;jvm&quot;) class NativeMap&lt;Key,Element&gt;() {
+    
+    import java.util {
+        HashMap,
+        JavaIterator=Iterator
+    }
+    native(&quot;jvm&quot;) HashMap&lt;Key, Element&gt; m = HashMap&lt;Key, Element&gt;();
+    
+    shared native(&quot;jvm&quot;) void put(Key id, Element instanceOrPartial) {
+        m.put(id, instanceOrPartial);
+    }
+    
+    shared native(&quot;jvm&quot;) Element? get(Key id) {
+        return m.get(id of Object?);
+    }
+    
+    shared native(&quot;jvm&quot;) Boolean contains(Key id) {
+        return m.containsKey(id of Object?);
+    }
+    
+    shared native(&quot;jvm&quot;) Integer size {
+        return m.size();
+    }
+    
+    shared native(&quot;jvm&quot;) Iterable&lt;Element, Null&gt; items {
+        return object extends BaseIterable&lt;Element,Null&gt;() satisfies Identifiable {
+            
+            shared actual Iterator&lt;Element&gt; iterator() {
+                JavaIterator&lt;Element&gt; it = m.values().iterator();
+                return object extends BaseIterator&lt;Element&gt;() satisfies Identifiable {
+                    
+                    shared actual Element|Finished next() {
+                        if (it.hasNext()) {
+                            return it.next();
+                        } else { 
+                            return finished;
+                        }
+                    }
+                };
+            }
+        };
+    }
+    
+    
+    shared native(&quot;jvm&quot;) Iterable&lt;Key, Null&gt; keys {
+        return object extends BaseIterable&lt;Key,Null&gt;() satisfies Identifiable {
+            
+            shared actual Iterator&lt;Key&gt; iterator() {
+                JavaIterator&lt;Key&gt; it = m.keySet().iterator();
+                return object extends BaseIterator&lt;Key&gt;() satisfies Identifiable {
+                    
+                    shared actual Key|Finished next() {
+                        if (it.hasNext()) {
+                            return it.next();
+                        } else { 
+                            return finished;
+                        }
+                    }
+                };
+            }
+        };
+    }
+    
+    shared native(&quot;jvm&quot;) actual String string {
+        return m.string;
+    }
+}
+
+native(&quot;js&quot;) class NativeMap&lt;Key,Element&gt;() {
+
+    dynamic ks;
+    dynamic vs;
+    dynamic {
+        ks = dynamic[null];
+        vs = dynamic[null];
+    }
+    &quot;Find the index of the specified key, or -1 if it isn&apos;t in the map&quot;
+    Integer find(Key id) {
+        if (id exists) {
+            dynamic {
+                Integer len=ks.length;
+                if (len &lt; 2) {
+                    return -1;
+                }
+                for (i in 1:len-1) {
+                    if (id == ks[i]) {
+                        return i;
+                    }
+                }
+            }
+            return -1;
+        }
+        return 0;
+    }
+
+    shared native(&quot;js&quot;) void put(Key id, Element instanceOrPartial) {
+        value i = find(id);
+        if (i &gt;= 0) {
+            //replace
+            dynamic {
+                setObjectProperty(vs, i, instanceOrPartial);
+            }
+        } else if (i &lt; 0) {
+            //new entry
+            dynamic {
+                ks.push(id);
+                vs.push(instanceOrPartial);
+            }
+        }
+    }
+    
+    shared native(&quot;js&quot;) Element? get(Key id) {
+        value i = find(id);
+        dynamic {
+            return i &gt;= 0 then vs[i] else null;
+        }
+    }
+    
+    shared native(&quot;js&quot;) Boolean contains(Key id) =&gt;
+        find(id) &gt;= 0;
+    
+    shared native(&quot;js&quot;) Integer size {
+        dynamic {
+            return ks.length-1;
+        }
+    }
+    
+    shared native(&quot;js&quot;) Iterable&lt;Element, Null&gt; items {
+        return object extends BaseIterable&lt;Element,Null&gt;() satisfies Identifiable {
+            
+            shared actual Iterator&lt;Element&gt; iterator() {
+                variable value i=1;
+                return object extends BaseIterator&lt;Element&gt;() satisfies Identifiable {
+                    
+                    shared actual Element|Finished next() {
+                        dynamic {
+                            if (i &gt;= vs.length) {
+                                return finished;
+                            }
+                            Element e = vs[i];
+                            i++;
+                            return e;
+                        }
+                    }
+                };
+            }
+        };
+    }
+    
+    
+    shared native(&quot;js&quot;) Iterable&lt;Key, Null&gt; keys {
+        return object extends BaseIterable&lt;Key,Null&gt;() satisfies Identifiable {
+            
+            shared actual Iterator&lt;Key&gt; iterator() {
+                variable value i=1;
+                return object extends BaseIterator&lt;Key&gt;() satisfies Identifiable {
+                    
+                    shared actual Key|Finished next() {
+                        dynamic {
+                            if (i &gt;= ks.length) {
+                                return finished;
+                            }
+                            Key e = ks[i];
+                            i++;
+                            return e;
+                        }
+                    }
+                };
+            }
+        };
+    }
+    
+    shared native(&quot;js&quot;) actual String string {
+        value sb=StringBuilder();
+        sb.append(&quot;{&quot;);
+        dynamic {
+            if (vs[0] exists) {
+                sb.append(&quot;&lt;null&gt; -&gt;&quot;).append(vs[0].string);
+            }
+            if (ks.length&gt;1) {
+                for (i in 1:ks.length-1) {
+                    if (sb.size &gt; 1) {
+                        sb.append(&quot;, &quot;);
+                    }
+                    sb.append(ks[i]).append(&quot;-&gt;&quot;);
+                    if (vs[i] exists) {
+                        sb.append(vs[i].string);
+                    } else {
+                        sb.append(&quot;[null]&quot;);
+                    }
+                }
+            }
+        }
+        sb.append(&quot;}&quot;);
+        return sb.string;
+    }
+}
+</pre></body></html>

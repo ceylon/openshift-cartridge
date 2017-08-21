@@ -1,0 +1,40 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>module.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='.resources/ceylondoc.css' rel='stylesheet' type='text/css'/>
+<link href='//fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/rainbow.linenumbers.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;The Ceylon language module containing the core definitions 
+ referred to by the [language specification][spec], along 
+ with some basic functionality of use to most programs:
+ 
+ - The [[root package|package ceylon.language]] defines 
+   general-purpose functionality including support for 
+   [[numbers|Numeric]] and [[character strings|String]], 
+   [[streams|Iterable]] and [[sequences|Sequential]], 
+   [[exceptions|Throwable]], and [[null values|Null]].
+ - The Ceylon _metamodel_ is defined in 
+   [[package ceylon.language.meta]] and its subpackages 
+   [[package ceylon.language.meta.model]] and 
+   [[package ceylon.language.meta.declaration]], which
+   define interfaces for interacting with applied types and 
+   unapplied type declarations respectively.
+ 
+ This module defines an abstraction over the basic 
+ facilities of the Java or JavaScript virtual machine, 
+ containing only functionality that can be easily 
+ implemented on both platforms. Thus, certain functionality, 
+ for example, concurrency, for which there is no common
+ virtual machine-agnostic model, is not covered by the
+ language module.
+ 
+ The language module is an implicit dependency of every
+ other Ceylon module, and may not be explicitly imported.
+ 
+ [spec]: http://ceylon-lang.org/documentation/current/spec&quot;
+by (&quot;Gavin King&quot;, &quot;Tom Bentley&quot;, &quot;Tako Schotanus&quot;,
+   &quot;Stephane Epardaud&quot;, &quot;Enrique Zamudio&quot;)
+license (&quot;http://www.apache.org/licenses/LICENSE-2.0.html&quot;)
+module ceylon.language maven:&quot;org.ceylon-lang&quot; &quot;1.3.3&quot;/*@CEYLON_VERSION@*/ {
+    native(&quot;jvm&quot;) import java.base &quot;7&quot;;
+}
+</pre></body></html>
